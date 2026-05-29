@@ -1,285 +1,191 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="Dieta"/>
-<meta name="theme-color" content="#0b0d12"/>
-
-<title>Plano Alimentar</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dieta Pro</title>
 
 <style>
-/* =========================
-   🌑 APPLE DARK PREMIUM
-========================= */
-:root{
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
-  --bg:#0b0d12;
-
-  --surface:rgba(255,255,255,0.04);
-  --surface2:rgba(255,255,255,0.06);
-
-  --border:rgba(255,255,255,0.06);
-  --border2:rgba(255,255,255,0.10);
-
-  --text:#e9e6df;
-  --text-dim:#8b90a0;
-  --text-faint:#4a5160;
-
-  --gold:#c9a84c;
-  --green:#6fbf8a;
-  --blue:#7eb8d4;
-
-  --mono:'DM Mono', monospace;
-
-  --shadow: 0 20px 60px rgba(0,0,0,0.45);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, sans-serif;
 }
 
-html,body{
-  height:100%;
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Inter',sans-serif;
-  -webkit-font-smoothing:antialiased;
-  overscroll-behavior:none;
+body {
+  background: #0B0C10;
+  color: #fff;
+  overflow-x: hidden;
 }
 
-/* APP ENTRY */
-#app{
-  max-width:480px;
-  margin:0 auto;
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  animation: fadeIn .4s ease-out;
+/* BACKGROUND GLOW */
+.bg {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0,255,170,0.08), transparent 40%),
+    radial-gradient(circle at 80% 10%, rgba(0,140,255,0.08), transparent 40%),
+    radial-gradient(circle at 50% 90%, rgba(255,255,255,0.03), transparent 50%);
+  z-index: -1;
 }
 
-/* =========================
-   ✨ ANIMAÇÕES
-========================= */
-@keyframes fadeIn{
-  from{opacity:0}
-  to{opacity:1}
+/* APP WRAPPER */
+.app {
+  padding-bottom: 80px;
 }
 
-@keyframes fadeUp{
-  from{
-    opacity:0;
-    transform:translateY(12px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
+/* TOP BAR */
+.header {
+  padding: 20px;
+  font-size: 18px;
+  font-weight: 500;
+  opacity: .9;
 }
 
-@keyframes press{
-  0%{transform:scale(1)}
-  50%{transform:scale(0.97)}
-  100%{transform:scale(1)}
+/* PAGES */
+.page {
+  display: none;
+  padding: 10px 20px 40px;
+  animation: fade .35s ease;
 }
 
-/* =========================
-   HEADER (APPLE STYLE)
-========================= */
-.hdr{
-  padding:calc(env(safe-area-inset-top) + 14px) 20px 0;
-  position:sticky;
-  top:0;
-  z-index:100;
-  background:linear-gradient(180deg,#141c2e 0%, transparent 100%);
-  backdrop-filter: blur(18px);
+.page.active {
+  display: block;
 }
 
-.hdr-title{
-  font-family:'Bricolage Grotesque', sans-serif;
-  font-size:18px;
-  font-weight:600;
+@keyframes fade {
+  from {opacity: 0; transform: translateY(10px);}
+  to {opacity: 1; transform: translateY(0);}
 }
 
-/* =========================
-   CARDS PREMIUM FEEL
-========================= */
-.card,
-.stat-card,
-.recipe-card,
-.prep-card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:14px;
-  box-shadow:var(--shadow);
-  animation: fadeUp .35s ease-out;
-  transition:all .25s ease;
+/* CARDS */
+.card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: .25s ease;
 }
 
-.card:active,
-.stat-card:active,
-.recipe-card:active{
-  transform:scale(0.985);
+.card:active {
+  transform: scale(0.98);
 }
 
-/* hover depth */
-.card:hover{
-  transform:translateY(-1px);
+/* BUTTONS */
+.btn {
+  background: linear-gradient(135deg, #00ffa3, #00a3ff);
+  border: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: #000;
+  font-weight: 600;
+  margin-top: 10px;
 }
 
-/* =========================
-   BUTTON / TOUCH FEEL
-========================= */
-button{
-  transition:all .2s ease;
-}
-
-button:active{
-  transform:scale(0.96);
-}
-
-/* =========================
-   ROW INTERACTION (TOUCH)
-========================= */
-.row{
-  transition:all .2s ease;
-}
-
-.row:active{
-  transform:scale(0.99);
-  background:rgba(255,255,255,0.03);
-}
-
-/* =========================
-   CHECKBOX MICRO INTERACTION
-========================= */
-.chkbox{
-  width:20px;
-  height:20px;
-  border-radius:7px;
-  border:1px solid var(--border2);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:all .25s ease;
-}
-
-.chkbox.chk{
-  background:var(--green);
-  transform:scale(1.08);
-  box-shadow:0 0 0 5px rgba(111,191,138,0.08);
-}
-
-/* =========================
-   TABS (APPLE NAV FEEL)
-========================= */
-.tab-btn{
-  transition:all .25s ease;
-}
-
-.tab-btn.active{
-  color:var(--gold);
-  text-shadow:0 0 20px rgba(201,168,76,0.25);
-}
-
-/* =========================
-   SCROLL TRANSITION
-========================= */
-.scroll{
-  animation: fadeIn .25s ease-out;
-}
-
-/* =========================
-   RIPPLE EFFECT BASE
-========================= */
-.ripple{
-  position:absolute;
-  border-radius:50%;
-  background:rgba(255,255,255,0.15);
-  transform:scale(0);
-  animation:rippleAnim .6s ease-out;
-  pointer-events:none;
-}
-
-@keyframes rippleAnim{
-  to{
-    transform:scale(20);
-    opacity:0;
-  }
-}
-
-/* =========================
-   DARK GLASS HEADER
-========================= */
-.hdr{
+/* NAV BAR */
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px;
+  background: rgba(10,10,10,0.8);
   backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,0.08);
 }
 
-/* =========================
-   GRAPH ANIMATION
-========================= */
-svg polyline{
-  stroke-dasharray:1000;
-  stroke-dashoffset:1000;
-  animation:draw 1.2s ease forwards;
+.nav button {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 12px;
+  transition: .2s;
 }
 
-@keyframes draw{
-  to{stroke-dashoffset:0}
+.nav button.active {
+  color: #00ffa3;
+  transform: translateY(-2px);
 }
 
-/* =========================
-   SAFE TOUCH UX
-========================= */
-*{
-  -webkit-tap-highlight-color:transparent;
+/* SMALL MICRO INTERACTION */
+.nav button:active {
+  transform: scale(0.9);
+}
+
+h2 {
+  font-weight: 500;
+  margin-bottom: 12px;
 }
 </style>
 </head>
 
 <body>
-<div id="app"></div>
+
+<div class="bg"></div>
+
+<div class="app">
+
+  <div class="header">Dieta Pro</div>
+
+  <!-- DIETAS -->
+  <div id="dietas" class="page active">
+    <h2>Dietas</h2>
+    <div class="card">
+      Plano Atual
+      <br><small>Déficit leve • 2200 kcal</small>
+      <button class="btn">Ver detalhes</button>
+    </div>
+    <div class="card">
+      Progresso semanal
+      <br><small>Você evoluiu 3.2% essa semana</small>
+    </div>
+  </div>
+
+  <!-- COMPRAS -->
+  <div id="compras" class="page">
+    <h2>Compras</h2>
+    <div class="card">Frango, arroz, ovos</div>
+    <div class="card">Lista inteligente ativada</div>
+  </div>
+
+  <!-- RECEITAS -->
+  <div id="receitas" class="page">
+    <h2>Receitas</h2>
+    <div class="card">Omelete proteico</div>
+    <div class="card">Shake hipercalórico</div>
+  </div>
+
+  <!-- FINANCEIRO -->
+  <div id="financeiro" class="page">
+    <h2>Financeiro</h2>
+    <div class="card">Gasto semanal: R$ 320</div>
+    <div class="card">Meta: reduzir 12%</div>
+  </div>
+
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="active" onclick="show('dietas', this)">Dietas</button>
+  <button onclick="show('compras', this)">Compras</button>
+  <button onclick="show('receitas', this)">Receitas</button>
+  <button onclick="show('financeiro', this)">Financeiro</button>
+</div>
 
 <script>
-/* =========================
-   ⚡ MICRO INTERAÇÕES (RIPPLE + HAPTIC)
-========================= */
-document.addEventListener("click",(e)=>{
+function show(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
 
-  const el = e.target.closest(".row, .card, button, .tab-btn");
-  if(!el) return;
-
-  /* ripple */
-  const ripple = document.createElement("span");
-  ripple.className = "ripple";
-
-  const rect = el.getBoundingClientRect();
-  ripple.style.left = (e.clientX - rect.left) + "px";
-  ripple.style.top = (e.clientY - rect.top) + "px";
-
-  el.style.position="relative";
-  el.style.overflow="hidden";
-
-  el.appendChild(ripple);
-
-  setTimeout(()=>ripple.remove(),600);
-
-  /* haptic (iPhone) */
-  if(navigator.vibrate){
-    navigator.vibrate(8);
-  }
-});
-
-/* =========================
-   🌙 AUTO DARK FEEL (base visual hook)
-========================= */
-const hour = new Date().getHours();
-if(hour >= 18 || hour <= 6){
-  document.documentElement.style.setProperty('--bg','#07080c');
-}
-</script>
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
 
 <script>
 // ═══════════════════════════════════════════════════════
