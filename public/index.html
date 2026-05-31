@@ -1822,6 +1822,52 @@ window.setLang=setLang;
     window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
   }
 })();
+  // ── LOGIN LOCAL (SUBSTITUIÇÃO SEGURA) ──
+function initAuth() {
+  console.log('[Auth] Iniciando Login Local...');
+  const user = localStorage.getItem('evo_user');
+  if (user) {
+    currentUser = JSON.parse(user);
+    checkAndRoute();
+  } else {
+    // Se não houver usuário, vai para a tela de boas-vindas
+    showScreen('auth-welcome');
+  }
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-pass').value;
+  
+  if(email && pass) {
+    // Login aceita qualquer e-mail/senha e salva localmente
+    const user = { email: email };
+    localStorage.setItem('evo_user', JSON.stringify(user));
+    currentUser = user;
+    console.log('[Auth] Login realizado com sucesso');
+    checkAndRoute();
+  } else {
+    showErr('login-err', 'Preencha e-mail e senha.');
+  }
+}
+
+async function doLogout() {
+  if (!confirm('Sair do EVO?')) return;
+  localStorage.removeItem('evo_user');
+  currentUser = null;
+  showScreen('auth-welcome');
+}
+
+// Garanta que checkAndRoute seja simples
+function checkAndRoute() {
+  const profile = JSON.parse(localStorage.getItem('evo_profile'));
+  if (!profile) {
+    showScreen('ob-screen');
+  } else {
+    showApp();
+  }
+}
+
 </script>
 </body>
 </html>
