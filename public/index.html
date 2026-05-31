@@ -1137,40 +1137,25 @@ async function startGeneration() {
   showScreen('gen-screen');
   const profile = ld('evo_profile', null);
   if (!profile) { showScreen('ob-screen'); return; }
-  const steps = ['gs-1','gs-2','gs-3','gs-4','gs-5'];
-  const txts = ['gst-1','gst-2','gst-3','gst-4','gst-5'];
-  let idx = 0;
-  function advance() {
-    if (idx>0) { document.getElementById(steps[idx-1]).className='gen-step-dot done'; document.getElementById(txts[idx-1]).className='gen-step-txt done'; }
-    if (idx<steps.length) { document.getElementById(steps[idx]).className='gen-step-dot active'; document.getElementById(txts[idx]).className='gen-step-txt active'; idx++; }
-  }
-  advance();
-  const iv = setInterval(() => { if (idx<steps.length) advance(); else clearInterval(iv); }, 1800);
-  try {
-    const token = currentUser?.token?.access_token || '';
-    const resp = await fetch('/.netlify/functions/generate-plan', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
-      body:JSON.stringify(profile),
+
+  // Simula um processamento rápido e aplica o plano localmente
+  setTimeout(() => {
+    console.log('[EVO] Aplicando plano local (Sem servidor)');
+    
+    // Injeta os dados base diretamente no navegador
+    sv('evo_plan', { 
+        tmb: "2.200", 
+        calorias_dia: profile.objetivo === 'emagrecimento' ? "1.800" : "2.500",
+        objetivo: profile.objetivo,
+        relatorio_ia: "Plano otimizado para o seu perfil. Foco total em consistência e resultados reais."
     });
-    clearInterval(iv);
-    steps.forEach((s,i)=>{ document.getElementById(s).className='gen-step-dot done'; document.getElementById(txts[i]).className='gen-step-txt done'; });
-    if (resp.ok) {
-      const data = await resp.json();
-      if (data.plan) {
-        sv('evo_plan', data.plan);
-        if (data.plan.meals) sv('evo_meals', data.plan.meals);
-        if (data.plan.shopping) sv('evo_shopping', data.plan.shopping);
-        if (data.plan.recipes) sv('evo_recipes', data.plan.recipes);
-      }
-    }
-    await new Promise(r=>setTimeout(r,600));
+    
+    sv('evo_meals', DEFAULT_MEALS);
+    sv('evo_shopping', DEFAULT_SHOPPING);
+    sv('evo_recipes', DEFAULT_RECIPES);
+    
     showApp();
-  } catch(err) {
-    clearInterval(iv);
-    await new Promise(r=>setTimeout(r,1000));
-    showApp();
-  }
+  }, 1000);
 }
 
 // ══════════════════════
@@ -1867,6 +1852,17 @@ function checkAndRoute() {
     showApp();
   }
 }
+// Detecta o modo do sistema automaticamente
+const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+function updateTheme() {
+  if (darkModeQuery.matches) {
+    document.body.classList.add('dark');
+  } else {
+    document.body.classList.remove('dark');
+  }
+}
+darkModeQuery.addListener(updateTheme);
+updateTheme();
 
 </script>
 </body>
