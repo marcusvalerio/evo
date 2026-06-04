@@ -3,237 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EVO - Premium SaaS</title>
+    <title>EVO - High Performance Nutrition</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #000000;
-            --surface: #111111;
-            --surface-light: #1c1c1c;
+            --surface: #0A0A0A;
+            --surface-light: #141414;
             --accent: #CCFF00; /* Cyber Lime */
             --text: #ffffff;
-            --text-dim: #71717a;
-            --border: rgba(255, 255, 255, 0.08);
-            --nav-bg: rgba(10, 10, 10, 0.8);
+            --text-dim: #666666;
+            --border: rgba(255, 255, 255, 0.05);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
 
-        /* --- CONTAINER PRINCIPAL --- */
-        .app-shell { width: 100%; max-width: 430px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 90px; }
-        .page { display: none; padding: 24px; animation: fadeIn 0.3s ease; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- LAYOUT E PÁGINAS --- */
+        .app-shell { width: 100%; max-width: 430px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 100px; }
+        .page { display: none; padding: 24px; animation: fadeIn 0.4s ease; }
+        .page.active { display: flex; flex-direction: column; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- AUTH (LOGIN/CADASTRO) --- */
-        .auth-card { text-align: center; margin-top: 60px; }
-        .logo-text { font-weight: 800; font-size: 3rem; letter-spacing: -2px; color: var(--accent); margin-bottom: 8px; }
-        .auth-toggle { display: flex; background: var(--surface); border-radius: 12px; padding: 4px; margin-bottom: 24px; border: 1px solid var(--border); }
-        .auth-toggle button { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-dim); font-weight: 600; cursor: pointer; border-radius: 10px; }
-        .auth-toggle button.active { background: var(--surface-light); color: var(--text); }
-        
-        .input-group { text-align: left; margin-bottom: 16px; }
-        .input-group label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; margin-left: 4px; }
-        input, select { width: 100%; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 1rem; }
+        /* --- TIPOGRAFIA --- */
+        .logo { font-weight: 800; font-size: 2.2rem; letter-spacing: -2px; color: var(--accent); margin-bottom: 4px; }
+        .slogan { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 40px; }
+        h1 { font-size: 1.8rem; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -1px; }
+        h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; }
+
+        /* --- CARDS E ELEMENTOS --- */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 16px; }
+        .label-dim { font-size: 0.65rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px; }
+
+        /* --- INPUTS --- */
+        input, select { 
+            width: 100%; padding: 18px; background: var(--surface-light); border: 1px solid var(--border); 
+            border-radius: 12px; color: #fff; font-size: 1rem; margin-bottom: 16px; 
+        }
         input:focus { border-color: var(--accent); outline: none; }
 
-        .btn-primary { width: 100%; padding: 18px; background: var(--accent); color: #000; border: none; border-radius: 18px; font-weight: 800; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
-
-        /* --- DASHBOARD ELEMENTS --- */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 16px; }
-        
-        .progress-box { height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .kcal-big { font-size: 3.5rem; font-weight: 800; line-height: 1; }
-        .kcal-sub { color: var(--text-dim); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
-
-        .macro-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-        .m-item { text-align: center; }
-        .m-item b { display: block; color: var(--accent); font-size: 1.1rem; }
-        .m-item span { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
-
-        /* --- BARRA DE NAVEGAÇÃO --- */
-        .nav-bar {
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 430px; height: 80px;
-            background: var(--nav-bg); backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border);
-            display: none; /* Só aparece após login */
-            grid-template-columns: repeat(4, 1fr);
-            align-items: center; padding: 0 10px; z-index: 100;
+        .btn { 
+            width: 100%; padding: 20px; background: var(--accent); color: #000; border: none; 
+            border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.9rem;
         }
-        .nav-item { text-align: center; cursor: pointer; color: var(--text-dim); transition: 0.3s; }
-        .nav-item.active { color: var(--accent); }
-        .nav-item i { display: block; font-size: 1.2rem; margin-bottom: 4px; }
-        .nav-item span { font-size: 0.65rem; font-weight: 600; }
 
-        /* --- LISTAS --- */
-        .list-title { font-size: 1rem; font-weight: 700; margin: 20px 0 12px; display: flex; justify-content: space-between; }
-        .item-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .item-icon { width: 40px; height: 40px; background: var(--surface-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        /* --- DASHBOARD --- */
+        .kcal-main { text-align: center; margin: 20px 0 40px; }
+        .kcal-number { font-size: 4.5rem; font-weight: 800; line-height: 1; display: block; }
+        
+        .macro-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        .m-card { background: var(--surface); padding: 16px; border-radius: 16px; border: 1px solid var(--border); }
+        .m-val { color: var(--accent); font-weight: 800; font-size: 1.1rem; display: block; }
+        .m-label { font-size: 0.6rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
+
+        /* --- PLANO DE DIETA (MASTIGADO) --- */
+        .meal-card { background: var(--surface); border-radius: 20px; padding: 20px; margin-bottom: 16px; border-left: 4px solid var(--accent); }
+        .meal-header { display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center; }
+        .meal-title { font-weight: 800; font-size: 1rem; text-transform: uppercase; }
+        .meal-kcal { font-size: 0.8rem; font-weight: 700; color: var(--accent); }
+        .meal-content { font-size: 0.9rem; line-height: 1.5; color: #ccc; margin-bottom: 12px; }
+        
+        .storage-box { 
+            background: rgba(204, 255, 0, 0.05); border: 1px dashed var(--accent); 
+            padding: 12px; border-radius: 10px; font-size: 0.75rem; 
+        }
+        .storage-tag { font-weight: 800; color: var(--accent); text-transform: uppercase; margin-right: 5px; }
+
+        /* --- NAVIGATION --- */
+        .nav { 
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 430px; height: 85px; background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px); border-top: 1px solid var(--border);
+            display: none; grid-template-columns: repeat(3, 1fr); align-items: center;
+        }
+        .nav-item { text-align: center; color: var(--text-dim); cursor: pointer; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-item.active { color: var(--accent); }
+        .nav-icon { width: 24px; height: 24px; margin: 0 auto 6px; display: block; background: currentColor; mask-size: contain; mask-repeat: no-repeat; mask-position: center; }
 
     </style>
 </head>
 <body>
 
-    <div class="app-shell">
+<div class="app-shell">
+
+    <!-- TELA 1: CADASTRO INICIAL -->
+    <section id="page-onboarding" class="page active">
+        <div class="logo">EVO</div>
+        <p class="slogan">Torne-se viciado em melhorar a si mesmo.</p>
+        <h1>Sua evolução começa aqui.</h1>
         
-        <!-- TELA 1: AUTHENTICATION -->
-        <section id="page-auth" class="page active">
-            <div class="auth-card">
-                <div class="logo-text">EVO</div>
-                <p style="color: var(--text-dim); margin-bottom: 40px;">Torne-se viciado em melhorar a si mesmo.</p>
-                
-                <div class="auth-toggle">
-                    <button id="btn-tab-login" class="active" onclick="toggleAuth('login')">Entrar</button>
-                    <button id="btn-tab-signup" onclick="toggleAuth('signup')">Criar Conta</button>
-                </div>
+        <div class="input-box">
+            <label class="label-dim">Seu Nome</label>
+            <input type="text" id="user-name" placeholder="Ex: Marcus">
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="input-box"><label class="label-dim">Peso (kg)</label><input type="number" id="weight" value="80"></div>
+            <div class="input-box"><label class="label-dim">Altura (cm)</label><input type="number" id="height" value="175"></div>
+        </div>
 
-                <div id="auth-fields">
-                    <div class="input-group" id="group-name" style="display: none;">
-                        <label>Nome Completo</label>
-                        <input type="text" placeholder="Como quer ser chamado?">
-                    </div>
-                    <div class="input-group">
-                        <label>E-mail</label>
-                        <input type="email" placeholder="seu@email.com">
-                    </div>
-                    <div class="input-group">
-                        <label>Senha</label>
-                        <input type="password" placeholder="••••••••">
-                    </div>
-                    <button class="btn-primary" onclick="doAuth()">Começar Evolução</button>
-                </div>
-            </div>
-        </section>
+        <div class="input-box">
+            <label class="label-dim">Objetivo Principal</label>
+            <select id="goal">
+                <option value="emagrecer">Emagrecimento Crítico</option>
+                <option value="hipertrofia">Hipertrofia Máxima</option>
+                <option value="manter">Performance / Manutenção</option>
+            </select>
+        </div>
 
-        <!-- TELA 2: DASHBOARD (HOME) -->
-        <section id="page-home" class="page">
-            <div class="header">
-                <h2>Início</h2>
-                <div style="width: 32px; height: 32px; background: var(--accent); border-radius: 50%;"></div>
-            </div>
-            
-            <div class="card progress-box">
-                <span class="kcal-sub">Calorias Restantes</span>
-                <span class="kcal-big">1.940</span>
-                <div style="width: 80%; height: 4px; background: var(--surface-light); border-radius: 10px; margin-top: 15px;">
-                    <div style="width: 40%; height: 100%; background: var(--accent); border-radius: 10px; box-shadow: 0 0 10px var(--accent);"></div>
-                </div>
-            </div>
+        <button class="btn" onclick="initApp()">Gerar Plano de Evolução</button>
+    </section>
 
-            <div class="card macro-grid">
-                <div class="m-item"><b>150g</b><span>Proteína</span></div>
-                <div class="m-item"><b>210g</b><span>Carbos</span></div>
-                <div class="m-item"><b>60g</b><span>Gordura</span></div>
-            </div>
+    <!-- TELA 2: DASHBOARD -->
+    <section id="page-home" class="page">
+        <div class="header" style="margin-bottom: 40px;">
+            <span class="label-dim" id="today-date">Hoje</span>
+            <h2 id="welcome-msg">Olá, Marcus</h2>
+        </div>
 
-            <div class="list-title">Refeições Recentes <span>Ver Tudo</span></div>
-            <div class="card">
-                <div class="item-row">
-                    <div class="item-icon">☕</div>
-                    <div style="flex:1"><b>Café da Manhã</b><br><small style="color:var(--text-dim)">Pão Integral + Ovo</small></div>
-                    <b>320 kcal</b>
-                </div>
-                <div class="item-row" style="border:none">
-                    <div class="item-icon">🥗</div>
-                    <div style="flex:1"><b>Almoço</b><br><small style="color:var(--text-dim)">Arroz, Feijão e Frango</small></div>
-                    <b>540 kcal</b>
-                </div>
-            </div>
-        </section>
+        <div class="kcal-main">
+            <span class="label-dim">Meta Diária Restante</span>
+            <span class="kcal-number" id="dash-kcal">2400</span>
+            <span style="font-weight: 800; font-size: 0.8rem; color: var(--accent);">KCAL</span>
+        </div>
 
-        <!-- TELA 3: DIÁRIO (ALIMENTAÇÃO) -->
-        <section id="page-diary" class="page">
-            <h2>Diário de Alimentos</h2>
-            <p style="color: var(--text-dim); margin-bottom: 20px;">Padrão Brasileiro TACO</p>
-            
-            <div class="input-group">
-                <input type="text" placeholder="🔍 Buscar alimento brasileiro...">
-            </div>
+        <div class="macro-row">
+            <div class="m-card"><span class="m-label">Proteína</span><span class="m-val" id="m-p">160g</span></div>
+            <div class="m-card"><span class="m-label">Carbos</span><span class="m-val" id="m-c">220g</span></div>
+            <div class="m-card"><span class="m-label">Gordura</span><span class="m-val" id="m-g">60g</span></div>
+        </div>
+    </section>
 
-            <div class="card">
-                <div class="item-row"><b>Arroz Branco Cozido</b> <span style="margin-left: auto; color: var(--accent);">+ Add</span></div>
-                <div class="item-row"><b>Feijão Carioca</b> <span style="margin-left: auto; color: var(--accent);">+ Add</span></div>
-                <div class="item-row"><b>Tapioca com Manteiga</b> <span style="margin-left: auto; color: var(--accent);">+ Add</span></div>
-            </div>
-        </section>
+    <!-- TELA 3: PLANO MASTIGADO (DIETA) -->
+    <section id="page-diet" class="page">
+        <h1>Seu Plano Mastigado</h1>
+        <p class="label-dim" style="margin-bottom: 24px;">Baseado no Padrão Brasileiro TACO</p>
 
-        <!-- TELA 4: PROGRESSO -->
-        <section id="page-stats" class="page">
-            <h2>Sua Evolução</h2>
-            <div class="card" style="height: 200px; display: flex; align-items: center; justify-content: center; color: var(--text-dim);">
-                [ Gráfico de Evolução de Peso ]
-            </div>
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span>Peso Inicial</span> <b>85kg</b>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span>Peso Atual</span> <b style="color: var(--accent);">81.5kg</b>
-                </div>
-            </div>
-        </section>
+        <div id="diet-container">
+            <!-- As refeições serão injetadas aqui via JS -->
+        </div>
+    </section>
 
-        <!-- BARRA DE NAVEGAÇÃO (FIXA NO RODAPÉ) -->
-        <nav class="nav-bar" id="main-nav">
-            <div class="nav-item active" onclick="switchPage('page-home', this)">
-                <i>🏠</i><span>Home</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('page-diary', this)">
-                <i>🍎</i><span>Diário</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('page-stats', this)">
-                <i>📈</i><span>Evolução</span>
-            </div>
-            <div class="nav-item" onclick="switchPage('page-auth', this)">
-                <i>👤</i><span>Perfil</span>
-            </div>
-        </nav>
+    <!-- NAVEGAÇÃO -->
+    <nav class="nav" id="main-nav">
+        <div class="nav-item active" onclick="showPage('page-home', this)"><span>Início</span></div>
+        <div class="nav-item" onclick="showPage('page-diet', this)"><span>Plano</span></div>
+        <div class="nav-item" onclick="showPage('page-onboarding', this)"><span>Perfil</span></div>
+    </nav>
 
-    </div>
+</div>
 
-    <script>
-        // Lógica de alternar Login/Cadastro
-        function toggleAuth(type) {
-            const nameField = document.getElementById('group-name');
-            const btnLogin = document.getElementById('btn-tab-login');
-            const btnSignup = document.getElementById('btn-tab-signup');
+<script>
+    let userData = {};
 
-            if (type === 'signup') {
-                nameField.style.display = 'block';
-                btnSignup.classList.add('active');
-                btnLogin.classList.remove('active');
-            } else {
-                nameField.style.display = 'none';
-                btnLogin.classList.add('active');
-                btnSignup.classList.remove('active');
-            }
-        }
-
-        // Simulação de Autenticação para abrir o App
-        function doAuth() {
-            document.getElementById('page-auth').classList.remove('active');
-            document.getElementById('page-home').classList.add('active');
-            document.getElementById('main-nav').style.display = 'grid';
-        }
-
-        // Navegação entre as seções do app
-        function switchPage(pageId, el) {
-            // Esconder todas as páginas
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            // Mostrar a página clicada
-            document.getElementById(pageId).classList.add('active');
-            
-            // Atualizar ícone ativo na nav bar
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    function showPage(id, el) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if(el) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
-            
-            // Scroll para o topo
-            window.scrollTo(0,0);
         }
-    </script>
+        window.scrollTo(0,0);
+    }
+
+    function initApp() {
+        const name = document.getElementById('user-name').value || "Guerreiro";
+        const weight = parseFloat(document.getElementById('weight').value);
+        const goal = document.getElementById('goal').value;
+
+        // Lógica de Nutrição Profissional
+        let baseKcal = (weight * 22) * 1.3; // TMB básica simplificada
+        if(goal === 'emagrecer') baseKcal -= 500;
+        if(goal === 'hipertrofia') baseKcal += 400;
+
+        userData = {
+            name: name,
+            kcal: Math.round(baseKcal),
+            p: Math.round(weight * 2),
+            g: Math.round(weight * 0.8),
+            c: Math.round((baseKcal - (weight * 2 * 4) - (weight * 0.8 * 9)) / 4)
+        };
+
+        // Atualiza UI
+        document.getElementById('welcome-msg').innerText = "Olá, " + name;
+        document.getElementById('dash-kcal').innerText = userData.kcal;
+        document.getElementById('m-p').innerText = userData.p + "g";
+        document.getElementById('m-c').innerText = userData.c + "g";
+        document.getElementById('m-g').innerText = userData.g + "g";
+
+        generateDietPlan(goal);
+        
+        document.getElementById('main-nav').style.display = 'grid';
+        showPage('page-home');
+    }
+
+    function generateDietPlan(goal) {
+        const container = document.getElementById('diet-container');
+        const meals = [
+            {
+                title: "Café da Manhã",
+                kcal: "350 kcal",
+                desc: "3 Ovos mexidos com 1 fatia de Pão Integral ou 50g de Mandioca cozida.",
+                prep: "Não congelar ovos prontos. A mandioca pode ser congelada cozida por 3 meses."
+            },
+            {
+                title: "Almoço (Padrão BR)",
+                kcal: "650 kcal",
+                desc: "150g de Arroz Branco, 100g de Feijão e 150g de Frango Grelhado. Salada à vontade.",
+                prep: "Pode congelar o kit completo. O frango dura 4 dias na geladeira."
+            },
+            {
+                title: "Lanche da Tarde",
+                kcal: "250 kcal",
+                desc: "1 Iogurte Desnatado com 30g de Aveia e 1 fruta (Banana ou Maçã).",
+                prep: "Frutas picadas perdem nutrientes. Consumir na hora."
+            },
+            {
+                title: "Jantar",
+                kcal: "500 kcal",
+                desc: "Omelete com Espinafre ou Carne Moída (Patinho) com Legumes ao vapor.",
+                prep: "A carne moída aceita excelente congelamento. Legumes ficam moles se congelados após cozidos."
+            }
+        ];
+
+        container.innerHTML = meals.map(m => `
+            <div class="meal-card">
+                <div class="meal-header">
+                    <span class="meal-title">${m.title}</span>
+                    <span class="meal-kcal">${m.kcal}</span>
+                </div>
+                <div class="meal-content">${m.desc}</div>
+                <div class="storage-box">
+                    <span class="storage-tag">Conservação:</span> ${m.prep}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Define data de hoje
+    const d = new Date();
+    const options = { weekday: 'long', day: 'numeric', month: 'long' };
+    document.getElementById('today-date').innerText = d.toLocaleDateString('pt-BR', options);
+
+</script>
 </body>
 </html>
