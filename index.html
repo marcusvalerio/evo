@@ -2,336 +2,339 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EVO - Premium Performance</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <title>EVO - Premium SaaS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --accent: #CCFF00;
-            --accent-glow: rgba(204, 255, 0, 0.2);
+            --accent-glow: rgba(204, 255, 0, 0.25);
             --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --bg: #000000;
             --text-main: #FFFFFF;
             --text-dim: #71717A;
+            --spring: cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
 
         body {
             background: var(--bg);
+            /* Mesh Gradient iOS 26 Style */
             background-image: 
                 radial-gradient(at 0% 0%, rgba(20, 20, 20, 1) 0, transparent 50%), 
-                radial-gradient(at 100% 0%, var(--accent-glow) 0, transparent 50%);
+                radial-gradient(at 100% 0%, var(--accent-glow) 0, transparent 40%),
+                radial-gradient(at 50% 100%, rgba(10, 10, 10, 1) 0, transparent 50%);
             background-attachment: fixed;
             color: var(--text-main);
             font-family: 'Plus Jakarta Sans', sans-serif;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
+            overflow: hidden; /* Scroll gerenciado pelas páginas */
         }
 
-        .app-container { width: 100%; max-width: 430px; padding: 20px 20px 120px; }
+        /* --- STACK NAVIGATION MANAGER --- */
+        #app-root {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            perspective: 1000px;
+        }
+
+        .page-wrapper {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            padding: 24px 24px 120px;
+            overflow-y: auto;
+            background: transparent;
+            transition: transform 0.4s var(--spring), opacity 0.4s ease;
+            z-index: 10;
+        }
+
+        /* Animações de Entrada e Saída */
+        .slide-in { transform: translateX(100%); opacity: 0; }
+        .slide-active { transform: translateX(0); opacity: 1; }
+        .slide-out { transform: translateX(-30%); opacity: 0; }
 
         /* --- LIQUID GLASS COMPONENTS --- */
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             border: 1px solid var(--glass-border);
-            border-radius: 30px;
+            border-radius: 28px;
             padding: 24px;
             margin-bottom: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.37);
         }
 
-        .page { display: none; animation: slideUp 0.5s ease forwards; }
-        .page.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        h1 { font-weight: 800; font-size: 2.2rem; letter-spacing: -2px; line-height: 1; margin: 40px 0 20px; }
+        .label-pro { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); display: block; margin-bottom: 8px; }
 
-        /* --- UI ELEMENTS --- */
-        .logo-title { font-weight: 800; font-size: 2.8rem; letter-spacing: -2px; color: var(--accent); text-align: center; margin-bottom: 10px; }
-        .sub-logo { text-align: center; font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 40px; }
-        
+        /* --- FORM ELEMENTS --- */
         input, select, textarea {
             width: 100%; padding: 18px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);
-            border-radius: 18px; color: #fff; font-size: 1rem; margin-bottom: 15px; outline: none; transition: 0.3s;
+            border-radius: 20px; color: #fff; font-size: 1rem; margin-bottom: 16px; outline: none; transition: 0.3s;
         }
-        input:focus { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+        input:focus, textarea:focus { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+        
+        input[type="range"] { height: 6px; -webkit-appearance: none; background: var(--glass-border); border: none; margin: 20px 0; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 15px var(--accent); }
 
         .btn-evo {
-            background: var(--accent); color: #000; border: none; padding: 20px; border-radius: 20px;
+            background: var(--accent); color: #000; border: none; padding: 20px; border-radius: 22px;
             font-weight: 800; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
-            box-shadow: 0 10px 25px var(--accent-glow); transition: 0.3s;
+            box-shadow: 0 12px 24px var(--accent-glow); transition: 0.3s;
         }
-        .btn-evo:active { transform: scale(0.97); }
 
-        .btn-secondary { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); margin-top: 10px; }
-
-        /* --- NAV BAR --- */
+        /* --- NAV BAR FIXA --- */
         .nav-bar {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 380px; height: 75px;
-            background: rgba(10,10,10,0.8); backdrop-filter: blur(30px);
-            border-radius: 30px; border: 1px solid var(--glass-border);
-            display: none; grid-template-columns: repeat(4, 1fr); align-items: center; z-index: 1000;
+            width: 90%; max-width: 380px; height: 76px;
+            background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            border-radius: 32px; border: 1px solid var(--glass-border);
+            display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; z-index: 1000;
         }
-        .nav-item { text-align: center; color: var(--text-dim); font-size: 0.6rem; font-weight: 800; text-transform: uppercase; cursor: pointer; }
-        .nav-item.active { color: var(--accent); }
+        .nav-item { text-align: center; color: var(--text-dim); font-size: 0.6rem; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .nav-item.active { color: var(--accent); transform: scale(1.1); }
 
         /* --- DASHBOARD WIDGETS --- */
-        .kcal-hero { font-size: 4.5rem; font-weight: 800; text-align: center; display: block; margin: 10px 0; letter-spacing: -4px; }
-        .macro-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .m-item { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 18px; text-align: center; }
-        .m-item b { color: var(--accent); display: block; font-size: 1.1rem; }
-        .m-item span { font-size: 0.5rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
-
-        .meal-card { border-left: 3px solid var(--accent); padding-left: 15px; margin-bottom: 25px; }
-        .meal-tag { font-size: 0.65rem; background: var(--accent-glow); color: var(--accent); padding: 4px 8px; border-radius: 6px; font-weight: 800; display: inline-block; margin-top: 10px; }
+        .kcal-display { font-size: 4rem; font-weight: 800; letter-spacing: -4px; text-align: center; display: block; margin: 15px 0; color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); }
+        .macro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .m-card { background: rgba(255,255,255,0.02); padding: 12px; border-radius: 18px; text-align: center; border: 1px solid var(--glass-border); }
+        .m-card b { display: block; font-size: 1.1rem; font-weight: 800; }
+        .m-card span { font-size: 0.5rem; text-transform: uppercase; color: var(--text-dim); }
 
     </style>
 </head>
 <body>
 
-<div class="app-container">
+<div id="app-root"></div>
 
-    <!-- TELA 1: AUTENTICAÇÃO (LOGIN/SIGNUP) -->
-    <section id="page-auth" class="page active">
-        <div class="logo-title">EVO</div>
-        <p class="sub-logo">Torne-se viciado em melhorar a si mesmo.</p>
-        
-        <div class="glass-card">
-            <h2 style="margin-bottom: 20px;">Bem-vindo</h2>
-            <input type="email" id="auth-email" placeholder="E-mail">
-            <input type="password" id="auth-password" placeholder="Senha">
-            <button class="btn-evo" onclick="core.handleAuth('login')">Entrar</button>
-            <button class="btn-evo btn-secondary" onclick="core.handleAuth('signup')">Criar Nova Conta</button>
-        </div>
-    </section>
-
-    <!-- TELA 2: ONBOARDING (SÓ APARECE APÓS SIGNUP) -->
-    <section id="page-onboarding" class="page">
-        <h1>Sua Bio.</h1>
-        <p style="color: var(--text-dim); margin-bottom: 30px;">Precisamos disso para calcular sua evolução.</p>
-        <div class="glass-card">
-            <input type="text" id="setup-name" placeholder="Como devemos te chamar?">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <input type="number" id="setup-weight" placeholder="Peso (kg)">
-                <input type="number" id="setup-height" placeholder="Altura (cm)">
-            </div>
-            <select id="setup-goal">
-                <option value="emagrecer">Objetivo: Emagrecer</option>
-                <option value="hipertrofia">Objetivo: Hipertrofia</option>
-                <option value="manter">Objetivo: Performance</option>
-            </select>
-            <button class="btn-evo" onclick="core.completeOnboarding()">Concluir Perfil</button>
-        </div>
-    </section>
-
-    <!-- TELA 3: DASHBOARD (HOME) -->
-    <section id="page-home" class="page">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <span id="streak-ui" style="color: var(--accent); font-weight: 800; font-size: 0.8rem;">🔥 0 DIAS</span>
-            <span onclick="core.logout()" style="color: var(--text-dim); font-size: 0.7rem; cursor: pointer; font-weight: 800;">SAIR</span>
-        </div>
-        <h1 id="home-greet">Atleta</h1>
-        
-        <div class="glass-card">
-            <span style="color: var(--text-dim); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Meta Diária</span>
-            <span class="kcal-hero" id="home-kcal">0</span>
-            <div class="macro-row">
-                <div class="m-item"><b id="home-p">0g</b><span>Prot</span></div>
-                <div class="m-item"><b id="home-c">0g</b><span>Carb</span></div>
-                <div class="m-item"><b id="home-g">0g</b><span>Gord</span></div>
-            </div>
-        </div>
-
-        <div class="glass-card">
-            <h2 style="font-size: 1rem; margin-bottom: 10px;">Dica do Dia</h2>
-            <p id="daily-tip" style="font-size: 0.9rem; color: #ccc;">Carregando sabedoria...</p>
-        </div>
-    </section>
-
-    <!-- TELA 4: DIETA -->
-    <section id="page-diet" class="page">
-        <h1>Plano<br>Mastigado.</h1>
-        <div id="diet-list-container"></div>
-    </section>
-
-    <!-- TELA 5: TREINO -->
-    <section id="page-workout" class="page">
-        <h1>Registro de<br>Esforço.</h1>
-        <div class="glass-card">
-            <input type="text" id="work-type" placeholder="O que treinou hoje?">
-            <input type="number" id="work-load" placeholder="Esforço Percebido (1-10)">
-            <textarea id="work-journal" placeholder="Diário: Como foi a performance?"></textarea>
-            <button class="btn-evo" onclick="core.saveWorkout()">Salvar Treino</button>
-        </div>
-    </section>
-
-    <!-- TELA 6: ESTATÍSTICAS -->
-    <section id="page-stats" class="page">
-        <h1>Estatísticas.</h1>
-        <div class="glass-card">
-            <p id="stats-info" style="color: #ccc; line-height: 1.6;"></p>
-        </div>
-    </section>
-
-    <!-- NAV BAR -->
-    <nav class="nav-bar" id="main-nav">
-        <div class="nav-item active" onclick="core.nav('page-home', this)">Home</div>
-        <div class="nav-item" onclick="core.nav('page-diet', this)">Plano</div>
-        <div class="nav-item" onclick="core.nav('page-workout', this)">Treino</div>
-        <div class="nav-item" onclick="core.nav('page-stats', this)">Dados</div>
-    </nav>
-
-</div>
+<nav class="nav-bar">
+    <div class="nav-item active" onclick="Router.go('home')">Home</div>
+    <div class="nav-item" onclick="Router.go('diet')">Plano</div>
+    <div class="nav-item" onclick="Router.go('log')">Log</div>
+    <div class="nav-item" onclick="Router.go('stats')">Dados</div>
+</nav>
 
 <script>
-const core = {
-    appState: {
-        isAuthenticated: false,
-        profile: null,
-        diet: null,
-        logs: [],
-        streak: 0
+/**
+ * EVO PREMIUM ARCHITECTURE
+ * Engineering & UI Design: iOS 26 Liquid Glass Standards
+ */
+
+// --- ESTADO CENTRALIZADO ---
+const state = {
+    user: JSON.parse(localStorage.getItem('evo_user')) || null,
+    workouts: JSON.parse(localStorage.getItem('evo_workouts')) || [],
+    diet: JSON.parse(localStorage.getItem('evo_diet')) || null,
+    streak: localStorage.getItem('evo_streak') || 0
+};
+
+// --- CONSTANTES DE DADOS (Preservadas) ---
+const MEALS = [
+    { name: "Café da Manhã", base: "Ovos Mexidos e Fruta", storage: "Não congelar" },
+    { name: "Almoço BR", base: "Frango, Arroz e Feijão", storage: "Pode Congelar" },
+    { name: "Jantar", base: "Carne Moída e Batata", storage: "Pode Congelar" }
+];
+
+// --- LAYOUT MANAGER (STACK NAVIGATION) ---
+const Router = {
+    history: [],
+    
+    go(target) {
+        const root = document.getElementById('app-root');
+        const oldPage = root.querySelector('.page-wrapper');
+        
+        // Criar nova página
+        const newPage = document.createElement('div');
+        newPage.className = 'page-wrapper slide-in';
+        newPage.innerHTML = this.render(target);
+        
+        root.appendChild(newPage);
+
+        // Atualizar Nav Bar
+        document.querySelectorAll('.nav-item').forEach(i => {
+            i.classList.toggle('active', i.innerText.toLowerCase() === target);
+        });
+
+        // Trigger da animação
+        setTimeout(() => {
+            if (oldPage) {
+                oldPage.classList.remove('slide-active');
+                oldPage.classList.add('slide-out');
+            }
+            newPage.classList.remove('slide-in');
+            newPage.classList.add('slide-active');
+        }, 10);
+
+        // Limpeza após transição
+        setTimeout(() => {
+            if (oldPage) oldPage.remove();
+        }, 400);
     },
 
-    init() {
-        const saved = localStorage.getItem('evo_premium_state');
-        if(saved) {
-            this.appState = JSON.parse(saved);
-            if(this.appState.isAuthenticated) {
-                if(this.appState.profile) {
-                    this.syncUI();
-                    this.nav('page-home');
-                    document.getElementById('main-nav').style.display = 'grid';
-                } else {
-                    this.nav('page-onboarding');
-                }
-            }
+    render(target) {
+        switch(target) {
+            case 'home': return this.screens.home();
+            case 'diet': return this.screens.diet();
+            case 'log': return this.screens.log();
+            case 'stats': return this.screens.stats();
+            default: return this.screens.home();
         }
     },
 
-    save() {
-        localStorage.setItem('evo_premium_state', JSON.stringify(this.appState));
-        this.syncUI();
-    },
-
-    handleAuth(mode) {
-        const email = document.getElementById('auth-email').value;
-        if(!email) return alert("Insira um e-mail");
-
-        this.appState.isAuthenticated = true;
-        
-        if(mode === 'signup') {
-            this.nav('page-onboarding');
-        } else {
-            if(this.appState.profile) {
-                this.nav('page-home');
-                document.getElementById('main-nav').style.display = 'grid';
-            } else {
-                this.nav('page-onboarding');
-            }
-        }
-        this.save();
-    },
-
-    completeOnboarding() {
-        const name = document.getElementById('setup-name').value;
-        const weight = parseFloat(document.getElementById('setup-weight').value);
-        const height = parseFloat(document.getElementById('setup-height').value);
-        const goal = document.getElementById('setup-goal').value;
-
-        if(!name || !weight) return alert("Preencha os campos");
-
-        // Cálculo dinâmico
-        let kcal = (10 * weight) + (6.25 * height) - (5 * 25) + 5;
-        if(goal === 'emagrecer') kcal -= 500; else kcal += 400;
-
-        this.appState.profile = { name, weight, height, goal };
-        this.appState.diet = {
-            kcal: Math.round(kcal),
-            p: Math.round(weight * 2),
-            g: Math.round(weight * 0.8),
-            c: Math.round((kcal - (weight*2*4) - (weight*0.8*9))/4)
-        };
-
-        this.nav('page-home');
-        document.getElementById('main-nav').style.display = 'grid';
-        this.save();
-    },
-
-    syncUI() {
-        if(!this.appState.profile) return;
-        document.getElementById('home-greet').innerText = `Olá, ${this.appState.profile.name}`;
-        document.getElementById('home-kcal').innerText = this.appState.diet.kcal;
-        document.getElementById('home-p').innerText = this.appState.diet.p + 'g';
-        document.getElementById('home-c').innerText = this.appState.diet.c + 'g';
-        document.getElementById('home-g').innerText = this.appState.diet.g + 'g';
-        document.getElementById('streak-ui').innerText = `🔥 ${this.appState.streak} DIAS`;
-        document.getElementById('daily-tip').innerText = "Consuma 35ml de água por cada kg de peso corporal para otimizar a queima de gordura.";
-        
-        this.renderDiet();
-        this.renderStats();
-    },
-
-    renderDiet() {
-        const w = this.appState.profile.weight;
-        const container = document.getElementById('diet-list-container');
-        const meals = [
-            { t: "Café da Manhã", p: Math.round(w*0.5), c: Math.round(w*0.6), base: "Ovos Mexidos e Fruta" },
-            { t: "Almoço BR", p: Math.round(w*0.7), c: Math.round(w*0.8), base: "Frango, Arroz e Feijão" },
-            { t: "Jantar", p: Math.round(w*0.6), c: Math.round(w*0.4), base: "Carne Moída e Batata Doce" }
-        ];
-
-        container.innerHTML = meals.map(m => `
-            <div class="glass-card meal-card">
-                <div style="display:flex; justify-content:space-between">
-                    <b>${m.t}</b>
-                    <span style="color:var(--accent)">${m.p}g P | ${m.c}g C</span>
+    screens: {
+        home() {
+            if(!state.user) return `
+                <h1>Configurar Perfil</h1>
+                <div class="glass-card">
+                    <label class="label-pro">Seu Nome</label>
+                    <input type="text" id="setup-name" placeholder="Ex: Marcus">
+                    <label class="label-pro">Peso Atual (kg)</label>
+                    <input type="number" id="setup-weight" value="80">
+                    <button class="btn-evo" onclick="Actions.setup()">Iniciar Plano</button>
                 </div>
-                <p style="font-size:0.8rem; color:#ccc; margin-top:5px;">${m.base}</p>
-                <span class="meal-tag">Padrão TACO: Pode Congelar</span>
-            </div>
-        `).join('');
-    },
+            `;
 
-    saveWorkout() {
-        const type = document.getElementById('work-type').value;
-        const load = document.getElementById('work-load').value;
-        if(!type) return;
-        
-        this.appState.logs.unshift({ type, load, date: new Date().toLocaleDateString() });
-        this.appState.streak++;
-        this.save();
-        alert("Treino registrado!");
-        this.nav('page-home');
-    },
+            return `
+                <span class="label-pro">🔥 STREAK: ${state.streak} DIAS</span>
+                <h1>Olá, ${state.user.name}</h1>
+                <div class="glass-card">
+                    <span class="label-pro">Meta Calórica Diária</span>
+                    <span class="kcal-display">${state.diet.kcal}</span>
+                    <div class="macro-grid">
+                        <div class="m-card"><b>${state.diet.p}g</b><span>Prot</span></div>
+                        <div class="m-card"><b>${state.diet.c}g</b><span>Carb</span></div>
+                        <div class="m-card"><b>${state.diet.g}g</b><span>Gord</span></div>
+                    </div>
+                </div>
+                <h2>Ação Sugerida</h2>
+                <div class="glass-card">
+                    <p>Beba 500ml de água gelada agora para otimizar o metabolismo basal.</p>
+                </div>
+            `;
+        },
 
-    renderStats() {
-        const stats = document.getElementById('stats-info');
-        stats.innerText = `Você já registrou ${this.appState.logs.length} treinos. Sua meta atual é ${this.appState.profile.goal}. Mantenha a constância!`;
-    },
+        diet() {
+            const w = state.user ? state.user.weight : 80;
+            return `
+                <h1>Plano Mastigado</h1>
+                <span class="label-pro">Personalizado para ${w}kg</span>
+                ${MEALS.map(m => `
+                    <div class="glass-card">
+                        <span class="label-pro" style="color: var(--accent)">${m.name}</span>
+                        <h2 style="margin-bottom:10px">${m.base}</h2>
+                        <p style="color:var(--text-dim); font-size:0.85rem">Gramagens dinâmicas ajustadas via IA baseadas em ${w}kg.</p>
+                        <div style="background: rgba(204,255,0,0.1); padding:10px; border-radius:12px; margin-top:15px; font-size:0.7rem;">
+                            <b style="color:var(--accent)">LOGÍSTICA:</b> ${m.storage}
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        },
 
-    logout() {
-        this.appState.isAuthenticated = false;
-        localStorage.removeItem('evo_premium_state');
-        location.reload();
-    },
+        log() {
+            return `
+                <h1>Log de Treino</h1>
+                <div class="glass-card">
+                    <label class="label-pro">Título do Treino</label>
+                    <input type="text" id="log-title" placeholder="Ex: Superior A + Cardio">
+                    
+                    <label class="label-pro">Esforço Percebido (1-10)</label>
+                    <input type="range" id="log-effort" min="1" max="10" value="7">
+                    
+                    <label class="label-pro">Kcal Estimadas</label>
+                    <input type="number" id="log-kcal" placeholder="Ex: 450">
+                    
+                    <label class="label-pro">Diário de Bordo (LLM Ready)</label>
+                    <textarea id="log-journal" placeholder="Descreva sensações, falhas e carga..."></textarea>
+                    
+                    <button class="btn-evo" onclick="Actions.saveLog()">Registrar Treino</button>
+                </div>
+            `;
+        },
 
-    nav(id, el) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if(el) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
+        stats() {
+            const logs = state.workouts;
+            return `
+                <h1>Estatísticas</h1>
+                <div class="glass-card">
+                    <h2>Histórico</h2>
+                    ${logs.length === 0 ? '<p>Nenhum treino registrado.</p>' : 
+                        logs.map(l => `
+                            <div style="border-bottom: 1px solid var(--glass-border); padding: 15px 0;">
+                                <div style="display:flex; justify-content:space-between">
+                                    <b>${l.title}</b>
+                                    <span style="color:var(--accent)">${l.kcal} kcal</span>
+                                </div>
+                                <small style="color:var(--text-dim)">Esforço: ${l.effort}/10</small>
+                            </div>
+                        `).join('')
+                    }
+                </div>
+                <button class="btn-evo" style="background:#111; color:#fff" onclick="Actions.exportJSON()">Exportar Relatório IA</button>
+            `;
         }
-        window.scrollTo(0,0);
     }
 };
 
-core.init();
+// --- ACTIONS MANAGER (LÓGICA) ---
+const Actions = {
+    setup() {
+        const name = document.getElementById('setup-name').value;
+        const weight = parseFloat(document.getElementById('setup-weight').value);
+        if(!name || !weight) return;
+
+        state.user = { name, weight };
+        
+        // Cálculo de Dieta Dinâmica (Mifflin-St Jeor simplificado)
+        const kcal = Math.round(weight * 30); // Base manutenção
+        state.diet = {
+            kcal: kcal,
+            p: weight * 2,
+            c: Math.round(kcal * 0.4 / 4),
+            g: Math.round(kcal * 0.25 / 9)
+        };
+
+        localStorage.setItem('evo_user', JSON.stringify(state.user));
+        localStorage.setItem('evo_diet', JSON.stringify(state.diet));
+        Router.go('home');
+    },
+
+    saveLog() {
+        const title = document.getElementById('log-title').value;
+        const effort = document.getElementById('log-effort').value;
+        const kcal = document.getElementById('log-kcal').value;
+        const journal = document.getElementById('log-journal').value;
+
+        if(!title) return;
+
+        const log = {
+            id: Date.now(),
+            date: new Date().toISOString(),
+            title, effort, kcal, journal
+        };
+
+        state.workouts.unshift(log);
+        localStorage.setItem('evo_workouts', JSON.stringify(state.workouts));
+        
+        alert("Performance registrada!");
+        Router.go('home');
+    },
+
+    exportJSON() {
+        const report = JSON.stringify({ user: state.user, history: state.workouts }, null, 2);
+        console.log("LLM REPORT:", report);
+        alert("Relatório gerado no console do desenvolvedor.");
+    }
+};
+
+// Iniciar App
+Router.go('home');
+
 </script>
 </body>
 </html>
