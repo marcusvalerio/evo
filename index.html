@@ -1,1224 +1,239 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>EVO — Performance</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,700&family=DM+Sans:wght@400;500;600&family=Rubik:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-/* ── RESET ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { height: 100%; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
-body { height: 100%; background: #06060a; color: #e8e8f0; font-family: 'Rubik', sans-serif; overflow: hidden; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVO - Premium SaaS</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000000;
+            --surface: #111111;
+            --surface-light: #1c1c1c;
+            --accent: #CCFF00; /* Cyber Lime */
+            --text: #ffffff;
+            --text-dim: #71717a;
+            --border: rgba(255, 255, 255, 0.08);
+            --nav-bg: rgba(10, 10, 10, 0.8);
+        }
 
-/* ── TOKENS ── */
-:root {
-  --void: #06060a;
-  --s1: #0d0d16;
-  --s2: #13131f;
-  --s3: #1b1b2a;
-  --border: rgba(255,255,255,0.07);
-  --border-lit: rgba(130,150,255,0.28);
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
 
-  --iris-1: #8090ff;
-  --iris-2: #b06cff;
-  --iris-3: #ff6cb0;
-  --iris-4: #5fffd4;
-  --iris-5: #ffd06c;
+        /* --- CONTAINER PRINCIPAL --- */
+        .app-shell { width: 100%; max-width: 430px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 90px; }
+        .page { display: none; padding: 24px; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  --accent: #8090ff;
-  --accent-glow: rgba(128,144,255,0.35);
+        /* --- AUTH (LOGIN/CADASTRO) --- */
+        .auth-card { text-align: center; margin-top: 60px; }
+        .logo-text { font-weight: 800; font-size: 3rem; letter-spacing: -2px; color: var(--accent); margin-bottom: 8px; }
+        .auth-toggle { display: flex; background: var(--surface); border-radius: 12px; padding: 4px; margin-bottom: 24px; border: 1px solid var(--border); }
+        .auth-toggle button { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-dim); font-weight: 600; cursor: pointer; border-radius: 10px; }
+        .auth-toggle button.active { background: var(--surface-light); color: var(--text); }
+        
+        .input-group { text-align: left; margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; margin-left: 4px; }
+        input, select { width: 100%; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 1rem; }
+        input:focus { border-color: var(--accent); outline: none; }
 
-  --t1: #e8e8f0;
-  --t2: rgba(232,232,240,0.52);
-  --t3: rgba(232,232,240,0.28);
+        .btn-primary { width: 100%; padding: 18px; background: var(--accent); color: #000; border: none; border-radius: 18px; font-weight: 800; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
 
-  --glass: rgba(255,255,255,0.045);
-  --glass-strong: rgba(255,255,255,0.08);
-  --glass-blur: blur(28px);
-  --glass-border: rgba(255,255,255,0.08);
+        /* --- DASHBOARD ELEMENTS --- */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 16px; }
+        
+        .progress-box { height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .kcal-big { font-size: 3.5rem; font-weight: 800; line-height: 1; }
+        .kcal-sub { color: var(--text-dim); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
 
-  --glow-blue: 0 0 36px rgba(128,144,255,0.32);
-  --glow-pink: 0 0 36px rgba(255,108,176,0.28);
-  --glow-teal: 0 0 36px rgba(95,255,212,0.28);
-  --shadow-card: 0 12px 48px rgba(0,0,0,0.55);
+        .macro-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        .m-item { text-align: center; }
+        .m-item b { display: block; color: var(--accent); font-size: 1.1rem; }
+        .m-item span { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
 
-  --px: 24px;
-  --r-sm: 14px;
-  --r-md: 20px;
-  --r-lg: 26px;
-  --r-xl: 32px;
+        /* --- BARRA DE NAVEGAÇÃO --- */
+        .nav-bar {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 430px; height: 80px;
+            background: var(--nav-bg); backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: none; /* Só aparece após login */
+            grid-template-columns: repeat(4, 1fr);
+            align-items: center; padding: 0 10px; z-index: 100;
+        }
+        .nav-item { text-align: center; cursor: pointer; color: var(--text-dim); transition: 0.3s; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item i { display: block; font-size: 1.2rem; margin-bottom: 4px; }
+        .nav-item span { font-size: 0.65rem; font-weight: 600; }
 
-  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --liquid: cubic-bezier(0.16, 1, 0.3, 1);
-  --smooth: cubic-bezier(0.4, 0, 0.2, 1);
-}
+        /* --- LISTAS --- */
+        .list-title { font-size: 1rem; font-weight: 700; margin: 20px 0 12px; display: flex; justify-content: space-between; }
+        .item-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .item-icon { width: 40px; height: 40px; background: var(--surface-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
 
-/* ── BG ── */
-.bg-canvas { position: fixed; inset: 0; z-index: 0; background: var(--void); overflow: hidden; pointer-events: none; }
-.bg-orb {
-  position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.15;
-  animation: orbDrift 20s ease-in-out infinite;
-}
-.bg-orb:nth-child(1) { width: 60vw; height: 60vw; background: radial-gradient(#5b6fff, transparent 70%); top:-15%; left:-10%; animation-delay:0s; }
-.bg-orb:nth-child(2) { width: 50vw; height: 50vw; background: radial-gradient(#b06cff, transparent 70%); bottom:-10%; right:-10%; animation-delay:-7s; }
-.bg-orb:nth-child(3) { width: 42vw; height: 42vw; background: radial-gradient(#ff6cb0, transparent 70%); top:38%; left:28%; animation-delay:-14s; }
-.bg-grid {
-  position: absolute; inset: 0;
-  background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size: 52px 52px;
-}
-@keyframes orbDrift {
-  0%,100% { transform: translate(0,0) scale(1); }
-  33%      { transform: translate(5%,7%) scale(1.07); }
-  66%      { transform: translate(-4%,-5%) scale(0.95); }
-}
-
-/* ── APP SHELL ── */
-#app { width:100%; height:100dvh; position:relative; overflow:hidden; }
-
-/* ── SCREENS ── */
-.screen {
-  position: absolute; inset: 0; z-index: 1;
-  display: flex; flex-direction: column;
-  opacity: 0; pointer-events: none;
-  transform: translateY(18px) scale(0.985);
-  transition: opacity 560ms var(--liquid), transform 560ms var(--liquid);
-  will-change: opacity, transform;
-}
-.screen.active  { opacity:1; pointer-events:all; transform:translateY(0) scale(1); }
-.screen.exit    { opacity:0; transform:translateY(-16px) scale(1.01); pointer-events:none; }
-
-/* ─────────────────────────────────────────
-   SCREEN: ENTRY — cinematic
-───────────────────────────────────────── */
-#screen-entry {
-  justify-content: flex-end;
-  padding-bottom: max(48px, env(safe-area-inset-bottom, 48px));
-  overflow: hidden;
-}
-/* Gradient mesh background for entry */
-.entry-bg {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 30% 20%, rgba(128,144,255,0.22) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 75% 70%, rgba(255,108,176,0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 60% 10%, rgba(95,255,212,0.1) 0%, transparent 50%),
-    var(--void);
-  z-index: 0;
-}
-.entry-bg-noise {
-  position: absolute; inset: 0; z-index: 1;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-}
-/* Gradient vignette bottom */
-.entry-vignette {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 65%; z-index: 2;
-  background: linear-gradient(to top, rgba(6,6,10,0.98) 0%, rgba(6,6,10,0.7) 50%, transparent 100%);
-}
-.entry-content {
-  position: relative; z-index: 3;
-  padding: 0 var(--px);
-  display: flex; flex-direction: column; gap: 0;
-}
-.entry-eyebrow {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
-  font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
-  letter-spacing: 0.2em; text-transform: uppercase; color: var(--t3);
-}
-.entry-eyebrow::before { content:''; display:block; width:22px; height:1px; background:var(--accent); box-shadow: 0 0 8px var(--accent); }
-.logo-mark {
-  font-family: 'Syne', sans-serif; font-weight: 800;
-  font-size: clamp(72px, 20vw, 120px);
-  line-height: 0.88; letter-spacing: -0.04em;
-  background: linear-gradient(135deg, #fff 0%, var(--iris-1) 35%, var(--iris-2) 60%, var(--iris-3) 85%, #fff 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  animation: logoShimmer 5s ease-in-out infinite;
-  margin-bottom: 18px;
-}
-@keyframes logoShimmer {
-  0%,100% { filter: drop-shadow(0 0 32px rgba(128,144,255,0.45)); }
-  50%      { filter: drop-shadow(0 0 60px rgba(255,108,176,0.38)); }
-}
-.entry-tagline {
-  font-family: 'Bricolage Grotesque', sans-serif;
-  font-size: clamp(17px, 4.8vw, 22px); font-weight: 300;
-  color: var(--t2); line-height: 1.4; margin-bottom: 32px; max-width: 290px;
-}
-.entry-tagline strong { color: var(--t1); font-weight: 600; }
-.entry-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 36px; }
-.entry-pill {
-  padding: 6px 14px; border-radius: 100px;
-  background: var(--glass); border: 1px solid var(--glass-border);
-  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--t2);
-  backdrop-filter: var(--glass-blur);
-}
-.entry-pill span { color: var(--iris-4); font-weight: 600; }
-.entry-cta { display: flex; flex-direction: column; gap: 12px; }
-
-/* ─────────────────────────────────────────
-   BUTTONS
-───────────────────────────────────────── */
-.btn-primary {
-  height: 56px; border-radius: var(--r-md); border: none;
-  background: linear-gradient(135deg, var(--iris-1) 0%, var(--iris-2) 100%);
-  color: #fff; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
-  cursor: pointer; position: relative; overflow: hidden;
-  box-shadow: 0 4px 20px rgba(128,144,255,0.38);
-  transition: transform 180ms var(--spring), box-shadow 180ms var(--smooth);
-  -webkit-tap-highlight-color: transparent;
-}
-.btn-primary::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent 50%);
-}
-.btn-primary:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(128,144,255,0.25); }
-
-.btn-ghost {
-  height: 50px; border-radius: var(--r-md);
-  background: var(--glass); border: 1px solid var(--glass-border);
-  color: var(--t2); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
-  cursor: pointer; backdrop-filter: var(--glass-blur);
-  transition: transform 180ms var(--spring), border-color 180ms, color 180ms;
-}
-.btn-ghost:active { transform: scale(0.97); border-color: var(--border-lit); color: var(--t1); }
-
-.btn-back {
-  width: 42px; height: 42px; flex-shrink: 0;
-  background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--r-sm);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: var(--t2); backdrop-filter: var(--glass-blur);
-  transition: transform 180ms var(--spring), color 180ms;
-}
-.btn-back:active { transform: scale(0.88); color: var(--t1); }
-
-/* ─────────────────────────────────────────
-   SCREEN: ONBOARDING
-───────────────────────────────────────── */
-#screen-onboarding {
-  overflow-y: auto; -webkit-overflow-scrolling: touch;
-  padding: 0 var(--px);
-  padding-top: max(52px, env(safe-area-inset-top, 52px));
-  padding-bottom: max(40px, env(safe-area-inset-bottom, 40px));
-}
-.onb-header { display:flex; align-items:center; gap:16px; margin-bottom:32px; }
-.onb-step-label { font-family:'DM Sans',sans-serif; font-size:12px; color:var(--t3); }
-.onb-step-label strong { color:var(--accent); }
-.onb-title { font-family:'Bricolage Grotesque',sans-serif; font-size:27px; font-weight:700; line-height:1.15; margin-bottom:5px; }
-.onb-sub { font-size:14px; color:var(--t2); margin-bottom:28px; }
-
-/* Form */
-.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.form-group { margin-bottom:16px; }
-.form-label {
-  display:block; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600;
-  letter-spacing:0.14em; text-transform:uppercase; color:var(--t3); margin-bottom:7px;
-}
-.form-input {
-  width:100%; height:52px;
-  background:var(--glass); border:1px solid var(--glass-border); border-radius:var(--r-sm);
-  padding:0 16px; color:var(--t1); font-family:'Rubik',sans-serif; font-size:16px;
-  outline:none; backdrop-filter:var(--glass-blur); -webkit-appearance:none;
-  transition: border-color 180ms, box-shadow 180ms;
-}
-.form-input:focus { border-color:var(--border-lit); box-shadow:0 0 0 3px rgba(128,144,255,0.1); }
-.form-input::placeholder { color:var(--t3); }
-
-/* Chips */
-.chip-group { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:22px; }
-.chip {
-  padding:9px 16px; border-radius:100px;
-  background:var(--glass); border:1px solid var(--glass-border);
-  color:var(--t2); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500;
-  cursor:pointer; user-select:none;
-  transition: all 200ms var(--spring);
-}
-.chip.selected {
-  background:linear-gradient(135deg, rgba(128,144,255,0.18), rgba(176,108,255,0.13));
-  border-color:var(--iris-1); color:var(--t1);
-  box-shadow:0 0 18px rgba(128,144,255,0.18);
-}
-.chip:active { transform:scale(0.94); }
-
-/* Goal cards */
-.goal-cards { display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
-.goal-card {
-  background:var(--glass); border:1px solid var(--glass-border);
-  border-radius:var(--r-md); padding:16px 18px;
-  cursor:pointer; position:relative; overflow:hidden;
-  transition: border-color 280ms, box-shadow 280ms, transform 180ms var(--spring);
-}
-.goal-card-shine {
-  position:absolute; inset:0; opacity:0;
-  transition:opacity 280ms;
-}
-.card-loss  .goal-card-shine { background:linear-gradient(135deg, rgba(95,255,212,0.08), transparent); }
-.card-gain  .goal-card-shine { background:linear-gradient(135deg, rgba(255,108,176,0.08), transparent); }
-.card-maint .goal-card-shine { background:linear-gradient(135deg, rgba(255,208,108,0.08), transparent); }
-.goal-card.selected .goal-card-shine { opacity:1; }
-.card-loss.selected  { border-color:var(--iris-4); box-shadow:0 0 24px rgba(95,255,212,0.18); }
-.card-gain.selected  { border-color:var(--iris-3); box-shadow:0 0 24px rgba(255,108,176,0.18); }
-.card-maint.selected { border-color:var(--iris-5); box-shadow:0 0 24px rgba(255,208,108,0.18); }
-.goal-card:active { transform:scale(0.98); }
-.goal-row { display:flex; align-items:center; gap:12px; position:relative; z-index:1; }
-.goal-icon { font-size:22px; }
-.goal-name { font-family:'Bricolage Grotesque',sans-serif; font-size:16px; font-weight:700; color:var(--t1); }
-.goal-desc { font-size:13px; color:var(--t2); margin-top:7px; line-height:1.5; position:relative; z-index:1; }
-
-/* ─────────────────────────────────────────
-   SCREEN: LOADING
-───────────────────────────────────────── */
-#screen-loading { align-items:center; justify-content:center; gap:20px; }
-.load-ring {
-  width:64px; height:64px; border-radius:50%;
-  border:2px solid transparent; border-top-color:var(--accent); border-right-color:var(--iris-3);
-  animation:spin 0.9s linear infinite;
-}
-@keyframes spin { to { transform:rotate(360deg); } }
-.load-txt { font-family:'Bricolage Grotesque',sans-serif; font-size:17px; color:var(--t2); }
-
-/* ─────────────────────────────────────────
-   SCREEN: COCKPIT
-───────────────────────────────────────── */
-#screen-cockpit {
-  overflow-y:auto; -webkit-overflow-scrolling:touch;
-  padding-bottom: max(100px, calc(env(safe-area-inset-bottom,0px) + 90px));
-}
-
-/* Header */
-.cockpit-header {
-  padding: var(--px);
-  padding-top: max(52px, env(safe-area-inset-top, 52px));
-  display:flex; justify-content:space-between; align-items:flex-start;
-  animation: fadeUp 0.55s var(--liquid) both;
-}
-.cockpit-greeting { font-family:'Bricolage Grotesque',sans-serif; font-size:24px; font-weight:700; line-height:1.2; }
-.cockpit-greeting em { font-style:normal; color:var(--accent); }
-.cockpit-date { font-family:'DM Sans',sans-serif; font-size:12px; color:var(--t3); margin-top:3px; }
-.btn-settings {
-  width:42px; height:42px; flex-shrink:0;
-  background:var(--glass); border:1px solid var(--glass-border); border-radius:var(--r-sm);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; color:var(--t2); backdrop-filter:var(--glass-blur);
-  font-size:17px; transition:transform 180ms var(--spring), color 180ms;
-}
-.btn-settings:active { transform:scale(0.88); color:var(--t1); }
-
-/* Hero calorie card */
-.hero-wrap { padding:0 var(--px); margin-bottom:16px; animation:fadeUp 0.55s var(--liquid) 0.08s both; }
-.hero-card {
-  background:linear-gradient(140deg, rgba(128,144,255,0.13) 0%, rgba(176,108,255,0.07) 100%);
-  border:1px solid rgba(128,144,255,0.22);
-  border-radius:var(--r-xl); padding:24px 22px;
-  position:relative; overflow:hidden;
-  box-shadow: var(--glow-blue), var(--shadow-card);
-}
-.hero-card::after {
-  content:''; position:absolute; top:-40%; right:-20%;
-  width:55%; height:55%; border-radius:50%;
-  background:radial-gradient(circle, rgba(128,144,255,0.18), transparent 70%);
-  animation:heroOrb 7s ease-in-out infinite; pointer-events:none;
-}
-@keyframes heroOrb { 0%,100%{transform:translate(0,0)}50%{transform:translate(-6%,9%)} }
-.hero-label {
-  font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600;
-  letter-spacing:0.16em; text-transform:uppercase; color:rgba(128,144,255,0.9); margin-bottom:8px;
-}
-.hero-value-row { display:flex; align-items:baseline; gap:6px; }
-.hero-number {
-  font-family:'Syne',sans-serif; font-size:52px; font-weight:800;
-  line-height:1; color:#fff; letter-spacing:-0.03em;
-}
-.hero-unit {
-  font-family:'Syne',sans-serif; font-size:20px; font-weight:700;
-  color:rgba(255,255,255,0.45); position:relative; z-index:1;
-}
-.hero-meta { margin-top:10px; font-size:13px; color:var(--t2); font-family:'Rubik',sans-serif; }
-.hero-meta strong { color:var(--t1); }
-.hero-bar-area { margin-top:18px; }
-.bar-row { display:flex; justify-content:space-between; font-family:'DM Sans',sans-serif; font-size:11px; color:var(--t3); margin-bottom:7px; }
-.bar-track { height:5px; background:rgba(255,255,255,0.07); border-radius:100px; overflow:hidden; }
-.bar-fill {
-  height:100%; border-radius:100px;
-  background:linear-gradient(90deg, var(--iris-1), var(--iris-2));
-  box-shadow:0 0 10px rgba(128,144,255,0.55);
-  transition:width 1.4s var(--liquid);
-}
-
-/* Macro grid — 3 equal pills */
-.macro-grid {
-  padding:0 var(--px); margin-bottom:14px;
-  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
-  animation:fadeUp 0.55s var(--liquid) 0.16s both;
-}
-.macro-pill {
-  background:var(--glass); border:1px solid var(--glass-border);
-  border-radius:var(--r-md); padding:16px 10px; text-align:center;
-  backdrop-filter:var(--glass-blur); cursor:pointer;
-  transition:transform 200ms var(--spring), box-shadow 200ms;
-  overflow:hidden;
-}
-.macro-pill:active { transform:scale(0.93); }
-.macro-num {
-  font-family:'Syne',sans-serif; font-size:28px; font-weight:800;
-  color:#fff; line-height:1; letter-spacing:-0.02em;
-}
-.macro-unit-sm { font-size:13px; font-weight:400; color:var(--t3); margin-left:1px; }
-.macro-lbl {
-  font-family:'DM Sans',sans-serif; font-size:10px; font-weight:600;
-  letter-spacing:0.13em; text-transform:uppercase; margin-top:5px;
-}
-.macro-pill.protein .macro-lbl { color:var(--iris-3); }
-.macro-pill.carbs   .macro-lbl { color:var(--iris-1); }
-.macro-pill.fat     .macro-lbl { color:var(--iris-4); }
-.macro-pill.protein:active { box-shadow:var(--glow-pink); }
-.macro-pill.carbs:active   { box-shadow:var(--glow-blue); }
-.macro-pill.fat:active     { box-shadow:var(--glow-teal); }
-
-/* Stats row */
-.stats-row {
-  padding:0 var(--px); margin-bottom:26px;
-  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
-  animation:fadeUp 0.55s var(--liquid) 0.22s both;
-}
-.stat-card {
-  background:var(--glass); border:1px solid var(--glass-border);
-  border-radius:var(--r-md); padding:14px 10px; text-align:center;
-  backdrop-filter:var(--glass-blur);
-}
-.stat-val { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:#fff; line-height:1; }
-.stat-lbl { font-family:'DM Sans',sans-serif; font-size:10px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--t3); margin-top:5px; }
-
-/* Section heading */
-.sec-head {
-  padding:0 var(--px); margin-bottom:12px;
-  display:flex; justify-content:space-between; align-items:center;
-  animation:fadeUp 0.55s var(--liquid) 0.28s both;
-}
-.sec-title { font-family:'Bricolage Grotesque',sans-serif; font-size:17px; font-weight:700; }
-.sec-more { font-family:'DM Sans',sans-serif; font-size:13px; color:var(--accent); background:none; border:none; cursor:pointer; padding:4px; }
-
-/* Module cards scroll */
-.module-scroll {
-  padding:0 var(--px); margin-bottom:26px;
-  display:flex; gap:12px;
-  overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
-  animation:fadeUp 0.55s var(--liquid) 0.32s both;
-}
-.module-scroll::-webkit-scrollbar { display:none; }
-.module-card {
-  min-width:188px; flex-shrink:0;
-  background:var(--glass); border:1px solid var(--glass-border);
-  border-radius:var(--r-lg); padding:20px 16px;
-  scroll-snap-align:start; backdrop-filter:var(--glass-blur); cursor:pointer;
-  transition:transform 250ms var(--spring), box-shadow 250ms, border-color 250ms;
-}
-.module-card:active { transform:scale(0.95) translateY(2px); }
-.module-card.m-diet  { border-color:rgba(95,255,212,0.12); }
-.module-card.m-train { border-color:rgba(255,108,176,0.12); }
-.module-card.m-shop  { border-color:rgba(255,208,108,0.12); }
-.module-card.m-diet:active  { box-shadow:var(--glow-teal); }
-.module-card.m-train:active { box-shadow:var(--glow-pink); }
-.module-card.m-shop:active  { box-shadow:0 0 30px rgba(255,208,108,0.22); }
-.m-icon { font-size:24px; margin-bottom:10px; }
-.m-title { font-family:'Bricolage Grotesque',sans-serif; font-size:15px; font-weight:700; margin-bottom:5px; }
-.m-preview { font-size:12px; color:var(--t2); line-height:1.5; }
-.m-tag {
-  display:inline-block; margin-top:10px; padding:3px 10px; border-radius:100px;
-  font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; letter-spacing:0.06em;
-}
-.m-diet .m-tag  { background:rgba(95,255,212,0.1); color:var(--iris-4); }
-.m-train .m-tag { background:rgba(255,108,176,0.1); color:var(--iris-3); }
-.m-shop .m-tag  { background:rgba(255,208,108,0.1); color:var(--iris-5); }
-
-/* Split list */
-.split-list {
-  padding:0 var(--px); margin-bottom:24px;
-  display:flex; flex-direction:column; gap:9px;
-  animation:fadeUp 0.55s var(--liquid) 0.38s both;
-}
-.split-row {
-  background:var(--glass); border:1px solid var(--glass-border);
-  border-radius:var(--r-md); padding:14px 16px;
-  display:flex; justify-content:space-between; align-items:center;
-  backdrop-filter:var(--glass-blur); cursor:pointer;
-  transition:transform 180ms var(--spring), border-color 180ms;
-}
-.split-row:active { transform:scale(0.98); border-color:var(--border-lit); }
-.split-day { font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--t3); margin-bottom:3px; }
-.split-name { font-family:'Bricolage Grotesque',sans-serif; font-size:15px; font-weight:700; color:var(--t1); }
-.split-count { font-family:'DM Sans',sans-serif; font-size:12px; color:var(--t2); margin-top:2px; }
-.split-chevron { color:var(--t3); font-size:18px; flex-shrink:0; }
-
-/* Reset */
-.reset-zone { padding:0 var(--px); animation:fadeUp 0.55s var(--liquid) 0.44s both; }
-.btn-danger {
-  width:100%; height:48px; background:rgba(255,80,80,0.07);
-  border:1px solid rgba(255,80,80,0.18); border-radius:var(--r-md);
-  color:rgba(255,120,120,0.8); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500;
-  cursor:pointer; transition:all 180ms var(--spring);
-}
-.btn-danger:active { transform:scale(0.97); background:rgba(255,80,80,0.14); }
-
-@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-
-/* ─────────────────────────────────────────
-   BOTTOM NAV
-───────────────────────────────────────── */
-.bottom-nav {
-  position:fixed; bottom:0; left:0; right:0; z-index:100;
-  padding:10px 8px; padding-bottom:max(18px, env(safe-area-inset-bottom, 18px));
-  background:linear-gradient(to top, rgba(6,6,10,0.97) 0%, rgba(6,6,10,0.82) 100%);
-  backdrop-filter:blur(24px);
-  display:none; gap:2px;
-  border-top:1px solid var(--border);
-}
-.bottom-nav.visible { display:flex; }
-.nav-btn {
-  flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
-  padding:8px 4px; border-radius:var(--r-sm); cursor:pointer;
-  background:none; border:none;
-  transition:transform 200ms var(--spring);
-}
-.nav-btn:active { transform:scale(0.88); }
-.nav-ico { font-size:20px; opacity:0.35; transition:opacity 200ms, filter 200ms; }
-.nav-txt { font-family:'DM Sans',sans-serif; font-size:10px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--t3); transition:color 200ms; }
-.nav-btn.active .nav-ico { opacity:1; filter:drop-shadow(0 0 7px var(--accent)); }
-.nav-btn.active .nav-txt { color:var(--accent); }
-
-/* ─────────────────────────────────────────
-   MODALS — bottom sheet
-───────────────────────────────────────── */
-.modal-overlay {
-  position:fixed; inset:0; z-index:300;
-  background:rgba(6,6,10,0.82); backdrop-filter:blur(14px);
-  opacity:0; pointer-events:none;
-  transition:opacity 380ms var(--smooth);
-  display:flex; align-items:flex-end;
-  will-change:opacity;
-}
-.modal-overlay.open { opacity:1; pointer-events:all; }
-
-.modal-sheet {
-  width:100%; max-height:90dvh;
-  background:var(--s2); border:1px solid var(--glass-border);
-  border-radius:var(--r-xl) var(--r-xl) 0 0;
-  overflow-y:auto; -webkit-overflow-scrolling:touch;
-  transform:translateY(100%);
-  transition:transform 480ms var(--liquid);
-  will-change:transform;
-  position:relative;
-}
-.modal-overlay.open .modal-sheet { transform:translateY(0); }
-
-/* Close button inside modal */
-.modal-close-btn {
-  position:sticky; top:0; z-index:10;
-  display:flex; justify-content:space-between; align-items:center;
-  padding:14px 20px 0;
-  background:var(--s2);
-}
-.modal-handle { width:38px; height:4px; border-radius:100px; background:rgba(255,255,255,0.12); }
-.btn-close-x {
-  width:34px; height:34px; border-radius:50%;
-  background:var(--glass); border:1px solid var(--glass-border);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; color:var(--t2); font-size:16px; font-weight:300;
-  transition:transform 180ms var(--spring), color 180ms, background 180ms;
-}
-.btn-close-x:active { transform:scale(0.88); color:var(--t1); background:var(--glass-strong); }
-
-.modal-body { padding:18px 22px max(36px, env(safe-area-inset-bottom,36px)); }
-.modal-title { font-family:'Bricolage Grotesque',sans-serif; font-size:22px; font-weight:700; margin-bottom:5px; }
-.modal-sub { font-size:13px; color:var(--t2); margin-bottom:22px; line-height:1.5; }
-
-/* Meal items */
-.meal-row {
-  display:flex; justify-content:space-between; align-items:flex-start;
-  padding:13px 14px; background:var(--glass); border:1px solid var(--glass-border);
-  border-radius:var(--r-sm); margin-bottom:9px;
-}
-.meal-info-name { font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; color:var(--t1); }
-.meal-info-desc { font-size:12px; color:var(--t3); margin-top:3px; }
-.meal-kcal-val { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--iris-4); text-align:right; }
-.meal-kcal-lbl { font-family:'DM Sans',sans-serif; font-size:10px; color:var(--t3); text-align:right; }
-
-/* Exercise items */
-.ex-section-label {
-  font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600;
-  letter-spacing:0.14em; text-transform:uppercase; color:var(--t3); margin:18px 0 10px;
-}
-.ex-row {
-  padding:13px 14px; background:var(--glass); border:1px solid var(--glass-border);
-  border-radius:var(--r-sm); margin-bottom:8px;
-}
-.ex-name { font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; color:var(--t1); }
-.ex-meta { font-size:12px; color:var(--t3); margin-top:3px; }
-.ex-badge {
-  display:inline-block; margin-top:7px; padding:3px 10px; border-radius:100px;
-  font-size:11px; font-family:'DM Sans',sans-serif; font-weight:600;
-  background:rgba(255,108,176,0.1); color:var(--iris-3);
-}
-
-/* Shopping */
-.shop-cat-label {
-  font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600;
-  letter-spacing:0.14em; text-transform:uppercase; color:var(--t3); margin:18px 0 10px;
-}
-.shop-row {
-  display:flex; align-items:center; gap:12px;
-  padding:11px 0; border-bottom:1px solid var(--border);
-  transition:opacity 250ms;
-}
-.shop-row.checked .shop-name { opacity:0.3; text-decoration:line-through; }
-.shop-chk {
-  width:22px; height:22px; border-radius:7px; flex-shrink:0;
-  background:var(--glass); border:1.5px solid var(--glass-border);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:all 200ms var(--spring);
-}
-.shop-chk.on { background:var(--accent); border-color:var(--accent); box-shadow:0 0 10px rgba(128,144,255,0.4); }
-.shop-chk.on::after { content:'✓'; color:#fff; font-size:12px; font-weight:700; }
-.shop-name { font-size:14px; color:var(--t1); flex:1; }
-.shop-qty { font-family:'DM Sans',sans-serif; font-size:12px; color:var(--t3); }
-
-/* Settings modal content */
-.settings-row {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:14px 14px; background:var(--glass); border:1px solid var(--glass-border);
-  border-radius:var(--r-sm); margin-bottom:9px;
-}
-.settings-lbl { font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; color:var(--t2); }
-.settings-val { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:#fff; }
-
-/* Responsive */
-@media(min-width:430px){ :root{--px:32px;} }
-@media(min-width:600px){ #app{max-width:420px;margin:0 auto;} }
-</style>
+    </style>
 </head>
 <body>
 
-<div class="bg-canvas">
-  <div class="bg-orb"></div>
-  <div class="bg-orb"></div>
-  <div class="bg-orb"></div>
-  <div class="bg-grid"></div>
-</div>
+    <div class="app-shell">
+        
+        <!-- TELA 1: AUTHENTICATION -->
+        <section id="page-auth" class="page active">
+            <div class="auth-card">
+                <div class="logo-text">EVO</div>
+                <p style="color: var(--text-dim); margin-bottom: 40px;">Torne-se viciado em melhorar a si mesmo.</p>
+                
+                <div class="auth-toggle">
+                    <button id="btn-tab-login" class="active" onclick="toggleAuth('login')">Entrar</button>
+                    <button id="btn-tab-signup" onclick="toggleAuth('signup')">Criar Conta</button>
+                </div>
 
-<div id="app">
+                <div id="auth-fields">
+                    <div class="input-group" id="group-name" style="display: none;">
+                        <label>Nome Completo</label>
+                        <input type="text" placeholder="Como quer ser chamado?">
+                    </div>
+                    <div class="input-group">
+                        <label>E-mail</label>
+                        <input type="email" placeholder="seu@email.com">
+                    </div>
+                    <div class="input-group">
+                        <label>Senha</label>
+                        <input type="password" placeholder="••••••••">
+                    </div>
+                    <button class="btn-primary" onclick="doAuth()">Começar Evolução</button>
+                </div>
+            </div>
+        </section>
 
-  <!-- ══════════ ENTRY ══════════ -->
-  <div class="screen active" id="screen-entry">
-    <div class="entry-bg"></div>
-    <div class="entry-bg-noise"></div>
-    <div class="entry-vignette"></div>
-    <div class="entry-content">
-      <div class="entry-eyebrow">Sistema de Performance</div>
-      <div class="logo-mark">EVO</div>
-      <p class="entry-tagline"><strong>Torne-se viciado</strong> em melhorar a si mesmo.</p>
-      <div class="entry-pills">
-        <div class="entry-pill"><span>100%</span> Local-First</div>
-        <div class="entry-pill">Plano <span>Personalizado</span></div>
-        <div class="entry-pill">Dieta + Treino + Compras</div>
-      </div>
-      <div class="entry-cta">
-        <button class="btn-primary" onclick="EVO.start()">Iniciar Protocolo →</button>
-      </div>
-    </div>
-  </div>
+        <!-- TELA 2: DASHBOARD (HOME) -->
+        <section id="page-home" class="page">
+            <div class="header">
+                <h2>Início</h2>
+                <div style="width: 32px; height: 32px; background: var(--accent); border-radius: 50%;"></div>
+            </div>
+            
+            <div class="card progress-box">
+                <span class="kcal-sub">Calorias Restantes</span>
+                <span class="kcal-big">1.940</span>
+                <div style="width: 80%; height: 4px; background: var(--surface-light); border-radius: 10px; margin-top: 15px;">
+                    <div style="width: 40%; height: 100%; background: var(--accent); border-radius: 10px; box-shadow: 0 0 10px var(--accent);"></div>
+                </div>
+            </div>
 
-  <!-- ══════════ ONBOARDING ══════════ -->
-  <div class="screen" id="screen-onboarding">
-    <div class="onb-header">
-      <button class="btn-back" onclick="EVO.goTo('entry')">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <span class="onb-step-label">Configuração do <strong>Perfil</strong></span>
-    </div>
-    <div class="onb-title">Seu perfil<br>de performance</div>
-    <p class="onb-sub">Dados precisos geram um plano real.</p>
+            <div class="card macro-grid">
+                <div class="m-item"><b>150g</b><span>Proteína</span></div>
+                <div class="m-item"><b>210g</b><span>Carbos</span></div>
+                <div class="m-item"><b>60g</b><span>Gordura</span></div>
+            </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Peso (kg)</label>
-        <input class="form-input" type="number" id="inp-weight" placeholder="75" inputmode="decimal">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Altura (cm)</label>
-        <input class="form-input" type="number" id="inp-height" placeholder="175" inputmode="decimal">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Idade</label>
-        <input class="form-input" type="number" id="inp-age" placeholder="28" inputmode="numeric">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Sexo</label>
-        <select class="form-input" id="inp-sex" style="cursor:pointer">
-          <option value="M">Masculino</option>
-          <option value="F">Feminino</option>
-        </select>
-      </div>
-    </div>
+            <div class="list-title">Refeições Recentes <span>Ver Tudo</span></div>
+            <div class="card">
+                <div class="item-row">
+                    <div class="item-icon">☕</div>
+                    <div style="flex:1"><b>Café da Manhã</b><br><small style="color:var(--text-dim)">Pão Integral + Ovo</small></div>
+                    <b>320 kcal</b>
+                </div>
+                <div class="item-row" style="border:none">
+                    <div class="item-icon">🥗</div>
+                    <div style="flex:1"><b>Almoço</b><br><small style="color:var(--text-dim)">Arroz, Feijão e Frango</small></div>
+                    <b>540 kcal</b>
+                </div>
+            </div>
+        </section>
 
-    <label class="form-label">Nível de Atividade</label>
-    <div class="chip-group" id="activity-chips">
-      <div class="chip" data-val="sedentary"  onclick="EVO.pickChip(this)">Sedentário</div>
-      <div class="chip" data-val="light"       onclick="EVO.pickChip(this)">Leve (1-2x)</div>
-      <div class="chip selected" data-val="moderate" onclick="EVO.pickChip(this)">Moderado (3-5x)</div>
-      <div class="chip" data-val="active"      onclick="EVO.pickChip(this)">Ativo (6-7x)</div>
-    </div>
+        <!-- TELA 3: DIÁRIO (ALIMENTAÇÃO) -->
+        <section id="page-diary" class="page">
+            <h2>Diário de Alimentos</h2>
+            <p style="color: var(--text-dim); margin-bottom: 20px;">Padrão Brasileiro TACO</p>
+            
+            <div class="input-group">
+                <input type="text" placeholder="🔍 Buscar alimento brasileiro...">
+            </div>
 
-    <label class="form-label">Objetivo Principal</label>
-    <div class="goal-cards">
-      <div class="goal-card card-loss" data-val="loss" onclick="EVO.pickGoal(this)">
-        <div class="goal-card-shine"></div>
-        <div class="goal-row"><span class="goal-icon">🔥</span><span class="goal-name">Emagrecimento</span></div>
-        <p class="goal-desc">Déficit calórico estratégico preservando massa muscular.</p>
-      </div>
-      <div class="goal-card card-gain selected" data-val="gain" onclick="EVO.pickGoal(this)">
-        <div class="goal-card-shine"></div>
-        <div class="goal-row"><span class="goal-icon">💪</span><span class="goal-name">Hipertrofia</span></div>
-        <p class="goal-desc">Superávit calculado para máximo ganho com mínimo acúmulo.</p>
-      </div>
-      <div class="goal-card card-maint" data-val="maintenance" onclick="EVO.pickGoal(this)">
-        <div class="goal-card-shine"></div>
-        <div class="goal-row"><span class="goal-icon">⚡</span><span class="goal-name">Manutenção</span></div>
-        <p class="goal-desc">Performance e saúde no ponto ideal de equilíbrio.</p>
-      </div>
-    </div>
+            <div class="card">
+                <div class="item-row"><b>Arroz Branco Cozido</b> <span style="margin-left: auto; color: var(--accent);">+ Add</span></div>
+                <div class="item-row"><b>Feijão Carioca</b> <span style="margin-left: auto; color: var(--accent);">+ Add</span></div>
+                <div class="item-row"><b>Tapioca com Manteiga</b> <span style="margin-left: auto; color: var(--accent);">+ Add</span></div>
+            </div>
+        </section>
 
-    <div style="padding:0 0 40px">
-      <button class="btn-primary" style="width:100%" onclick="EVO.generate()">Gerar Meu Plano →</button>
-    </div>
-  </div>
+        <!-- TELA 4: PROGRESSO -->
+        <section id="page-stats" class="page">
+            <h2>Sua Evolução</h2>
+            <div class="card" style="height: 200px; display: flex; align-items: center; justify-content: center; color: var(--text-dim);">
+                [ Gráfico de Evolução de Peso ]
+            </div>
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Peso Inicial</span> <b>85kg</b>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Peso Atual</span> <b style="color: var(--accent);">81.5kg</b>
+                </div>
+            </div>
+        </section>
 
-  <!-- ══════════ LOADING ══════════ -->
-  <div class="screen" id="screen-loading">
-    <div class="load-ring"></div>
-    <p class="load-txt">Calibrando seu protocolo…</p>
-  </div>
+        <!-- BARRA DE NAVEGAÇÃO (FIXA NO RODAPÉ) -->
+        <nav class="nav-bar" id="main-nav">
+            <div class="nav-item active" onclick="switchPage('page-home', this)">
+                <i>🏠</i><span>Home</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('page-diary', this)">
+                <i>🍎</i><span>Diário</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('page-stats', this)">
+                <i>📈</i><span>Evolução</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('page-auth', this)">
+                <i>👤</i><span>Perfil</span>
+            </div>
+        </nav>
 
-  <!-- ══════════ COCKPIT ══════════ -->
-  <div class="screen" id="screen-cockpit">
-
-    <div class="cockpit-header">
-      <div>
-        <div class="cockpit-greeting">Cockpit <em id="user-goal-label">EVO</em></div>
-        <div class="cockpit-date" id="cockpit-date"></div>
-      </div>
-      <button class="btn-settings" onclick="EVO.open('settings')">⚙️</button>
-    </div>
-
-    <div class="hero-wrap">
-      <div class="hero-card">
-        <div class="hero-label">Meta Calórica Diária</div>
-        <div class="hero-value-row">
-          <span class="hero-number" id="d-kcal">—</span>
-          <span class="hero-unit">kcal</span>
-        </div>
-        <div class="hero-meta">TMB: <strong id="d-tmb">—</strong> kcal &nbsp;·&nbsp; Objetivo: <strong id="d-goal">—</strong></div>
-        <div class="hero-bar-area">
-          <div class="bar-row"><span>Consumido hoje</span><span id="bar-pct">0%</span></div>
-          <div class="bar-track"><div class="bar-fill" id="cal-bar" style="width:0%"></div></div>
-        </div>
-      </div>
     </div>
 
-    <div class="macro-grid">
-      <div class="macro-pill protein" onclick="EVO.open('diet')">
-        <div class="macro-num"><span id="d-prot">—</span><span class="macro-unit-sm">g</span></div>
-        <div class="macro-lbl">Proteína</div>
-      </div>
-      <div class="macro-pill carbs" onclick="EVO.open('diet')">
-        <div class="macro-num"><span id="d-carbs">—</span><span class="macro-unit-sm">g</span></div>
-        <div class="macro-lbl">Carboidrato</div>
-      </div>
-      <div class="macro-pill fat" onclick="EVO.open('diet')">
-        <div class="macro-num"><span id="d-fat">—</span><span class="macro-unit-sm">g</span></div>
-        <div class="macro-lbl">Gordura</div>
-      </div>
-    </div>
+    <script>
+        // Lógica de alternar Login/Cadastro
+        function toggleAuth(type) {
+            const nameField = document.getElementById('group-name');
+            const btnLogin = document.getElementById('btn-tab-login');
+            const btnSignup = document.getElementById('btn-tab-signup');
 
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-val" id="d-imc">—</div>
-        <div class="stat-lbl">IMC</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="d-days">—</div>
-        <div class="stat-lbl">Dias Treino</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="d-weight">—</div>
-        <div class="stat-lbl">Peso kg</div>
-      </div>
-    </div>
+            if (type === 'signup') {
+                nameField.style.display = 'block';
+                btnSignup.classList.add('active');
+                btnLogin.classList.remove('active');
+            } else {
+                nameField.style.display = 'none';
+                btnLogin.classList.add('active');
+                btnSignup.classList.remove('active');
+            }
+        }
 
-    <div class="sec-head">
-      <span class="sec-title">Módulos</span>
-    </div>
-    <div class="module-scroll">
-      <div class="module-card m-diet" onclick="EVO.open('diet')">
-        <div class="m-icon">🥗</div>
-        <div class="m-title">Plano Alimentar</div>
-        <div class="m-preview" id="diet-preview">—</div>
-        <span class="m-tag">Ver Refeições</span>
-      </div>
-      <div class="module-card m-train" onclick="EVO.open('training')">
-        <div class="m-icon">🏋️</div>
-        <div class="m-title">Protocolo Treino</div>
-        <div class="m-preview" id="train-preview">—</div>
-        <span class="m-tag">Ver Treinos</span>
-      </div>
-      <div class="module-card m-shop" onclick="EVO.open('shopping')">
-        <div class="m-icon">🛒</div>
-        <div class="m-title">Lista de Compras</div>
-        <div class="m-preview">Semana completa pré-montada.</div>
-        <span class="m-tag">Ver Lista</span>
-      </div>
-    </div>
+        // Simulação de Autenticação para abrir o App
+        function doAuth() {
+            document.getElementById('page-auth').classList.remove('active');
+            document.getElementById('page-home').classList.add('active');
+            document.getElementById('main-nav').style.display = 'grid';
+        }
 
-    <div class="sec-head">
-      <span class="sec-title">Divisão Semanal</span>
-      <button class="sec-more" onclick="EVO.open('training')">Ver tudo</button>
-    </div>
-    <div class="split-list" id="split-list"></div>
-
-    <div class="reset-zone">
-      <button class="btn-danger" onclick="EVO.resetConfirm()">⚠️ Resetar Perfil e Plano</button>
-    </div>
-    <div style="height:14px"></div>
-  </div>
-
-</div><!-- #app -->
-
-<!-- ══════════ NAV ══════════ -->
-<nav class="bottom-nav" id="bottom-nav">
-  <button class="nav-btn active" id="nav-cockpit" onclick="EVO.navClick('cockpit',this)">
-    <span class="nav-ico">⚡</span><span class="nav-txt">Cockpit</span>
-  </button>
-  <button class="nav-btn" id="nav-diet" onclick="EVO.open('diet');EVO.navClick('diet',this)">
-    <span class="nav-ico">🥗</span><span class="nav-txt">Dieta</span>
-  </button>
-  <button class="nav-btn" id="nav-train" onclick="EVO.open('training');EVO.navClick('train',this)">
-    <span class="nav-ico">🏋️</span><span class="nav-txt">Treino</span>
-  </button>
-  <button class="nav-btn" id="nav-shop" onclick="EVO.open('shopping');EVO.navClick('shop',this)">
-    <span class="nav-ico">🛒</span><span class="nav-txt">Compras</span>
-  </button>
-</nav>
-
-<!-- ══════════ MODALS ══════════ -->
-
-<!-- Diet -->
-<div class="modal-overlay" id="modal-diet">
-  <div class="modal-sheet">
-    <div class="modal-close-btn">
-      <div class="modal-handle"></div>
-      <button class="btn-close-x" onclick="EVO.close('diet')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-title">🥗 Plano Alimentar</div>
-      <div class="modal-sub" id="diet-modal-sub">—</div>
-      <div id="diet-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Training -->
-<div class="modal-overlay" id="modal-training">
-  <div class="modal-sheet">
-    <div class="modal-close-btn">
-      <div class="modal-handle"></div>
-      <button class="btn-close-x" onclick="EVO.close('training')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-title">🏋️ Protocolo de Treino</div>
-      <div class="modal-sub" id="train-modal-sub">—</div>
-      <div id="train-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Shopping -->
-<div class="modal-overlay" id="modal-shopping">
-  <div class="modal-sheet">
-    <div class="modal-close-btn">
-      <div class="modal-handle"></div>
-      <button class="btn-close-x" onclick="EVO.close('shopping')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-title">🛒 Lista de Compras</div>
-      <div class="modal-sub">Semana completa — toque para marcar</div>
-      <div id="shop-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Settings -->
-<div class="modal-overlay" id="modal-settings">
-  <div class="modal-sheet">
-    <div class="modal-close-btn">
-      <div class="modal-handle"></div>
-      <button class="btn-close-x" onclick="EVO.close('settings')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-title">⚙️ Configurações</div>
-      <div class="modal-sub" id="settings-sub">—</div>
-      <div id="settings-list"></div>
-      <div style="margin-top:24px">
-        <button class="btn-danger" onclick="EVO.resetConfirm()">Resetar tudo e recomeçar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ ENGINE ══════════ -->
-<script>
-'use strict';
-const EVO = (() => {
-
-  /* ─ DATA ─ */
-  let S = { screen:'entry', profile:null, plan:null, checked:{}, ui:{ activity:'moderate', goal:'gain' } };
-
-  const ACT = { sedentary:1.2, light:1.375, moderate:1.55, active:1.725 };
-
-  const GOALS = {
-    loss:        { label:'Emagrecimento', mod:-500, prot:2.2, carb:2.5, fat:0.8 },
-    gain:        { label:'Hipertrofia',   mod:+350, prot:2.0, carb:4.5, fat:1.0 },
-    maintenance: { label:'Manutenção',    mod:0,    prot:1.8, carb:3.5, fat:0.9 },
-  };
-
-  const SPLITS = {
-    loss: [
-      {day:'SEG',name:'Peito + Tríceps',type:'Push',exs:5},
-      {day:'TER',name:'Costas + Bíceps',type:'Pull',exs:5},
-      {day:'QUA',name:'Cardio HIIT',type:'Cardio',exs:4},
-      {day:'QUI',name:'Pernas + Glúteos',type:'Legs',exs:6},
-      {day:'SEX',name:'Ombros + Core',type:'Push',exs:5},
-      {day:'SÁB',name:'Cardio Moderado',type:'Cardio',exs:3},
-    ],
-    gain: [
-      {day:'SEG',name:'Peito + Tríceps',type:'Push',exs:6},
-      {day:'TER',name:'Costas + Bíceps',type:'Pull',exs:6},
-      {day:'QUA',name:'Pernas Quad',type:'Legs',exs:6},
-      {day:'QUI',name:'Ombros + Core',type:'Push',exs:5},
-      {day:'SEX',name:'Pernas Post.',type:'Legs',exs:5},
-    ],
-    maintenance: [
-      {day:'SEG',name:'Upper A',type:'Full',exs:6},
-      {day:'QUA',name:'Lower',type:'Legs',exs:5},
-      {day:'SEX',name:'Upper B',type:'Full',exs:5},
-    ],
-  };
-
-  const EX_DB = {
-    Push:   ['Supino Reto c/ Barra','Supino Inclinado Halteres','Crucifixo Peck Deck','Tríceps Pulley','Desenvolvimento Arnold','Elevação Lateral'],
-    Pull:   ['Puxada Pronada','Remada Curvada','Remada Unilateral','Rosca Direta','Rosca Concentrada','Face Pull'],
-    Legs:   ['Agachamento Livre','Leg Press 45°','Cadeira Extensora','Mesa Flexora','Afundo Búlgaro','Panturrilha Smith'],
-    Cardio: ['Corrida Intervalada 20min','Bike Estacionária 25min','Pular Corda 15min','Escada 20min'],
-    Full:   ['Agachamento Livre','Supino Reto','Remada Curvada','Desenvolvimento','Terra Romeno','Prancha'],
-  };
-
-  const MEALS = {
-    loss: [
-      {name:'Café da Manhã',desc:'Ovos mexidos + pão integral + café preto',cal:380},
-      {name:'Lanche Manhã',desc:'Whey protein + 1 banana',cal:210},
-      {name:'Almoço',desc:'Frango grelhado + arroz integral + salada',cal:480},
-      {name:'Pré-Treino',desc:'Batata doce + atum',cal:290},
-      {name:'Jantar',desc:'Peixe assado + legumes no vapor',cal:350},
-    ],
-    gain: [
-      {name:'Café da Manhã',desc:'Ovos + aveia + frutas vermelhas + leite',cal:580},
-      {name:'Lanche Manhã',desc:'Sanduíche integral + whey',cal:420},
-      {name:'Almoço',desc:'Arroz + feijão + frango + batata doce',cal:720},
-      {name:'Pré-Treino',desc:'Banana + pasta de amendoim + whey',cal:480},
-      {name:'Pós-Treino',desc:'Whey + dextrose + creatina',cal:320},
-      {name:'Jantar',desc:'Carne vermelha + macarrão integral + legumes',cal:650},
-    ],
-    maintenance: [
-      {name:'Café da Manhã',desc:'Tapioca + frango + suco natural',cal:420},
-      {name:'Lanche Manhã',desc:'Iogurte grego + granola + mel',cal:280},
-      {name:'Almoço',desc:'Arroz + frango + feijão + salada',cal:560},
-      {name:'Pré-Treino',desc:'Whey + banana',cal:280},
-      {name:'Jantar',desc:'Omelete + legumes + pão integral',cal:380},
-    ],
-  };
-
-  const SHOP = {
-    loss: {
-      'Proteínas':[{n:'Frango (peito)',q:'2kg'},{n:'Atum em lata',q:'6 unid'},{n:'Ovos',q:'1 dúzia'},{n:'Whey Protein',q:'1 pote'},{n:'Tilápia',q:'1kg'}],
-      'Carboidratos':[{n:'Arroz integral',q:'1kg'},{n:'Batata doce',q:'1kg'},{n:'Pão integral',q:'1 pct'},{n:'Aveia',q:'500g'}],
-      'Vegetais & Frutas':[{n:'Alface + Rúcula',q:'1 maço'},{n:'Tomate',q:'6 unid'},{n:'Brócolis',q:'500g'},{n:'Banana',q:'1 cacho'}],
-    },
-    gain: {
-      'Proteínas':[{n:'Frango (peito)',q:'3kg'},{n:'Patinho moído',q:'1kg'},{n:'Ovos',q:'2 dúzias'},{n:'Whey Protein',q:'1 pote'},{n:'Atum',q:'4 unid'}],
-      'Carboidratos':[{n:'Arroz branco',q:'2kg'},{n:'Batata doce',q:'2kg'},{n:'Macarrão integral',q:'500g'},{n:'Aveia',q:'500g'},{n:'Banana',q:'2 cachos'}],
-      'Gorduras Boas':[{n:'Pasta de amendoim',q:'1 pote'},{n:'Azeite extra virgem',q:'500ml'},{n:'Abacate',q:'4 unid'}],
-      'Suplementos':[{n:'Creatina monohidratada',q:'1 pote'},{n:'Dextrose',q:'1kg'}],
-    },
-    maintenance: {
-      'Proteínas':[{n:'Frango (peito)',q:'2kg'},{n:'Ovos',q:'1 dúzia'},{n:'Whey Protein',q:'1 pote'},{n:'Iogurte grego',q:'4 unid'}],
-      'Carboidratos':[{n:'Arroz integral',q:'1kg'},{n:'Feijão',q:'500g'},{n:'Tapioca',q:'500g'},{n:'Banana',q:'1 cacho'}],
-      'Vegetais':[{n:'Mix de legumes',q:'1kg'},{n:'Salada folhas',q:'2 maços'}],
-    },
-  };
-
-  /* ─ PLAN ENGINE ─ */
-  function compute(p) {
-    const tmb = p.sex === 'M'
-      ? 88.36 + 13.4*p.weight + 4.8*p.height - 5.7*p.age
-      : 447.6  + 9.2*p.weight + 3.1*p.height - 4.3*p.age;
-    const tdee = tmb * ACT[p.activity];
-    const g = GOALS[p.goal];
-    const kcal = Math.round(tdee + g.mod);
-    const prot = Math.round(p.weight * g.prot);
-    const fat  = Math.round(p.weight * g.fat);
-    const carb = Math.round(Math.max((kcal - prot*4 - fat*9) / 4, 50));
-    const imc  = (p.weight / Math.pow(p.height/100, 2)).toFixed(1);
-    const split = SPLITS[p.goal];
-    return {
-      tmb:Math.round(tmb), tdee:Math.round(tdee), kcal,
-      prot, carb, fat, imc, goalLabel:g.label,
-      split, meals:MEALS[p.goal], shopping:SHOP[p.goal],
-      trainDays:split.length,
-    };
-  }
-
-  /* ─ PERSIST ─ */
-  function save() {
-    try {
-      localStorage.setItem('evo_p', JSON.stringify(S.profile));
-      localStorage.setItem('evo_pl', JSON.stringify(S.plan));
-      localStorage.setItem('evo_ch', JSON.stringify(S.checked));
-    } catch(e){}
-  }
-  function load() {
-    try {
-      const p=localStorage.getItem('evo_p'), pl=localStorage.getItem('evo_pl'), ch=localStorage.getItem('evo_ch');
-      if(p)  S.profile = JSON.parse(p);
-      if(pl) S.plan    = JSON.parse(pl);
-      if(ch) S.checked = JSON.parse(ch);
-    } catch(e){}
-  }
-  function wipe() {
-    ['evo_p','evo_pl','evo_ch'].forEach(k=>localStorage.removeItem(k));
-    S.profile=null; S.plan=null; S.checked={};
-  }
-
-  /* ─ NAVIGATION ─ */
-  function goTo(id) {
-    if(id === S.screen) return;
-    const cur = document.getElementById('screen-'+S.screen);
-    const nxt = document.getElementById('screen-'+id);
-    if(!nxt) return;
-    cur.classList.remove('active'); cur.classList.add('exit');
-    setTimeout(()=>cur.classList.remove('exit'), 600);
-    nxt.classList.add('active');
-    S.screen = id;
-    const nav = document.getElementById('bottom-nav');
-    id==='cockpit' ? nav.classList.add('visible') : nav.classList.remove('visible');
-  }
-
-  function navClick(id, el) {
-    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-    el.classList.add('active');
-  }
-
-  /* ─ SELECTIONS ─ */
-  function pickChip(el) {
-    document.querySelectorAll('#activity-chips .chip').forEach(c=>c.classList.remove('selected'));
-    el.classList.add('selected');
-    S.ui.activity = el.dataset.val;
-  }
-  function pickGoal(el) {
-    document.querySelectorAll('.goal-card').forEach(c=>c.classList.remove('selected'));
-    el.classList.add('selected');
-    S.ui.goal = el.dataset.val;
-  }
-
-  /* ─ ENTRY / START ─ */
-  function start() {
-    load();
-    if(S.plan && S.profile) {
-      renderCockpit(); goTo('cockpit');
-    } else {
-      goTo('onboarding');
-    }
-  }
-
-  /* ─ GENERATE ─ */
-  function generate() {
-    const w = parseFloat(document.getElementById('inp-weight').value);
-    const h = parseFloat(document.getElementById('inp-height').value);
-    const a = parseInt(document.getElementById('inp-age').value);
-    const sx = document.getElementById('inp-sex').value;
-    if(!w||!h||!a||w<30||w>300||h<100||h>250||a<10||a>100) {
-      alert('Preencha peso, altura e idade com valores válidos.'); return;
-    }
-    S.profile = { weight:w, height:h, age:a, sex:sx, activity:S.ui.activity, goal:S.ui.goal };
-    goTo('loading');
-    setTimeout(()=>{ S.plan=compute(S.profile); save(); renderCockpit(); goTo('cockpit'); }, 1500);
-  }
-
-  /* ─ RENDER COCKPIT ─ */
-  function renderCockpit() {
-    const {plan:pl, profile:pr} = S;
-    if(!pl) return;
-    document.getElementById('cockpit-date').textContent =
-      new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
-    document.getElementById('user-goal-label').textContent = pl.goalLabel;
-    document.getElementById('d-kcal').textContent  = pl.kcal.toLocaleString('pt-BR');
-    document.getElementById('d-tmb').textContent   = pl.tmb.toLocaleString('pt-BR');
-    document.getElementById('d-goal').textContent  = pl.goalLabel;
-    document.getElementById('d-prot').textContent  = pl.prot;
-    document.getElementById('d-carbs').textContent = pl.carb;
-    document.getElementById('d-fat').textContent   = pl.fat;
-    document.getElementById('d-imc').textContent   = pl.imc;
-    document.getElementById('d-days').textContent  = pl.trainDays+'x';
-    document.getElementById('d-weight').textContent= pr.weight;
-    document.getElementById('diet-preview').textContent  = `${pl.meals.length} refeições · ${pl.kcal} kcal/dia`;
-    document.getElementById('train-preview').textContent = `${pl.trainDays}x/semana · ${pl.goalLabel}`;
-
-    /* Split list */
-    document.getElementById('split-list').innerHTML = pl.split.map(s=>`
-      <div class="split-row" onclick="EVO.open('training')">
-        <div>
-          <div class="split-day">${s.day}</div>
-          <div class="split-name">${s.name}</div>
-          <div class="split-count">${s.exs} exercícios</div>
-        </div>
-        <span class="split-chevron">›</span>
-      </div>`).join('');
-
-    renderDiet(); renderTraining(); renderShopping(); renderSettings();
-  }
-
-  /* ─ RENDER MODALS ─ */
-  function renderDiet() {
-    const pl = S.plan; if(!pl) return;
-    document.getElementById('diet-modal-sub').textContent =
-      `${pl.kcal} kcal/dia  ·  P: ${pl.prot}g  ·  C: ${pl.carb}g  ·  G: ${pl.fat}g`;
-    document.getElementById('diet-list').innerHTML = pl.meals.map(m=>`
-      <div class="meal-row">
-        <div><div class="meal-info-name">${m.name}</div><div class="meal-info-desc">${m.desc}</div></div>
-        <div><div class="meal-kcal-val">${m.cal}</div><div class="meal-kcal-lbl">kcal</div></div>
-      </div>`).join('');
-  }
-
-  function renderTraining() {
-    const pl = S.plan; if(!pl) return;
-    document.getElementById('train-modal-sub').textContent = `${pl.trainDays}x/semana · ${pl.goalLabel}`;
-    let html='';
-    pl.split.forEach(s=>{
-      html += `<div class="ex-section-label">${s.day} — ${s.name}</div>`;
-      (EX_DB[s.type]||EX_DB['Full']).slice(0,s.exs).forEach(ex=>{
-        html += `<div class="ex-row"><div class="ex-name">${ex}</div><div class="ex-meta">4 séries × 10–12 reps · 60s descanso</div><span class="ex-badge">${s.type}</span></div>`;
-      });
-    });
-    document.getElementById('train-list').innerHTML = html;
-  }
-
-  function renderShopping() {
-    const pl = S.plan; if(!pl) return;
-    let html='';
-    Object.entries(pl.shopping).forEach(([cat,items])=>{
-      html += `<div class="shop-cat-label">${cat}</div>`;
-      items.forEach((it,i)=>{
-        const key=`${cat}_${i}`, done=S.checked[key];
-        html += `
-          <div class="shop-row ${done?'checked':''}" id="shop-${key}">
-            <div class="shop-chk ${done?'on':''}" onclick="EVO.toggleShop('${key}')"></div>
-            <span class="shop-name">${it.n}</span>
-            <span class="shop-qty">${it.q}</span>
-          </div>`;
-      });
-    });
-    document.getElementById('shop-list').innerHTML = html;
-  }
-
-  function renderSettings() {
-    const {plan:pl, profile:pr} = S; if(!pl||!pr) return;
-    document.getElementById('settings-sub').textContent =
-      `${pr.weight}kg · ${pr.height}cm · ${pr.age} anos · ${GOALS[pr.goal].label}`;
-    document.getElementById('settings-list').innerHTML = [
-      ['Peso', pr.weight+'kg'], ['Altura', pr.height+'cm'], ['Idade', pr.age+' anos'],
-      ['TMB', pl.tmb+' kcal'], ['TDEE', pl.tdee+' kcal'], ['Meta', pl.kcal+' kcal'],
-      ['IMC', pl.imc], ['Proteína', pl.prot+'g'], ['Carbs', pl.carb+'g'], ['Gordura', pl.fat+'g'],
-    ].map(([l,v])=>`
-      <div class="settings-row">
-        <span class="settings-lbl">${l}</span>
-        <span class="settings-val">${v}</span>
-      </div>`).join('');
-  }
-
-  /* ─ SHOP TOGGLE ─ */
-  function toggleShop(key) {
-    S.checked[key] = !S.checked[key]; save();
-    const row = document.getElementById('shop-'+key);
-    const chk = row.querySelector('.shop-chk');
-    if(S.checked[key]) { row.classList.add('checked'); chk.classList.add('on'); }
-    else               { row.classList.remove('checked'); chk.classList.remove('on'); }
-  }
-
-  /* ─ MODALS ─ */
-  function open(id) {
-    if(id==='settings') renderSettings();
-    document.getElementById('modal-'+id).classList.add('open');
-    // Reset nav active to cockpit when closing via X
-  }
-  function close(id) {
-    document.getElementById('modal-'+id).classList.remove('open');
-    // restore cockpit nav active
-    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-    document.getElementById('nav-cockpit').classList.add('active');
-  }
-
-  /* Tap overlay to close */
-  document.querySelectorAll('.modal-overlay').forEach(ov=>{
-    ov.addEventListener('click', e=>{
-      if(e.target===ov) {
-        const id = ov.id.replace('modal-','');
-        close(id);
-      }
-    });
-  });
-
-  /* Swipe down to close */
-  document.querySelectorAll('.modal-sheet').forEach(sheet=>{
-    let startY=0, startScroll=0;
-    sheet.addEventListener('touchstart', e=>{ startY=e.touches[0].clientY; startScroll=sheet.scrollTop; }, {passive:true});
-    sheet.addEventListener('touchend', e=>{
-      const dy = e.changedTouches[0].clientY - startY;
-      if(dy > 80 && startScroll <= 0) {
-        const id = sheet.closest('.modal-overlay').id.replace('modal-','');
-        close(id);
-      }
-    }, {passive:true});
-  });
-
-  /* ─ RESET ─ */
-  function resetConfirm() {
-    if(confirm('Tem certeza? Todos os dados serão apagados.')) {
-      ['diet','training','shopping','settings'].forEach(close);
-      wipe();
-      setTimeout(()=>goTo('entry'), 300);
-    }
-  }
-
-  /* ─ INIT ─ */
-  load();
-
-  return { goTo, start, navClick, pickChip, pickGoal, generate, open, close, toggleShop, resetConfirm };
-})();
-</script>
+        // Navegação entre as seções do app
+        function switchPage(pageId, el) {
+            // Esconder todas as páginas
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Mostrar a página clicada
+            document.getElementById(pageId).classList.add('active');
+            
+            // Atualizar ícone ativo na nav bar
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+            
+            // Scroll para o topo
+            window.scrollTo(0,0);
+        }
+    </script>
 </body>
 </html>
