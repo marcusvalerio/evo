@@ -8,7 +8,6 @@ const inter = Inter({
   variable: '--font-sans',
   display: 'swap',
 })
-
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
@@ -18,34 +17,13 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'EVO | Evolua seu corpo',
   description: 'App premium de acompanhamento de dieta e evolucao fitness',
-  generator: 'v0.app',
   manifest: '/manifest.json',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'black-translucent',
-    title: 'EVO',
-  },
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'EVO' },
+  icons: { icon: '/icon.svg', apple: '/apple-icon.png' },
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0a1612',
+  themeColor: '#000022',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -53,14 +31,10 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${jetbrainsMono.variable} bg-background`}>
-      <body className="font-sans antialiased min-h-screen">
+    <html lang="pt-BR" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <body className="antialiased min-h-dvh" style={{ background: '#000022' }}>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
