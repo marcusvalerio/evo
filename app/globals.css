@@ -53,81 +53,80 @@
 }
 
 :root {
-  /* EVO Fitness Premium - Mint/Cyan Theme */
-  --background: #0a1612;
-  --foreground: #f0f5f3;
-  --card: #111d18;
-  --card-foreground: #f0f5f3;
-  --popover: #111d18;
-  --popover-foreground: #f0f5f3;
-  --primary: #4ade80;
-  --primary-foreground: #0a1612;
-  --secondary: #1a2e26;
-  --secondary-foreground: #d0e0d9;
-  --muted: #162822;
-  --muted-foreground: #6b8a7e;
-  --accent: #4ade80;
-  --accent-foreground: #0a1612;
-  --destructive: #ef4444;
-  --border: #243d33;
-  --input: #1a2e26;
-  --ring: #4ade80;
-  --success: #4ade80;
-  --success-foreground: #0a1612;
-  --warning: #f59e0b;
-  --warning-foreground: #0a1612;
-  --chart-1: #4ade80;
+  --background: #060d0a;
+  --foreground: #eef4f0;
+  --card: rgba(14, 22, 17, 0.85);
+  --card-foreground: #eef4f0;
+  --popover: #0e1611;
+  --popover-foreground: #eef4f0;
+  --primary: #39e07a;
+  --primary-foreground: #060d0a;
+  --secondary: #141f19;
+  --secondary-foreground: #c8ddd2;
+  --muted: #0f1a14;
+  --muted-foreground: #5a7a6a;
+  --accent: #39e07a;
+  --accent-foreground: #060d0a;
+  --destructive: #f05050;
+  --border: rgba(57, 224, 122, 0.12);
+  --input: #141f19;
+  --ring: #39e07a;
+  --success: #39e07a;
+  --success-foreground: #060d0a;
+  --warning: #f0a030;
+  --warning-foreground: #060d0a;
+  --chart-1: #39e07a;
   --chart-2: #22d3ee;
-  --chart-3: #6366f1;
-  --chart-4: #f472b6;
+  --chart-3: #818cf8;
+  --chart-4: #fb7185;
   --chart-5: #fbbf24;
   --radius: 1rem;
-  --sidebar: #0d1915;
-  --sidebar-foreground: #f0f5f3;
-  --sidebar-primary: #4ade80;
-  --sidebar-primary-foreground: #0a1612;
-  --sidebar-accent: #1a2e26;
-  --sidebar-accent-foreground: #d0e0d9;
-  --sidebar-border: #243d33;
-  --sidebar-ring: #4ade80;
+  --sidebar: #060d0a;
+  --sidebar-foreground: #eef4f0;
+  --sidebar-primary: #39e07a;
+  --sidebar-primary-foreground: #060d0a;
+  --sidebar-accent: #141f19;
+  --sidebar-accent-foreground: #c8ddd2;
+  --sidebar-border: rgba(57, 224, 122, 0.12);
+  --sidebar-ring: #39e07a;
 }
 
 .dark {
-  --background: #0a1612;
-  --foreground: #f0f5f3;
-  --card: #111d18;
-  --card-foreground: #f0f5f3;
-  --popover: #111d18;
-  --popover-foreground: #f0f5f3;
-  --primary: #4ade80;
-  --primary-foreground: #0a1612;
-  --secondary: #1a2e26;
-  --secondary-foreground: #d0e0d9;
-  --muted: #162822;
-  --muted-foreground: #6b8a7e;
-  --accent: #4ade80;
-  --accent-foreground: #0a1612;
-  --destructive: #ef4444;
-  --border: #243d33;
-  --input: #1a2e26;
-  --ring: #4ade80;
-  --success: #4ade80;
-  --success-foreground: #0a1612;
-  --warning: #f59e0b;
-  --warning-foreground: #0a1612;
-  --chart-1: #4ade80;
+  --background: #060d0a;
+  --foreground: #eef4f0;
+  --card: rgba(14, 22, 17, 0.85);
+  --card-foreground: #eef4f0;
+  --popover: #0e1611;
+  --popover-foreground: #eef4f0;
+  --primary: #39e07a;
+  --primary-foreground: #060d0a;
+  --secondary: #141f19;
+  --secondary-foreground: #c8ddd2;
+  --muted: #0f1a14;
+  --muted-foreground: #5a7a6a;
+  --accent: #39e07a;
+  --accent-foreground: #060d0a;
+  --destructive: #f05050;
+  --border: rgba(57, 224, 122, 0.12);
+  --input: #141f19;
+  --ring: #39e07a;
+  --success: #39e07a;
+  --success-foreground: #060d0a;
+  --warning: #f0a030;
+  --warning-foreground: #060d0a;
+  --chart-1: #39e07a;
   --chart-2: #22d3ee;
-  --chart-3: #6366f1;
-  --chart-4: #f472b6;
+  --chart-3: #818cf8;
+  --chart-4: #fb7185;
   --chart-5: #fbbf24;
-  --sidebar: #0d1915;
-  --sidebar-foreground: #f0f5f3;
-  --sidebar-primary: #4ade80;
-  --sidebar-primary-foreground: #0a1612;
-  --sidebar-accent: #1a2e26;
-  --sidebar-accent-foreground: #d0e0d9;
-  --sidebar-border: #243d33;
-  --sidebar-ring: #4ade80;
+  --sidebar: #060d0a;
+  --sidebar-foreground: #eef4f0;
+  --sidebar-primary: #39e07a;
+  --sidebar-primary-foreground: #060d0a;
+  --sidebar-accent: #141f19;
+  --sidebar-accent-foreground: #c8ddd2;
+  --sidebar-border: rgba(57, 224, 122, 0.12);
+  --sidebar-ring: #39e07a;
 }
 
 @layer base {
@@ -145,94 +144,177 @@
   }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+/* ===================== ANIMATED GRADIENT MESH ===================== */
+@keyframes mesh-drift-1 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  33% { transform: translate(8%, -12%) scale(1.15); }
+  66% { transform: translate(-6%, 8%) scale(0.9); }
+}
+@keyframes mesh-drift-2 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  25% { transform: translate(-10%, 6%) scale(1.2); }
+  75% { transform: translate(12%, -8%) scale(0.85); }
+}
+@keyframes mesh-drift-3 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  50% { transform: translate(6%, 10%) scale(1.1); }
+}
+@keyframes mesh-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+.gradient-mesh {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #243d33;
-  border-radius: 4px;
+.mesh-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  mix-blend-mode: screen;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #355a4a;
+.mesh-orb-1 {
+  width: 55vw;
+  height: 55vw;
+  top: -15%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(0, 80, 200, 0.35) 0%, transparent 70%);
+  animation: mesh-drift-1 18s ease-in-out infinite, mesh-pulse 8s ease-in-out infinite;
 }
 
-/* Smooth animations */
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+.mesh-orb-2 {
+  width: 50vw;
+  height: 50vw;
+  top: 20%;
+  right: -15%;
+  background: radial-gradient(circle, rgba(220, 60, 40, 0.3) 0%, transparent 70%);
+  animation: mesh-drift-2 22s ease-in-out infinite, mesh-pulse 10s ease-in-out infinite 2s;
 }
 
-.animate-shimmer {
-  animation: shimmer 2s ease-in-out infinite;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(74, 222, 128, 0.1) 50%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
+.mesh-orb-3 {
+  width: 60vw;
+  height: 60vw;
+  bottom: -10%;
+  left: 20%;
+  background: radial-gradient(circle, rgba(0, 120, 180, 0.25) 0%, transparent 70%);
+  animation: mesh-drift-3 16s ease-in-out infinite, mesh-pulse 12s ease-in-out infinite 4s;
 }
 
-/* Glass effect */
-.glass {
-  background: rgba(17, 29, 24, 0.85);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+.mesh-orb-4 {
+  width: 35vw;
+  height: 35vw;
+  top: 50%;
+  left: 30%;
+  background: radial-gradient(circle, rgba(57, 224, 122, 0.08) 0%, transparent 70%);
+  animation: mesh-drift-1 25s ease-in-out infinite reverse;
 }
 
-/* Progress ring animation */
-@keyframes progress-ring {
-  0% {
-    stroke-dashoffset: 283;
-  }
+/* ===================== GLASS CARDS ===================== */
+.glass-card {
+  background: rgba(14, 22, 17, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(57, 224, 122, 0.1);
 }
 
-/* Subtle glow effect */
-.glow-primary {
-  box-shadow: 0 0 30px rgba(74, 222, 128, 0.3),
-              0 0 60px rgba(74, 222, 128, 0.15);
+.glass-card-strong {
+  background: rgba(14, 22, 17, 0.88);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(57, 224, 122, 0.15);
 }
 
-.glow-success {
-  box-shadow: 0 0 30px rgba(74, 222, 128, 0.3),
-              0 0 60px rgba(74, 222, 128, 0.15);
+.glass-nav {
+  background: rgba(6, 13, 10, 0.88);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-top: 1px solid rgba(57, 224, 122, 0.1);
 }
 
-/* Gradient text */
+/* ===================== ARC / WHOOP-STYLE RING ===================== */
+@keyframes arc-fill {
+  from { stroke-dashoffset: 502; }
+}
+
+.arc-animated {
+  animation: arc-fill 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ===================== GLOW EFFECTS ===================== */
+.glow-green {
+  box-shadow: 0 0 20px rgba(57, 224, 122, 0.25), 0 0 60px rgba(57, 224, 122, 0.1);
+}
+
+.glow-text-green {
+  text-shadow: 0 0 30px rgba(57, 224, 122, 0.5);
+}
+
+/* ===================== GRADIENT TEXT ===================== */
 .text-gradient {
-  background: linear-gradient(135deg, #4ade80, #22d3ee);
+  background: linear-gradient(135deg, #39e07a 0%, #22d3ee 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Premium card hover */
+.text-gradient-warm {
+  background: linear-gradient(135deg, #fbbf24 0%, #f05050 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===================== SHIMMER ===================== */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  animation: shimmer 2.5s ease-in-out infinite;
+  background: linear-gradient(90deg, transparent 0%, rgba(57, 224, 122, 0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+}
+
+/* ===================== SCROLLBAR ===================== */
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(57, 224, 122, 0.2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(57, 224, 122, 0.4); }
+
+/* ===================== SAFE AREAS ===================== */
+.safe-area-pt { padding-top: env(safe-area-inset-top); }
+.safe-area-pb { padding-bottom: env(safe-area-inset-bottom); }
+
+/* ===================== INSIGHT PULSE ===================== */
+@keyframes insight-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(57, 224, 122, 0); }
+  50% { box-shadow: 0 0 0 6px rgba(57, 224, 122, 0.08); }
+}
+
+.insight-pulse {
+  animation: insight-pulse 3s ease-in-out infinite;
+}
+
+/* ===================== CARD HOVER ===================== */
 .card-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-hover:active {
+  transform: scale(0.98);
 }
 
-.card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+/* ===================== LOADING SCREEN ===================== */
+@keyframes evo-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.06); opacity: 1; }
 }
-
-/* Safe area for mobile */
-.safe-area-pt {
-  padding-top: env(safe-area-inset-top);
-}
-
-.safe-area-pb {
-  padding-bottom: env(safe-area-inset-bottom);
+.evo-breathe {
+  animation: evo-breathe 2s ease-in-out infinite;
 }
