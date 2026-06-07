@@ -1,25 +1,32 @@
-import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Goldman, Tenor_Sans, Sora } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({
+const goldman = Goldman({
+  weight: ['700'],
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-logo',
   display: 'swap',
 })
-const jetbrainsMono = JetBrains_Mono({
+
+const tenorSans = Tenor_Sans({
+  weight: ['400'],
   subsets: ['latin'],
-  variable: '--font-mono',
+  variable: '--font-title',
+  display: 'swap',
+})
+
+const sora = Sora({
+  subsets: ['latin'],
+  variable: '--font-body',
+  weight: ['300', '400', '500', '600', '700', '800'],
   display: 'swap',
 })
 
 export const metadata: Metadata = {
   title: 'EVO | Evolua seu corpo',
   description: 'App premium de acompanhamento de dieta e evolucao fitness',
-  manifest: '/manifest.json',
   appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'EVO' },
-  icons: { icon: '/icon.svg', apple: '/apple-icon.png' },
 }
 
 export const viewport: Viewport = {
@@ -33,10 +40,9 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="antialiased min-h-dvh" style={{ background: '#000022' }}>
+    <html lang="pt-BR" className={`${goldman.variable} ${tenorSans.variable} ${sora.variable}`}>
+      <body className="antialiased min-h-dvh" style={{ background: '#000022', fontFamily: 'var(--font-body)' }}>
         {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
   )
