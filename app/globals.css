@@ -3,216 +3,330 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ══════════════════════════════════════════
+   EVO — DESIGN TOKENS
+   Palette: Hadopelagic (#000022), Ashenvale (#104071),
+   Sea Fantasy (#1A9597), Metal Spark (#EEFF99),
+   Pale Grey (#FDFDFE), Maui Mist (#EEF2F3)
+══════════════════════════════════════════ */
 :root {
-  /* EVO Palette — Hadopelagic */
-  --bg: #000022;
-  --bg-secondary: #080830;
-  --surface: rgba(16, 64, 113, 0.25);
-  --surface-strong: rgba(16, 64, 113, 0.45);
-  --border: rgba(26, 149, 151, 0.18);
-  --border-active: rgba(26, 149, 151, 0.5);
+  --navy:    #000022;
+  --ocean:   #104071;
+  --teal:    #1A9597;
+  --neon:    #EEFF99;
+  --white:   #FDFDFE;
+  --mist:    #EEF2F3;
+  --mist-2:  #E4E9EB;
 
-  /* Brand colors */
-  --navy: #000022;
-  --ocean: #104071;
-  --teal: #1A9597;
-  --neon: #EEFF99;       /* Metal Spark — neon accent */
-  --white: #FDFDFE;
-  --mist: #EEF2F3;       /* Maui Mist — off-white bg for light */
-
-  /* Semantic */
-  --foreground: #FDFDFE;
-  --foreground-muted: rgba(238, 242, 243, 0.45);
-  --foreground-subtle: rgba(238, 242, 243, 0.25);
-  --primary: #1A9597;
-  --primary-glow: rgba(26, 149, 151, 0.35);
-  --accent: #EEFF99;
-  --accent-glow: rgba(238, 255, 153, 0.3);
-
-  --radius: 1.25rem;
+  /* Dark mode (default — app is dark-first) */
+  --bg:           #000022;
+  --bg-card:      rgba(16, 64, 113, 0.30);
+  --bg-card-2:    rgba(16, 64, 113, 0.15);
+  --fg:           #FDFDFE;
+  --fg-muted:     rgba(238, 242, 243, 0.50);
+  --fg-subtle:    rgba(238, 242, 243, 0.25);
+  --primary:      #1A9597;
+  --primary-dim:  rgba(26, 149, 151, 0.15);
+  --accent:       #EEFF99;
+  --border-c:     rgba(238, 242, 243, 0.07);
+  --shadow-card:  0 2px 20px rgba(0, 0, 10, 0.45);
+  --radius:       1.25rem;
 }
 
-/* Light mode — sistema */
+/* Light mode — follow system */
 @media (prefers-color-scheme: light) {
   :root {
-    --bg: #EEF2F3;
-    --bg-secondary: #E4E9EB;
-    --surface: rgba(255, 255, 255, 0.72);
-    --surface-strong: rgba(255, 255, 255, 0.9);
-    --border: rgba(16, 64, 113, 0.1);
-    --border-active: rgba(26, 149, 151, 0.4);
-    --foreground: #000022;
-    --foreground-muted: rgba(0, 0, 34, 0.5);
-    --foreground-subtle: rgba(0, 0, 34, 0.25);
-    --primary: #1A9597;
-    --primary-glow: rgba(26, 149, 151, 0.2);
-    --accent: #104071;
-    --accent-glow: rgba(16, 64, 113, 0.15);
+    --bg:           #EEF2F3;
+    --bg-card:      rgba(255, 255, 255, 0.90);
+    --bg-card-2:    rgba(238, 242, 243, 0.80);
+    --fg:           #000022;
+    --fg-muted:     rgba(0, 0, 34, 0.48);
+    --fg-subtle:    rgba(0, 0, 34, 0.22);
+    --primary:      #1A9597;
+    --primary-dim:  rgba(26, 149, 151, 0.12);
+    --accent:       #104071;
+    --border-c:     rgba(0, 0, 34, 0.07);
+    --shadow-card:  0 2px 12px rgba(0, 0, 34, 0.07), 0 1px 3px rgba(0, 0, 34, 0.04);
   }
 }
 
+/* ══════════════════════════════════════════
+   BASE
+══════════════════════════════════════════ */
 @layer base {
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'DM Sans', 'Inter', system-ui, sans-serif;
     background: var(--bg);
-    color: var(--foreground);
+    color: var(--fg);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     overscroll-behavior: none;
-    scroll-behavior: smooth;
   }
   body { min-height: 100dvh; overscroll-behavior: none; }
-  input, button, textarea { font-family: inherit; }
+  input, button, textarea, select { font-family: inherit; }
   ::-webkit-scrollbar { width: 0; height: 0; }
 }
 
-/* ── GRADIENT MESH BACKGROUND ── */
-@keyframes orb1 {
-  0%,100% { transform: translate(0,0) scale(1); }
-  33%      { transform: translate(6vw,-10vh) scale(1.12); }
-  66%      { transform: translate(-4vw,7vh) scale(0.92); }
-}
-@keyframes orb2 {
-  0%,100% { transform: translate(0,0) scale(1); }
-  40%      { transform: translate(-8vw,5vh) scale(1.18); }
-  75%      { transform: translate(10vw,-7vh) scale(0.88); }
-}
-@keyframes orb3 {
-  0%,100% { transform: translate(0,0) scale(1); }
-  50%      { transform: translate(4vw,9vh) scale(1.08); }
-}
-@keyframes orb-pulse {
-  0%,100% { opacity: .55; }
-  50%      { opacity: .9; }
-}
+/* ══════════════════════════════════════════
+   MOTION GRADIENT — paleta Hadopelagic
+   Navy → Ocean → Teal → Neon (pontual)
+   Ondas lentas, fluidas como óleo
+══════════════════════════════════════════ */
 
-.mesh-bg {
+/* Base fixo da tela */
+.motion-bg {
   position: fixed; inset: 0; z-index: 0;
   pointer-events: none; overflow: hidden;
+  background: #000022;
 }
-.mesh-orb {
-  position: absolute; border-radius: 50%;
-  filter: blur(90px); mix-blend-mode: screen;
-}
-.orb-1 {
-  width: 60vw; height: 60vw;
-  top: -10%; left: -10%;
-  background: radial-gradient(circle, rgba(0,60,180,0.5) 0%, transparent 70%);
-  animation: orb1 20s ease-in-out infinite, orb-pulse 9s ease-in-out infinite;
-}
-.orb-2 {
-  width: 55vw; height: 55vw;
-  bottom: 5%; right: -15%;
-  background: radial-gradient(circle, rgba(200,50,30,0.38) 0%, transparent 70%);
-  animation: orb2 26s ease-in-out infinite, orb-pulse 11s ease-in-out infinite 2s;
-}
-.orb-3 {
-  width: 65vw; height: 65vw;
-  bottom: -15%; left: 15%;
-  background: radial-gradient(circle, rgba(0,130,190,0.32) 0%, transparent 70%);
-  animation: orb3 18s ease-in-out infinite, orb-pulse 13s ease-in-out infinite 4s;
-}
-.orb-4 {
-  width: 30vw; height: 30vw;
-  top: 40%; left: 35%;
-  background: radial-gradient(circle, rgba(26,149,151,0.12) 0%, transparent 70%);
-  animation: orb1 32s ease-in-out infinite reverse;
-}
-/* Noise grain overlay */
-.mesh-grain {
-  position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  opacity: .4;
+@media (prefers-color-scheme: light) {
+  .motion-bg { background: #EEF2F3; }
+  .motion-bg .m-orb { display: none; }
+  .motion-grain { display: none; }
 }
 
-/* ── GLASS SURFACES ── */
+/* Animações de deriva — lentas, orgânicas */
+@keyframes drift-a {
+  0%   { transform: translate(0%, 0%)   scale(1)    rotate(0deg); }
+  20%  { transform: translate(5%, -8%)  scale(1.10) rotate(6deg); }
+  45%  { transform: translate(-4%, 6%)  scale(0.93) rotate(-4deg); }
+  70%  { transform: translate(7%, 3%)   scale(1.07) rotate(9deg); }
+  100% { transform: translate(0%, 0%)   scale(1)    rotate(0deg); }
+}
+@keyframes drift-b {
+  0%   { transform: translate(0%, 0%)   scale(1)    rotate(0deg); }
+  30%  { transform: translate(-7%, 9%)  scale(1.14) rotate(-8deg); }
+  60%  { transform: translate(9%, -5%)  scale(0.90) rotate(5deg); }
+  100% { transform: translate(0%, 0%)   scale(1)    rotate(0deg); }
+}
+@keyframes drift-c {
+  0%   { transform: translate(0%, 0%)  scale(1); }
+  50%  { transform: translate(4%, 8%)  scale(1.08); }
+  100% { transform: translate(0%, 0%)  scale(1); }
+}
+@keyframes pulse-opacity {
+  0%, 100% { opacity: var(--op-min, 0.5); }
+  50%       { opacity: var(--op-max, 0.85); }
+}
+
+.m-orb {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  filter: blur(80px);
+}
+
+/* ORB 1 — Hadopelagic Navy (#000022) profundo no topo */
+.orb-navy {
+  width: 90vw; height: 90vw;
+  top: -25%; left: -20%;
+  background: radial-gradient(ellipse at 45% 45%,
+    #0a1a60 0%,
+    #060e40 40%,
+    #000022 65%,
+    transparent 80%);
+  animation: drift-a 30s ease-in-out infinite;
+  --op-min: 0.9; --op-max: 1;
+  animation: drift-a 30s ease-in-out infinite,
+             pulse-opacity 14s ease-in-out infinite;
+  opacity: 0.95;
+}
+
+/* ORB 2 — Ashenvale Ocean (#104071) — camada média */
+.orb-ocean {
+  width: 110vw; height: 75vw;
+  top: 15%; right: -25%;
+  background: radial-gradient(ellipse at 50% 50%,
+    #104071 0%,
+    #0c3060 40%,
+    #060e40 65%,
+    transparent 80%);
+  filter: blur(70px);
+  animation: drift-b 24s ease-in-out infinite,
+             pulse-opacity 10s ease-in-out infinite 3s;
+  --op-min: 0.65; --op-max: 0.9;
+  opacity: 0.75;
+}
+
+/* ORB 3 — Sea Fantasy Teal (#1A9597) — terço inferior */
+.orb-teal {
+  width: 100vw; height: 85vw;
+  bottom: -20%; left: -10%;
+  background: radial-gradient(ellipse at 50% 55%,
+    #1A9597 0%,
+    #0e6870 35%,
+    #064055 60%,
+    transparent 78%);
+  filter: blur(90px);
+  animation: drift-c 20s ease-in-out infinite,
+             pulse-opacity 12s ease-in-out infinite 6s;
+  --op-min: 0.45; --op-max: 0.72;
+  opacity: 0.58;
+}
+
+/* ORB 4 — Metal Spark (#EEFF99) pontual — brilho sutil no centro */
+.orb-neon {
+  width: 50vw; height: 40vw;
+  top: 38%; left: 25%;
+  background: radial-gradient(ellipse at 50% 50%,
+    rgba(238, 255, 153, 0.12) 0%,
+    rgba(238, 255, 153, 0.05) 40%,
+    transparent 70%);
+  filter: blur(50px);
+  animation: drift-a 40s ease-in-out infinite reverse,
+             pulse-opacity 18s ease-in-out infinite 9s;
+  --op-min: 0.3; --op-max: 0.6;
+  opacity: 0.42;
+}
+
+/* ORB 5 — Teal mais claro para dar profundidade */
+.orb-teal-2 {
+  width: 70vw; height: 60vw;
+  top: 50%; right: -15%;
+  background: radial-gradient(ellipse at 40% 40%,
+    #127880 0%,
+    #0a4850 45%,
+    transparent 72%);
+  filter: blur(75px);
+  animation: drift-b 35s ease-in-out infinite reverse,
+             pulse-opacity 16s ease-in-out infinite 4s;
+  --op-min: 0.3; --op-max: 0.55;
+  opacity: 0.4;
+}
+
+/* Grain sutil sobre tudo */
+.motion-grain {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  opacity: 0.30;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+/* ══════════════════════════════════════════
+   GLASS / CARDS
+══════════════════════════════════════════ */
 .glass {
-  background: var(--surface);
+  background: var(--bg-card);
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-c);
   border-radius: var(--radius);
 }
 .glass-strong {
-  background: var(--surface-strong);
-  backdrop-filter: blur(36px) saturate(180%);
-  -webkit-backdrop-filter: blur(36px) saturate(180%);
-  border: 1px solid var(--border);
+  background: rgba(8, 24, 60, 0.70);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(26, 149, 151, 0.18);
   border-radius: var(--radius);
 }
-
-/* ── LIQUID GLASS NAV ── */
-.liquid-nav {
-  background: rgba(0, 0, 34, 0.55);
-  backdrop-filter: blur(48px) saturate(200%) brightness(1.1);
-  -webkit-backdrop-filter: blur(48px) saturate(200%) brightness(1.1);
-  border-top: 1px solid rgba(26,149,151,0.15);
-  box-shadow: 0 -1px 0 rgba(238,255,153,0.04), inset 0 1px 0 rgba(255,255,255,0.04);
-}
 @media (prefers-color-scheme: light) {
-  .liquid-nav {
-    background: rgba(238, 242, 243, 0.72);
-    border-top: 1px solid rgba(16,64,113,0.1);
-    box-shadow: 0 -1px 0 rgba(26,149,151,0.08);
+  .glass {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 34, 0.07);
+    box-shadow: 0 2px 12px rgba(0, 0, 34, 0.06);
+  }
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid rgba(0, 0, 34, 0.08);
+    box-shadow: 0 4px 24px rgba(0, 0, 34, 0.08);
   }
 }
 
-/* ── WHOOP-STYLE ARC ── */
-@keyframes arc-in {
-  from { stroke-dashoffset: var(--arc-len, 502); }
+/* ══════════════════════════════════════════
+   LIQUID GLASS NAV
+══════════════════════════════════════════ */
+.liquid-nav {
+  background: rgba(0, 0, 28, 0.75);
+  backdrop-filter: blur(48px) saturate(200%);
+  -webkit-backdrop-filter: blur(48px) saturate(200%);
+  border-top: 1px solid rgba(26, 149, 151, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
-.arc-animate { animation: arc-in 1.4s cubic-bezier(.4,0,.2,1) forwards; }
-
-/* ── NEON GLOW ── */
-.neon-glow {
-  filter: drop-shadow(0 0 8px var(--accent)) drop-shadow(0 0 20px var(--accent-glow));
-}
-.teal-glow {
-  filter: drop-shadow(0 0 6px var(--primary)) drop-shadow(0 0 16px var(--primary-glow));
-}
-
-/* ── TEXT GRADIENT ── */
-.text-neon {
-  background: linear-gradient(135deg, #EEFF99 0%, #c8f56a 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.text-ocean {
-  background: linear-gradient(135deg, #1A9597 0%, #104071 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
+@media (prefers-color-scheme: light) {
+  .liquid-nav {
+    background: rgba(238, 242, 243, 0.85);
+    backdrop-filter: blur(48px) saturate(180%);
+    -webkit-backdrop-filter: blur(48px) saturate(180%);
+    border-top: 1px solid rgba(16, 64, 113, 0.09);
+    box-shadow: 0 -1px 0 rgba(26, 149, 151, 0.06);
+  }
 }
 
-/* ── INSIGHT PULSE ── */
-@keyframes ip {
-  0%,100% { box-shadow: 0 0 0 0 rgba(26,149,151,0); }
-  50%      { box-shadow: 0 0 0 8px rgba(26,149,151,0.07); }
+/* ══════════════════════════════════════════
+   HERO CARD GRADIENT
+   (o card principal do dashboard tem cor sólida)
+══════════════════════════════════════════ */
+.hero-gradient {
+  background: linear-gradient(145deg,
+    #0e3868 0%,
+    #104071 30%,
+    #1A9597 75%,
+    #148890 100%);
 }
-.insight-pulse { animation: ip 3.5s ease-in-out infinite; }
+@media (prefers-color-scheme: light) {
+  .hero-gradient {
+    background: linear-gradient(145deg,
+      #104071 0%,
+      #1A9597 60%,
+      #1cc8cb 100%);
+  }
+}
 
-/* ── EVO BREATHE (loading) ── */
+/* ══════════════════════════════════════════
+   ASK FLOATING PILL
+══════════════════════════════════════════ */
+.ask-pill {
+  background: rgba(8, 12, 36, 0.78);
+  backdrop-filter: blur(32px) saturate(160%);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow:
+    0 4px 28px rgba(0, 0, 0, 0.40),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+@media (prefers-color-scheme: light) {
+  .ask-pill {
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid rgba(0, 0, 34, 0.10);
+    box-shadow: 0 4px 20px rgba(0, 0, 34, 0.14), 0 1px 0 #fff inset;
+  }
+}
+
+/* ══════════════════════════════════════════
+   GLOW
+══════════════════════════════════════════ */
+.glow-teal { filter: drop-shadow(0 0 7px #1A9597) drop-shadow(0 0 20px rgba(26,149,151,0.45)); }
+.glow-neon { filter: drop-shadow(0 0 8px #EEFF99) drop-shadow(0 0 24px rgba(238,255,153,0.42)); }
+.glow-box-teal { box-shadow: 0 0 0 1px rgba(26,149,151,0.35), 0 0 20px rgba(26,149,151,0.25); }
+
+/* ══════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════ */
 @keyframes breathe {
-  0%,100% { transform: scale(1); opacity: .9; }
-  50%      { transform: scale(1.07); opacity: 1; }
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50%       { transform: scale(1.06); opacity: 1; }
 }
-.evo-breathe { animation: breathe 2s ease-in-out infinite; }
+.evo-breathe { animation: breathe 2.2s ease-in-out infinite; }
 
-/* ── ACTIVE PRESS ── */
-.press { transition: transform .18s cubic-bezier(.4,0,.2,1); }
-.press:active { transform: scale(0.97); }
+@keyframes insight-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26,149,151,0); }
+  50%       { box-shadow: 0 0 0 8px rgba(26,149,151,0.07); }
+}
+.insight-pulse { animation: insight-pulse 3.5s ease-in-out infinite; }
 
-/* ── SAFE AREAS ── */
-.pt-safe { padding-top: max(env(safe-area-inset-top), 12px); }
+.press { transition: transform 0.17s cubic-bezier(0.4, 0, 0.2, 1); }
+.press:active { transform: scale(0.96); }
+
+/* ══════════════════════════════════════════
+   SAFE AREAS
+══════════════════════════════════════════ */
+.pt-safe { padding-top: max(env(safe-area-inset-top), 14px); }
 .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 16px); }
-
-/* ── SHIMMER SKELETON ── */
-@keyframes shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position:  200% 0; }
-}
-.shimmer {
-  background: linear-gradient(90deg, transparent, rgba(238,255,153,0.06), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 2.2s ease-in-out infinite;
-}
