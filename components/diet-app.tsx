@@ -21,7 +21,6 @@ import { RecipeList } from "@/components/recipe-list"
 import { Finance } from "@/components/finance"
 import { Dashboard } from "@/components/dashboard"
 
-// Storage keys
 const KEYS = {
   checked: "evo_checked",
   shopChecked: "evo_shop",
@@ -32,23 +31,14 @@ const KEYS = {
 }
 
 export function DietApp() {
-  // Tab state
   const [activeTab, setActiveTab] = useState<TabId>("dashboard")
-
-  // Day selection
   const [selectedDay, setSelectedDay] = useState(getTodayIdx())
-
-  // Checked items
   const [checked, setChecked] = useState<Record<string, boolean>>({})
   const [shopChecked, setShopChecked] = useState<Record<string, boolean>>({})
-
-  // Data
   const [purchases, setPurchases] = useState<Purchase[]>([])
   const [weights, setWeights] = useState<WeightEntry[]>([])
   const [evals, setEvals] = useState<Record<string, DayEval>>({})
   const [budget, setBudget] = useState(300)
-
-  // Hydration
   const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
@@ -61,105 +51,61 @@ export function DietApp() {
     setIsHydrated(true)
   }, [])
 
-  // Save effects
-  useEffect(() => {
-    if (isHydrated) save(KEYS.checked, checked)
-  }, [checked, isHydrated])
+  useEffect(() => { if (isHydrated) save(KEYS.checked, checked) }, [checked, isHydrated])
+  useEffect(() => { if (isHydrated) save(KEYS.shopChecked, shopChecked) }, [shopChecked, isHydrated])
+  useEffect(() => { if (isHydrated) save(KEYS.purchases, purchases) }, [purchases, isHydrated])
+  useEffect(() => { if (isHydrated) save(KEYS.weights, weights) }, [weights, isHydrated])
+  useEffect(() => { if (isHydrated) save(KEYS.evals, evals) }, [evals, isHydrated])
+  useEffect(() => { if (isHydrated) save(KEYS.finMeta, budget) }, [budget, isHydrated])
 
-  useEffect(() => {
-    if (isHydrated) save(KEYS.shopChecked, shopChecked)
-  }, [shopChecked, isHydrated])
+  const toggleChecked = (key: string) => setChecked(prev => ({ ...prev, [key]: !prev[key] }))
+  const toggleShopChecked = (key: string) => setShopChecked(prev => ({ ...prev, [key]: !prev[key] }))
+  const clearShopChecked = () => setShopChecked({})
+  const addPurchase = (purchase: Purchase) => setPurchases(prev => [...prev, purchase])
+  const removePurchase = (id: string) => setPurchases(prev => prev.filter(p => p.id !== id))
 
-  useEffect(() => {
-    if (isHydrated) save(KEYS.purchases, purchases)
-  }, [purchases, isHydrated])
-
-  useEffect(() => {
-    if (isHydrated) save(KEYS.weights, weights)
-  }, [weights, isHydrated])
-
-  useEffect(() => {
-    if (isHydrated) save(KEYS.evals, evals)
-  }, [evals, isHydrated])
-
-  useEffect(() => {
-    if (isHydrated) save(KEYS.finMeta, budget)
-  }, [budget, isHydrated])
-
-  // Handlers
-  const toggleChecked = (key: string) => {
-    setChecked((prev) => ({ ...prev, [key]: !prev[key] }))
-  }
-
-  const toggleShopChecked = (key: string) => {
-    setShopChecked((prev) => ({ ...prev, [key]: !prev[key] }))
-  }
-
-  const clearShopChecked = () => {
-    setShopChecked({})
-  }
-
-  const addPurchase = (purchase: Purchase) => {
-    setPurchases((prev) => [...prev, purchase])
-  }
-
-  const removePurchase = (id: string) => {
-    setPurchases((prev) => prev.filter((p) => p.id !== id))
-  }
-
-  // Current day data
   const currentDay = DAYS[selectedDay]
   const dayProgress = getDayProgressReal(currentDay, checked)
 
-  // Get header title based on tab
   const getTitle = () => {
     switch (activeTab) {
-      case "dashboard":
-        return "EVO"
-      case "dieta":
-        return currentDay
-      case "compras":
-        return "Lista de Compras"
-      case "receitas":
-        return "Receitas"
-      case "financeiro":
-        return "Controle de Gastos"
-      default:
-        return "EVO"
+      case "dashboard": return "EVO"
+      case "dieta": return currentDay
+      case "compras": return "Compras"
+      case "receitas": return "Receitas"
+      case "financeiro": return "Gastos"
+      default: return "EVO"
     }
   }
 
-  // Get subtitle based on tab
   const getSubtitle = () => {
     switch (activeTab) {
-      case "dashboard":
-        return "Evolua seu corpo"
-      case "dieta":
-        return "Plano Alimentar"
-      case "compras":
-        return "Mercado"
-      case "receitas":
-        return "Cookbook"
-      case "financeiro":
-        return "Financeiro"
-      default:
-        return "EVO"
+      case "dashboard": return "Evolua seu corpo"
+      case "dieta": return "Plano Alimentar"
+      case "compras": return "Lista da Semana"
+      case "receitas": return "Cozinha Real"
+      case "financeiro": return "Controle"
+      default: return ""
     }
   }
 
   if (!isHydrated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-center">
+      <div className="fixed inset-0 flex items-center justify-center bg-background">
+        {/* Gradient mesh on loading screen */}
+        <div className="gradient-mesh">
+          <div className="mesh-orb mesh-orb-1" />
+          <div className="mesh-orb mesh-orb-2" />
+          <div className="mesh-orb mesh-orb-3" />
+        </div>
+        <div className="relative z-10 text-center">
           <motion.div
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="text-5xl font-black text-gradient"
+            className="evo-breathe text-6xl font-black text-gradient tracking-tight"
           >
             EVO
           </motion.div>
-          <div className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            Carregando...
+          <div className="mt-3 font-mono text-[9px] uppercase tracking-[4px] text-muted-foreground">
+            Carregando
           </div>
         </div>
       </div>
@@ -167,7 +113,15 @@ export function DietApp() {
   }
 
   return (
-    <div className="mx-auto min-h-screen max-w-md bg-background pb-24">
+    <div className="relative mx-auto min-h-screen max-w-md bg-background pb-24">
+      {/* Animated gradient mesh background */}
+      <div className="gradient-mesh">
+        <div className="mesh-orb mesh-orb-1" />
+        <div className="mesh-orb mesh-orb-2" />
+        <div className="mesh-orb mesh-orb-3" />
+        <div className="mesh-orb mesh-orb-4" />
+      </div>
+
       <Header
         title={getTitle()}
         subtitle={getSubtitle()}
@@ -175,70 +129,54 @@ export function DietApp() {
         showBrand={activeTab === "dashboard"}
       />
 
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         <AnimatePresence mode="wait">
           {activeTab === "dashboard" && (
             <motion.div
               key="dashboard"
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, x: 16 }}
+              transition={{ duration: 0.22 }}
               className="pt-4"
             >
-              <Dashboard
-                checked={checked}
-                weights={weights}
-                evals={evals}
-              />
+              <Dashboard checked={checked} weights={weights} evals={evals} />
             </motion.div>
           )}
 
           {activeTab === "dieta" && (
             <motion.div
               key="dieta"
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, x: 16 }}
+              transition={{ duration: 0.22 }}
             >
-              <DayPicker
-                selectedDay={selectedDay}
-                onDayChange={setSelectedDay}
-                checked={checked}
-              />
-              <MealList
-                dayName={currentDay}
-                checked={checked}
-                onToggle={toggleChecked}
-              />
+              <DayPicker selectedDay={selectedDay} onDayChange={setSelectedDay} checked={checked} />
+              <MealList dayName={currentDay} checked={checked} onToggle={toggleChecked} />
             </motion.div>
           )}
 
           {activeTab === "compras" && (
             <motion.div
               key="compras"
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, x: 16 }}
+              transition={{ duration: 0.22 }}
               className="pt-4"
             >
-              <ShoppingList
-                shopChecked={shopChecked}
-                onToggle={toggleShopChecked}
-                onClear={clearShopChecked}
-              />
+              <ShoppingList shopChecked={shopChecked} onToggle={toggleShopChecked} onClear={clearShopChecked} />
             </motion.div>
           )}
 
           {activeTab === "receitas" && (
             <motion.div
               key="receitas"
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, x: 16 }}
+              transition={{ duration: 0.22 }}
               className="pt-4"
             >
               <RecipeList />
@@ -248,10 +186,10 @@ export function DietApp() {
           {activeTab === "financeiro" && (
             <motion.div
               key="financeiro"
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, x: 16 }}
+              transition={{ duration: 0.22 }}
               className="pt-4"
             >
               <Finance
