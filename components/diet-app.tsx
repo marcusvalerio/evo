@@ -74,9 +74,12 @@ export function DietApp() {
   if (!hydrated) {
     return (
       <div className="fixed inset-0 flex items-center justify-center" style={{ background: "#000022" }}>
-        <div className="mesh-bg">
-          <div className="mesh-orb orb-1"/><div className="mesh-orb orb-2"/>
-          <div className="mesh-orb orb-3"/><div className="mesh-orb orb-4"/>
+        <div className="motion-bg">
+          <div className="m-orb orb-navy"/>
+          <div className="m-orb orb-ocean"/>
+          <div className="m-orb orb-teal"/>
+          <div className="m-orb orb-neon"/>
+          <div className="m-orb orb-teal-2"/>
         </div>
         <div className="mesh-grain"/>
         <div className="relative z-10 text-center">
@@ -94,9 +97,14 @@ export function DietApp() {
   return (
     <div className="relative mx-auto min-h-dvh" style={{ maxWidth: 480, background: "transparent" }}>
       {/* Mesh */}
-      <div className="mesh-bg"><div className="mesh-orb orb-1"/><div className="mesh-orb orb-2"/>
-        <div className="mesh-orb orb-3"/><div className="mesh-orb orb-4"/></div>
-      <div className="mesh-grain"/>
+      <div className="motion-bg">
+        <div className="m-orb orb-navy"/>
+        <div className="m-orb orb-ocean"/>
+        <div className="m-orb orb-teal"/>
+        <div className="m-orb orb-neon"/>
+        <div className="m-orb orb-teal-2"/>
+      </div>
+      <div className="motion-grain"/>
 
       {/* Header */}
       <header className="sticky top-0 z-40 pt-safe"
