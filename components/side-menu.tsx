@@ -1,16 +1,16 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion"
-import { X, ShoppingCart, BookOpen, Wallet, Settings, User, ChevronRight, LogOut } from "lucide-react"
 
-export type MenuTabId = "compras" | "receitas" | "gastos" | "perfil" | "config"
+export type MenuTabId = "compras" | "receitas" | "gastos" | "extrato" | "perfil" | "config"
 
-const ITEMS = [
-  { id: "compras" as MenuTabId,  Icon: ShoppingCart, label: "Lista de Compras", sub: "Semana organizada" },
-  { id: "receitas" as MenuTabId, Icon: BookOpen,      label: "Receitas",          sub: "Cozinha real" },
-  { id: "gastos" as MenuTabId,   Icon: Wallet,        label: "Controle de Gastos", sub: "Alimentacao" },
-  { id: "perfil" as MenuTabId,   Icon: User,          label: "Perfil",            sub: "Seus dados" },
-  { id: "config" as MenuTabId,   Icon: Settings,      label: "Configuracoes",     sub: "Preferencias" },
+const ITEMS: { id: MenuTabId; label: string; sub: string }[] = [
+  { id: "extrato",  label: "Extrato",          sub: "Telemetria de aderência" },
+  { id: "compras",  label: "Lista de Compras",  sub: "Semana" },
+  { id: "receitas", label: "Receitas",           sub: "Cozinha real" },
+  { id: "gastos",   label: "Gastos",             sub: "Alimentação" },
+  { id: "perfil",   label: "Perfil",             sub: "Dados" },
+  { id: "config",   label: "Config",             sub: "Sistema" },
 ]
 
 interface Props {
@@ -25,84 +25,84 @@ export function SideMenu({ open, onClose, onSelect, userName }: Props) {
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[60]"
-            style={{ background: "rgba(0,0,20,0.7)", backdropFilter: "blur(8px)" }}
-          />
-          {/* Panel */}
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", stiffness: 340, damping: 32 }}
-            className="fixed right-0 top-0 bottom-0 z-[70] w-80 flex flex-col"
             style={{
-              background: "rgba(4, 4, 40, 0.96)",
-              backdropFilter: "blur(40px)",
-              borderLeft: "1px solid rgba(26,149,151,0.2)",
-            }}
-          >
+              position: 'fixed', inset: 0, zIndex: 60,
+              background: 'rgba(0,0,0,0.85)',
+            }}/>
+          <motion.div
+            initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+            transition={{ type: 'tween', duration: 0.22, ease: [.4,0,.2,1] }}
+            style={{
+              position: 'fixed', right: 0, top: 0, bottom: 0,
+              zIndex: 70, width: 260,
+              background: '#000000',
+              borderLeft: '1px solid #222',
+              display: 'flex', flexDirection: 'column',
+            }}>
             {/* Header */}
-            <div className="pt-safe px-6 pb-6 border-b border-white/5">
-              <div className="flex items-center justify-between mb-6">
-                <span className="font-mono text-[9px] uppercase tracking-[3px] text-white/30">EVO</span>
-                <button
-                  onClick={onClose}
-                  className="press flex h-9 w-9 items-center justify-center rounded-full"
-                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
-                >
-                  <X size={16} className="text-white/50" />
-                </button>
+            <div className="pt-safe" style={{
+              padding: '14px 16px', borderBottom: '1px solid #222',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            }}>
+              <div>
+                <div style={{
+                  fontFamily: 'var(--f-logo)', fontSize: '1rem',
+                  letterSpacing: '0.14em', color: '#fff',
+                }}>EVO</div>
+                {userName && (
+                  <div style={{
+                    fontFamily: 'var(--f-body)', fontSize: '0.6rem',
+                    fontWeight: 300, color: 'rgba(255,255,255,0.3)',
+                    textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 3,
+                  }}>{userName}</div>
+                )}
               </div>
-              {userName && (
-                <div>
-                  <div className="text-xl font-black text-white tracking-tight">Oi, {userName}</div>
-                  <div className="font-mono text-[10px] text-white/35 mt-0.5 uppercase tracking-wider">Bem-vindo de volta</div>
-                </div>
-              )}
+              <button onClick={onClose} className="press btn-ghost"
+                style={{ padding: '7px 11px', fontSize: '0.6rem' }}>
+                ✕
+              </button>
             </div>
 
             {/* Items */}
-            <div className="flex-1 px-4 py-4 space-y-1.5 overflow-y-auto">
-              {ITEMS.map(({ id, Icon, label, sub }) => (
-                <button
-                  key={id}
-                  onClick={() => { onSelect(id); onClose(); }}
-                  className="press w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all group"
+            <div style={{ flex: 1, overflowY: 'auto' }}>
+              {ITEMS.map((item, i) => (
+                <button key={item.id}
+                  onClick={() => { onSelect(item.id); onClose() }}
+                  className="press"
                   style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.05)",
-                  }}
-                >
-                  <div
-                    className="flex h-10 w-10 items-center justify-center rounded-xl flex-shrink-0"
-                    style={{ background: "rgba(26,149,151,0.12)", border: "1px solid rgba(26,149,151,0.2)" }}
-                  >
-                    <Icon size={18} style={{ color: "#1A9597" }} />
+                    width: '100%', textAlign: 'left',
+                    padding: '14px 16px',
+                    background: 'transparent', border: 'none',
+                    borderBottom: '1px solid #111',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  }}>
+                  <div>
+                    <div style={{
+                      fontFamily: 'var(--f-head)',
+                      fontSize: '0.72rem', textTransform: 'uppercase',
+                      letterSpacing: '0.12em', color: '#fff',
+                    }}>{item.label}</div>
+                    <div style={{
+                      fontFamily: 'var(--f-body)', fontSize: '0.55rem',
+                      fontWeight: 300, color: 'rgba(255,255,255,0.25)',
+                      textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: 3,
+                    }}>{item.sub}</div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm text-white/85">{label}</div>
-                    <div className="font-mono text-[9px] text-white/30 uppercase tracking-wider mt-0.5">{sub}</div>
-                  </div>
-                  <ChevronRight size={14} className="text-white/20 flex-shrink-0" />
+                  <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem' }}>→</span>
                 </button>
               ))}
             </div>
 
             {/* Footer */}
-            <div className="px-4 pb-safe pb-4 border-t border-white/5 pt-4">
-              <button
-                className="press w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left"
-                style={{ background: "rgba(240,80,80,0.08)", border: "1px solid rgba(240,80,80,0.15)" }}
-              >
-                <LogOut size={16} style={{ color: "rgba(240,80,80,0.8)" }} />
-                <span className="text-sm font-medium" style={{ color: "rgba(240,80,80,0.8)" }}>Sair</span>
-              </button>
+            <div style={{ padding: '12px 16px', borderTop: '1px solid #222' }} className="pb-safe">
+              <div style={{
+                fontFamily: 'var(--f-body)', fontSize: '0.52rem',
+                fontWeight: 300, color: 'rgba(255,255,255,0.15)',
+                textTransform: 'uppercase', letterSpacing: '0.14em',
+              }}>evo-weld.vercel.app</div>
             </div>
           </motion.div>
         </>
