@@ -2,19 +2,17 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Send, ChevronRight, Sparkles, Brain, UtensilsCrossed, ShoppingBag, Dumbbell } from "lucide-react"
+import { X, ArrowRight, Utensils, ShoppingBag, Dumbbell, Brain } from "lucide-react"
 import { WeightEntry, DayEval, fmtDate, calcStreak, getDayProgressReal } from "@/lib/helpers"
-import { DAYS, DayName } from "@/lib/data"
+import { DAYS } from "@/lib/data"
 
 interface Msg { role: "user" | "assistant"; content: string }
 
-
-
 const QUICK = [
-  { icon: UtensilsCrossed, label: "Montar minha dieta base", q: "Me ajuda a montar uma dieta base personalizada pra mim, com base na piramide alimentar brasileira. Foca em comida real." },
-  { icon: ShoppingBag,     label: "Gerar lista de compras", q: "Com base na minha dieta, gera uma lista de compras objetiva pra semana, por categoria." },
-  { icon: Dumbbell,        label: "Sugestao pre-treino",    q: "O que comer antes do treino? Quero algo pratico com comida real." },
-  { icon: Brain,           label: "Como evoluir mais",      q: "Como posso melhorar minha evolucao fisica com base no meu progresso atual?" },
+  { Icon: Utensils,    label: "Montar dieta base",       q: "Me ajuda a montar uma dieta base personalizada com base na pirâmide alimentar brasileira. Foco em comida real." },
+  { Icon: ShoppingBag, label: "Lista de compras",         q: "Gera uma lista de compras objetiva para a semana, por categoria, baseada na dieta." },
+  { Icon: Dumbbell,    label: "Pré-treino",               q: "O que comer antes do treino? Algo prático com comida real." },
+  { Icon: Brain,       label: "Como evoluir mais",        q: "Como posso melhorar minha evolução física com base no meu progresso atual?" },
 ]
 
 interface Props {
@@ -37,21 +35,13 @@ export function IAModal({ onClose, weights, evals, checked, userName, userGoal }
   const lastW = [...weights].sort((a,b) => b.date.localeCompare(a.date))[0]
   const recentEv = Object.entries(evals).sort(([a],[b]) => b.localeCompare(a)).slice(0,3)
 
-  const system = `Voce e o EVO Coach — coach de evolucao fisica e alimentar do app EVO.
+  const system = `Você é o EVO Coach — coach de evolução física e alimentar direto ao ponto.
 
-Filosofia: comida real, pirâmide alimentar brasileira, sem industrializados. Suplementacao apenas se mencionada pelo usuario (creatina e whey sao ok como excecao). Nao substitui medico nem nutricionista — mencione isso quando relevante, sem exagerar.
+Filosofia: comida real, pirâmide alimentar brasileira, sem industrializados. Suplementação só se o usuário mencionar (creatina e whey são ok). Não substitui médico ou nutricionista — mencione uma vez se relevante, sem repetir.
 
-Perfil do usuario:
-- Nome: ${userName || "nao informado"}
-- Objetivo: ${userGoal || "nao informado"}
-- Peso recente: ${lastW ? `${lastW.val}kg` : "nao registrado"}
-- Streak: ${streak} dias
-- Progresso hoje: ${pct}%
-- Avaliacoes recentes: ${recentEv.length > 0 ? recentEv.map(([d,e]) => `${fmtDate(d)}: humor ${e.humor}, energia ${e.energia}`).join(" | ") : "sem avaliacao"}
+Perfil: Nome: ${userName||'não informado'} / Objetivo: ${userGoal||'não informado'} / Peso: ${lastW?`${lastW.val}kg`:'não registrado'} / Streak: ${streak} dias / Hoje: ${pct}%${recentEv.length>0?' / '+recentEv.map(([d,e])=>`${fmtDate(d)}: humor ${e.humor}`).join(', '):''}
 
-Tom: direto, humano, como um coach de verdade. Sem enrolacao, sem frases feitas de app. Maximo 3 paragrafos curtos. Sem listas longas. Sem asteriscos. Sem markdown.
-
-Se pedir dieta base: use a pirâmide alimentar brasileira (cereais, vegetais, frutas, leguminosas, laticinios, carnes, oleos). Avise que e sugestao e recomende acompanhamento com nutricionista.`
+Responda de forma direta e técnica. Máximo 3 parágrafos curtos. Sem listas longas. Sem asteriscos. Sem markdown. Tom: coach experiente, não app motivacional.`
 
   async function send(text: string) {
     if (!text.trim() || loading) return
@@ -71,9 +61,12 @@ Se pedir dieta base: use a pirâmide alimentar brasileira (cereais, vegetais, fr
         }),
       })
       const data = await res.json()
-      setMsgs(prev => [...prev, { role: "assistant", content: data.content?.[0]?.text || "Nao consegui responder agora." }])
+      setMsgs(prev => [...prev, {
+        role: "assistant",
+        content: data.content?.[0]?.text || data.error || "Erro na resposta."
+      }])
     } catch {
-      setMsgs(prev => [...prev, { role: "assistant", content: "Erro de conexao. Tenta de novo." }])
+      setMsgs(prev => [...prev, { role: "assistant", content: "Erro de conexão." }])
     } finally {
       setLoading(false)
     }
@@ -81,56 +74,60 @@ Se pedir dieta base: use a pirâmide alimentar brasileira (cereais, vegetais, fr
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[80] flex flex-col"
-      style={{ background: "rgba(0,0,20,0.97)", backdropFilter: "blur(40px)" }}
-    >
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 80,
+        background: '#000000', display: 'flex', flexDirection: 'column',
+      }}>
+
       {/* Header */}
-      <div className="pt-safe flex items-center justify-between px-5 py-4"
-        style={{ borderBottom: "1px solid rgba(26,149,151,.15)" }}>
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl"
-            style={{ background: "rgba(26,149,151,.12)", border: "1px solid rgba(26,149,151,.25)",
-              boxShadow: "0 0 20px rgba(26,149,151,.15)" }}>
-            <Sparkles size={18} style={{ color: "#1A9597", filter: "drop-shadow(0 0 6px #1A9597)" }}/>
-          </div>
-          <div>
-            <div className="font-mono text-[8px] uppercase tracking-[3px]"
-              style={{ color: "rgba(238,242,243,.35)" }}>EVO</div>
-            <div className="text-base font-black tracking-tight" style={{ color: "#FDFDFE" }}>Coach IA</div>
-          </div>
+      <div className="pt-safe" style={{
+        padding: '14px 16px',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        flexShrink: 0,
+      }}>
+        <div>
+          <div className="label" style={{ marginBottom: 2 }}>EVO IA</div>
+          <h2 style={{ fontFamily: 'var(--f-title)', fontSize: '1.1rem',
+            textTransform: 'uppercase', letterSpacing: '0.07em', color: '#FFFFFF' }}>
+            Coach
+          </h2>
         </div>
-        <button onClick={onClose}
-          className="press flex h-9 w-9 items-center justify-center rounded-full"
-          style={{ background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.08)" }}>
-          <X size={16} style={{ color: "rgba(238,242,243,.5)" }}/>
+        <button onClick={onClose} className="btn-ghost press" style={{ padding: '8px 12px' }}>
+          <X size={14}/>
         </button>
       </div>
 
-      {/* Body */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+      {/* Messages */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
         {msgs.length === 0 && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
-            <div className="glass rounded-3xl p-5">
-              <p className="text-sm leading-relaxed" style={{ color: "rgba(238,242,243,.65)" }}>
-                {streak > 0
-                  ? `${streak} dias no streak. Tô aqui pra te ajudar a evoluir.`
-                  : "Pronto pra te ajudar. O que você quer saber?"}
-              </p>
-              <p className="text-xs mt-2 leading-relaxed" style={{ color: "rgba(238,242,243,.3)" }}>
-                Lembrete: sou um auxilio inteligente, nao substituo medico ou nutricionista.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {QUICK.map(({ icon: Icon, label, q }) => (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <p style={{
+              fontFamily: 'var(--f-body)', fontSize: '0.8rem', fontWeight: 300,
+              color: 'rgba(255,255,255,0.4)', lineHeight: 1.65, marginBottom: 20,
+              borderLeft: '2px solid rgba(255,255,255,0.12)', paddingLeft: 12,
+            }}>
+              {streak > 0 ? `${streak} dias no streak. O que você quer saber?` : 'Pronto para te ajudar.'}
+            </p>
+
+            <div className="label" style={{ marginBottom: 10 }}>Perguntas rápidas</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {QUICK.map(({ Icon, label, q }) => (
                 <button key={label} onClick={() => send(q)}
-                  className="press glass rounded-2xl px-3 py-4 text-left flex flex-col gap-2 transition-all"
-                  style={{ border: "1px solid rgba(26,149,151,.15)" }}>
-                  <Icon size={16} style={{ color: "#1A9597" }}/>
-                  <span className="font-mono text-[9px] uppercase tracking-wide leading-snug"
-                    style={{ color: "rgba(238,242,243,.55)" }}>{label}</span>
+                  className="press"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '12px 14px', background: 'var(--surface)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    textAlign: 'left', cursor: 'pointer',
+                  }}>
+                  <Icon size={14} style={{ color: 'rgba(255,255,255,0.4)', flexShrink: 0 }}/>
+                  <span style={{ fontFamily: 'var(--f-body)', fontSize: '0.78rem',
+                    color: 'rgba(255,255,255,0.6)', fontWeight: 400, flex: 1 }}>
+                    {label}
+                  </span>
+                  <ArrowRight size={12} style={{ color: 'rgba(255,255,255,0.2)', flexShrink: 0 }}/>
                 </button>
               ))}
             </div>
@@ -141,13 +138,22 @@ Se pedir dieta base: use a pirâmide alimentar brasileira (cereais, vegetais, fr
           {msgs.map((m, i) => (
             <motion.div key={i}
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: .22 }}
-              className={`max-w-[88%] ${m.role === "user" ? "ml-auto" : "mr-auto"}`}>
-              <div className="rounded-2xl px-4 py-3 text-sm leading-relaxed"
-                style={m.role === "user"
-                  ? { background: "#1A9597", color: "#000022", borderRadius: "1rem 1rem 0.25rem 1rem" }
-                  : { background: "rgba(16,64,113,.4)", border: "1px solid rgba(26,149,151,.2)",
-                      color: "#FDFDFE", borderRadius: "1rem 1rem 1rem 0.25rem" }}>
+              transition={{ duration: 0.2 }}
+              style={{
+                marginBottom: 12,
+                display: 'flex',
+                justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start',
+              }}>
+              <div style={{
+                maxWidth: '86%',
+                padding: '10px 14px',
+                background: m.role === 'user' ? '#FFFFFF' : 'var(--surface)',
+                border: `1px solid ${m.role === 'user' ? 'transparent' : 'rgba(255,255,255,0.08)'}`,
+                fontFamily: 'var(--f-body)',
+                fontSize: '0.82rem', fontWeight: m.role === 'user' ? 400 : 300,
+                color: m.role === 'user' ? '#000000' : 'rgba(255,255,255,0.75)',
+                lineHeight: 1.6,
+              }}>
                 {m.content}
               </div>
             </motion.div>
@@ -155,40 +161,36 @@ Se pedir dieta base: use a pirâmide alimentar brasileira (cereais, vegetais, fr
         </AnimatePresence>
 
         {loading && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="flex gap-1.5 px-4 py-3 rounded-2xl w-fit mr-auto"
-            style={{ background: "rgba(16,64,113,.4)", border: "1px solid rgba(26,149,151,.2)" }}>
+          <div style={{
+            display: 'flex', gap: 6, padding: '10px 14px',
+            background: 'var(--surface)', border: '1px solid rgba(255,255,255,0.08)',
+            width: 'fit-content',
+          }}>
             {[0,1,2].map(i => (
-              <motion.div key={i} className="w-1.5 h-1.5 rounded-full"
-                style={{ background: "#1A9597" }}
-                animate={{ opacity: [.3,1,.3] }}
-                transition={{ duration: 1, repeat: Infinity, delay: i*.2 }}/>
+              <motion.div key={i}
+                style={{ width: 4, height: 4, background: 'rgba(255,255,255,0.4)' }}
+                animate={{ opacity: [0.3,1,0.3] }}
+                transition={{ duration: 1, repeat: Infinity, delay: i*0.22 }}/>
             ))}
-          </motion.div>
+          </div>
         )}
       </div>
 
       {/* Input */}
-      <div className="px-4 pt-3 pb-safe pb-4"
-        style={{ borderTop: "1px solid rgba(26,149,151,.12)",
-          background: "rgba(0,0,20,.8)", backdropFilter: "blur(24px)" }}>
-        <div className="flex items-center gap-3 rounded-2xl px-4 py-3"
-          style={{ background: "rgba(16,64,113,.2)", border: "1px solid rgba(26,149,151,.2)" }}>
-          <input
-            type="text" value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && send(input)}
-            placeholder="Pergunte qualquer coisa..."
-            className="flex-1 bg-transparent text-sm outline-none"
-            style={{ color: "#FDFDFE", caretColor: "#1A9597" }}
-          />
-          <button onClick={() => send(input)}
-            disabled={!input.trim() || loading}
-            className="press flex h-8 w-8 items-center justify-center rounded-xl transition-opacity disabled:opacity-30"
-            style={{ background: "#1A9597", boxShadow: "0 0 12px rgba(26,149,151,.4)" }}>
-            <Send size={14} style={{ color: "#000022" }}/>
-          </button>
-        </div>
+      <div style={{
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        padding: '12px 16px', flexShrink: 0,
+        display: 'flex', gap: 8,
+      }} className="pb-safe">
+        <input type="text" value={input} placeholder="Pergunte..."
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && send(input)}
+          className="input-brutal" style={{ flex: 1, padding: '10px 14px', fontSize: '0.85rem' }}/>
+        <button onClick={() => send(input)} disabled={!input.trim() || loading}
+          className="btn-primary press"
+          style={{ padding: '10px 16px', opacity: input.trim() && !loading ? 1 : 0.35 }}>
+          <ArrowRight size={15}/>
+        </button>
       </div>
     </motion.div>
   )
