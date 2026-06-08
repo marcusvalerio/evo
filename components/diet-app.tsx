@@ -17,70 +17,62 @@ import { Finance } from "@/components/finance"
 import { Reflexao } from "@/components/reflexao"
 import { Onboarding, OnboardingData } from "@/components/onboarding"
 
-const KEYS = {
-  onboarded:  "evo3_onboarded",
-  userData:   "evo3_user",
-  checked:    "evo3_checked",
-  shopChk:    "evo3_shop",
-  purchases:  "evo3_purchases",
-  weights:    "evo3_weights",
-  evals:      "evo3_evals",
-  budget:     "evo3_budget",
+const K = {
+  onboarded: "evo4_ob", userData: "evo4_ud",
+  checked: "evo4_ch", shopChk: "evo4_sk",
+  purchases: "evo4_pu", weights: "evo4_we",
+  evals: "evo4_ev", budget: "evo4_bu",
 }
 
-type ActiveView = TabId | MenuTabId
+type View = TabId | MenuTabId
 
 export function DietApp() {
   const [hydrated,  setHydrated]  = useState(false)
   const [onboarded, setOnboarded] = useState(false)
   const [userData,  setUserData]  = useState<OnboardingData | null>(null)
   const [tab,       setTab]       = useState<TabId>("home")
-  const [view,      setView]      = useState<ActiveView>("home")
+  const [view,      setView]      = useState<View>("home")
   const [menuOpen,  setMenuOpen]  = useState(false)
   const [showIA,    setShowIA]    = useState(false)
   const [selDay,    setSelDay]    = useState(getTodayIdx())
-  const [checked,   setChecked]   = useState<Record<string, boolean>>({})
-  const [shopChk,   setShopChk]   = useState<Record<string, boolean>>({})
+  const [checked,   setChecked]   = useState<Record<string,boolean>>({})
+  const [shopChk,   setShopChk]   = useState<Record<string,boolean>>({})
   const [purchases, setPurchases] = useState<Purchase[]>([])
   const [weights,   setWeights]   = useState<WeightEntry[]>([])
-  const [evals,     setEvals]     = useState<Record<string, DayEval>>({})
+  const [evals,     setEvals]     = useState<Record<string,DayEval>>({})
   const [budget,    setBudget]    = useState(300)
 
   useEffect(() => {
-    setOnboarded(load(KEYS.onboarded, false))
-    setUserData(load(KEYS.userData, null))
-    setChecked(load(KEYS.checked, {}))
-    setShopChk(load(KEYS.shopChk, {}))
-    setPurchases(load(KEYS.purchases, []))
-    setWeights(load(KEYS.weights, []))
-    setEvals(load(KEYS.evals, {}))
-    setBudget(load(KEYS.budget, 300))
+    setOnboarded(load(K.onboarded, false))
+    setUserData(load(K.userData, null))
+    setChecked(load(K.checked, {}))
+    setShopChk(load(K.shopChk, {}))
+    setPurchases(load(K.purchases, []))
+    setWeights(load(K.weights, []))
+    setEvals(load(K.evals, {}))
+    setBudget(load(K.budget, 300))
     setHydrated(true)
   }, [])
 
-  useEffect(() => { if (hydrated) save(KEYS.checked, checked) }, [checked, hydrated])
-  useEffect(() => { if (hydrated) save(KEYS.shopChk, shopChk) }, [shopChk, hydrated])
-  useEffect(() => { if (hydrated) save(KEYS.purchases, purchases) }, [purchases, hydrated])
-  useEffect(() => { if (hydrated) save(KEYS.weights, weights) }, [weights, hydrated])
-  useEffect(() => { if (hydrated) save(KEYS.evals, evals) }, [evals, hydrated])
-  useEffect(() => { if (hydrated) save(KEYS.budget, budget) }, [budget, hydrated])
+  useEffect(() => { if (hydrated) save(K.checked,   checked)   }, [checked,   hydrated])
+  useEffect(() => { if (hydrated) save(K.shopChk,   shopChk)   }, [shopChk,   hydrated])
+  useEffect(() => { if (hydrated) save(K.purchases, purchases) }, [purchases, hydrated])
+  useEffect(() => { if (hydrated) save(K.weights,   weights)   }, [weights,   hydrated])
+  useEffect(() => { if (hydrated) save(K.evals,     evals)     }, [evals,     hydrated])
+  useEffect(() => { if (hydrated) save(K.budget,    budget)    }, [budget,    hydrated])
 
-  function handleOnboardingComplete(data: OnboardingData) {
-    setUserData(data)
-    setOnboarded(true)
-    // Save initial weight from onboarding
+  function handleOnboard(data: OnboardingData) {
+    setUserData(data); setOnboarded(true)
     if (data.peso) {
       const d = new Date()
       const date = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
       const w = [{ date, val: parseFloat(data.peso) }]
-      setWeights(w)
-      save(KEYS.weights, w)
+      setWeights(w); save(K.weights, w)
     }
-    save(KEYS.onboarded, true)
-    save(KEYS.userData, data)
+    save(K.onboarded, true); save(K.userData, data)
   }
 
-  function handleTabChange(t: TabId) {
+  function handleTab(t: TabId) {
     if (t === "menu") { setMenuOpen(true); return }
     setTab(t); setView(t)
   }
@@ -88,140 +80,129 @@ export function DietApp() {
   const currentDay = DAYS[selDay]
   const dayPct = getDayProgressReal(currentDay, checked)
 
-  // Loading
-  if (!hydrated) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center" style={{ background: '#000022' }}>
-        <div className="motion-bg">
-          <div className="m-orb orb-navy"/><div className="m-orb orb-ocean"/>
-          <div className="m-orb orb-teal"/><div className="m-orb orb-neon"/>
-        </div>
-        <div className="motion-grain"/>
-        <div className="relative z-10 text-center">
-          <div className="evo-breathe"
-            style={{ fontFamily: 'var(--font-logo)', fontSize: '4rem', color: '#FDFDFE',
-              letterSpacing: '0.12em', textShadow: '0 0 60px rgba(26,149,151,0.5)' }}>
-            EVO
-          </div>
-        </div>
-      </div>
-    )
-  }
+  /* LOADING */
+  if (!hydrated) return (
+    <div style={{ position: 'fixed', inset: 0, background: '#000', display: 'flex',
+      alignItems: 'center', justifyContent: 'center' }}>
+      <div className="breathe" style={{ fontFamily: 'var(--f-logo)', fontSize: '3rem',
+        color: '#FFFFFF', letterSpacing: '0.18em' }}>EVO</div>
+    </div>
+  )
 
-  // Onboarding
-  if (!onboarded) {
-    return <Onboarding onComplete={handleOnboardingComplete} />
+  /* ONBOARDING */
+  if (!onboarded) return <Onboarding onComplete={handleOnboard}/>
+
+  const VIEW_TITLE: Record<string, string> = {
+    home: '', dieta: currentDay, progresso: 'Evolução',
+    reflexao: 'Reflexão', compras: 'Compras',
+    receitas: 'Receitas', gastos: 'Gastos',
+    perfil: 'Perfil', config: 'Config',
   }
 
   return (
-    <div className="relative mx-auto min-h-dvh" style={{ maxWidth: 480 }}>
-      <div className="motion-bg">
-        <div className="m-orb orb-navy"/><div className="m-orb orb-ocean"/>
-        <div className="m-orb orb-teal"/><div className="m-orb orb-neon"/>
-        <div className="m-orb orb-teal-2"/>
-      </div>
-      <div className="motion-grain"/>
+    <div style={{ maxWidth: 480, margin: '0 auto', minHeight: '100dvh',
+      background: '#000000', position: 'relative' }}>
 
-      {/* Header — minimal, just EVO logo on left */}
-      <header className="sticky top-0 z-40 pt-safe"
-        style={{
-          background: 'rgba(0,0,26,0.6)', backdropFilter: 'blur(32px)',
-          borderBottom: '1px solid rgba(255,255,255,0.05)',
-        }}>
+      {/* HEADER — linha fina, limpo */}
+      <header className="pt-safe" style={{
+        position: 'sticky', top: 0, zIndex: 40,
+        background: '#000000',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+      }}>
         <div style={{
-          padding: '12px 16px',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          padding: '10px 16px',
         }}>
-          <div style={{
-            fontFamily: 'var(--font-logo)', fontSize: '1.4rem',
-            color: 'var(--fg)', letterSpacing: '0.12em',
-          }}>
-            EVO
-          </div>
-          {/* Spacer for Ask button */}
+          <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ duration: 0.18 }}>
+            {view === 'home' ? (
+              <span style={{ fontFamily: 'var(--f-logo)', fontSize: '1.3rem',
+                letterSpacing: '0.14em', color: '#FFFFFF' }}>EVO</span>
+            ) : (
+              <span style={{ fontFamily: 'var(--f-title)', fontSize: '0.9rem',
+                textTransform: 'uppercase', letterSpacing: '0.1em',
+                color: '#FFFFFF' }}>{VIEW_TITLE[view] || view}</span>
+            )}
+          </motion.div>
+          {/* Space for Ask button */}
           <div style={{ width: 80 }}/>
         </div>
+        {/* Progress bar for dieta tab */}
+        {view === 'dieta' && (
+          <div className="progress-track" style={{ margin: '0', height: 2 }}>
+            <motion.div className="progress-fill"
+              initial={{ width: 0 }} animate={{ width: `${dayPct}%` }}
+              transition={{ duration: 1.2 }}/>
+          </div>
+        )}
       </header>
 
-      {/* Floating Ask button — top right */}
-      <AskButton onClick={() => setShowIA(true)} />
+      {/* ASK BUTTON */}
+      <AskButton onClick={() => setShowIA(true)}/>
 
-      {/* Content */}
-      <main className="relative z-10" style={{ paddingBottom: 100 }}>
+      {/* CONTENT */}
+      <main style={{ paddingBottom: 80 }}>
         <AnimatePresence mode="wait">
 
-          {view === "home" && (
+          {view === 'home' && (
             <motion.div key="home"
-              initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }}
-              style={{ paddingTop: 8 }}>
-              <Dashboard checked={checked} weights={weights} evals={evals} />
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
+              <Dashboard checked={checked} weights={weights} evals={evals}/>
             </motion.div>
           )}
 
-          {view === "dieta" && (
+          {view === 'dieta' && (
             <motion.div key="dieta"
-              initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }}>
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
               <DayPicker selectedDay={selDay} onDayChange={setSelDay} checked={checked}/>
               <MealList dayName={currentDay} checked={checked}
-                onToggle={k => setChecked(p => ({ ...p, [k]: !p[k] }))}/>
+                onToggle={k => setChecked(p => ({...p,[k]:!p[k]}))}/>
             </motion.div>
           )}
 
-          {view === "progresso" && (
+          {view === 'progresso' && (
             <motion.div key="progresso"
-              initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }}
-              style={{ padding: '8px 16px 0' }}>
-              {/* Progress tab */}
-              <div style={{ paddingTop: 8, marginBottom: 12 }}>
-                <div className="label-xs" style={{ marginBottom: 4 }}>Evolução</div>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '1.4rem', color: 'var(--fg)' }}>
-                  Seu progresso
-                </h2>
-              </div>
-              <div className="glass" style={{ padding: '1.1rem', marginBottom: 12 }}>
-                <div className="label-xs" style={{ marginBottom: 10 }}>Registrar peso</div>
-                <div style={{ display: 'flex', gap: 10 }}>
-                  <input type="number" step="0.1" placeholder="Ex: 92.5" id="w-input"
-                    style={{
-                      flex: 1, padding: '11px 14px', borderRadius: 12, outline: 'none',
-                      background: 'var(--card-2, rgba(16,64,113,0.16))',
-                      border: '1px solid var(--border)', color: 'var(--fg)', fontSize: '0.9rem',
-                    }}/>
-                  <button className="press"
-                    style={{
-                      padding: '11px 18px', borderRadius: 12,
-                      background: 'var(--primary)', color: '#000022',
-                      fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '0.8rem',
-                    }}
-                    onClick={() => {
-                      const inp = document.getElementById('w-input') as HTMLInputElement
-                      const val = parseFloat(inp?.value || '')
-                      if (!isNaN(val) && val > 0) {
-                        const d = new Date()
-                        const date = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
-                        setWeights(prev => [...prev.filter(w => w.date !== date), { date, val }])
-                        if (inp) inp.value = ''
-                      }
-                    }}>
-                    Salvar
-                  </button>
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
+              <div style={{ padding: '0' }}>
+                <div style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div className="label" style={{ marginBottom: 6 }}>Registrar peso</div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <input type="number" step="0.1" placeholder="Ex: 92.5" id="w-in"
+                      className="input-brutal" style={{ flex: 1 }}/>
+                    <button className="btn-primary press"
+                      style={{ padding: '12px 16px', flexShrink: 0 }}
+                      onClick={() => {
+                        const el = document.getElementById('w-in') as HTMLInputElement
+                        const val = parseFloat(el?.value || '')
+                        if (!isNaN(val) && val > 0) {
+                          const d = new Date()
+                          const date = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
+                          setWeights(prev => [...prev.filter(w => w.date !== date), { date, val }])
+                          if (el) el.value = ''
+                        }
+                      }}>
+                      Salvar
+                    </button>
+                  </div>
                 </div>
                 {weights.length > 0 && (
-                  <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    {[...weights].sort((a,b) => b.date.localeCompare(a.date)).slice(0,5).map(w => (
+                  <div>
+                    {[...weights].sort((a,b) => b.date.localeCompare(a.date)).slice(0,8).map((w,i) => (
                       <div key={w.date} style={{
                         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                        padding: '8px 12px', borderRadius: 10,
-                        background: 'rgba(255,255,255,0.03)',
+                        padding: '12px 16px',
+                        borderBottom: '1px solid rgba(255,255,255,0.04)',
                       }}>
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.7rem', color: 'var(--fg-2)' }}>
+                        <span style={{ fontFamily: 'var(--f-body)', fontSize: '0.7rem',
+                          fontWeight: 300, color: 'rgba(255,255,255,0.3)' }}>
                           {w.date.split('-').reverse().slice(0,2).join('/')}
                         </span>
-                        <span style={{ fontFamily: 'var(--font-body)', fontWeight: 700, color: 'var(--fg)' }}>
-                          {w.val} kg
+                        <span style={{ fontFamily: 'var(--f-logo)', fontSize: '1.1rem',
+                          color: '#FFFFFF', letterSpacing: '-0.01em' }}>
+                          {w.val} <span style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)' }}>kg</span>
                         </span>
                       </div>
                     ))}
@@ -231,56 +212,43 @@ export function DietApp() {
             </motion.div>
           )}
 
-          {view === "reflexao" && (
+          {view === 'reflexao' && (
             <motion.div key="reflexao"
-              initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }}
-              style={{ paddingTop: 8 }}>
-              <Reflexao />
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
+              <Reflexao/>
             </motion.div>
           )}
 
-          {view === "compras" && (
-            <motion.div key="compras"
-              initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }}
-              style={{ paddingTop: 8 }}>
+          {view === 'compras' && (
+            <motion.div key="compras" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
               <ShoppingList shopChecked={shopChk}
-                onToggle={k => setShopChk(p => ({ ...p, [k]: !p[k] }))}
-                onClear={() => setShopChk({})}/>
+                onToggle={k => setShopChk(p => ({...p,[k]:!p[k]}))} onClear={() => setShopChk({})}/>
             </motion.div>
           )}
-
-          {view === "receitas" && (
-            <motion.div key="receitas"
-              initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }}
-              style={{ paddingTop: 8 }}>
-              <RecipeList />
+          {view === 'receitas' && (
+            <motion.div key="receitas" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
+              <RecipeList/>
             </motion.div>
           )}
-
-          {view === "gastos" && (
-            <motion.div key="gastos"
-              initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }}
-              style={{ paddingTop: 8 }}>
+          {view === 'gastos' && (
+            <motion.div key="gastos" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
               <Finance purchases={purchases}
-                onAddPurchase={p => setPurchases(prev => [...prev, p])}
-                onRemovePurchase={id => setPurchases(prev => prev.filter(p => p.id !== id))}
+                onAddPurchase={p => setPurchases(pr => [...pr, p])}
+                onRemovePurchase={id => setPurchases(pr => pr.filter(p => p.id !== id))}
                 budget={budget} onBudgetChange={setBudget}/>
             </motion.div>
           )}
-
-          {(view === "perfil" || view === "config") && (
-            <motion.div key={view}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              transition={{ duration: 0.2 }}
-              style={{ padding: '16px' }}>
-              <div className="glass" style={{ padding: '1.25rem' }}>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.85rem', color: 'var(--fg-2)' }}>
-                  Em breve.
-                </p>
+          {(view === 'perfil' || view === 'config') && (
+            <motion.div key={view} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              transition={{ duration: 0.18 }}>
+              <div style={{ padding: 16 }}>
+                <p style={{ fontFamily: 'var(--f-body)', fontSize: '0.75rem',
+                  color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase',
+                  letterSpacing: '0.1em', fontWeight: 300 }}>Em breve.</p>
               </div>
             </motion.div>
           )}
@@ -288,7 +256,7 @@ export function DietApp() {
         </AnimatePresence>
       </main>
 
-      {/* IA Modal */}
+      {/* MODALS */}
       <AnimatePresence>
         {showIA && (
           <IAModal onClose={() => setShowIA(false)} weights={weights} evals={evals}
@@ -296,12 +264,10 @@ export function DietApp() {
         )}
       </AnimatePresence>
 
-      {/* Side menu */}
       <SideMenu open={menuOpen} onClose={() => setMenuOpen(false)}
         onSelect={(id: MenuTabId) => { setView(id) }} userName={userData?.nome}/>
 
-      {/* Nav pill */}
-      <Navigation active={tab} onChange={handleTabChange}/>
+      <Navigation active={tab} onChange={handleTab}/>
     </div>
   )
 }
