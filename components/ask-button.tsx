@@ -2,62 +2,54 @@
 
 import { motion } from "framer-motion"
 
-// Multicolor sparkle SVG (like the Ask reference images)
-function SparkleIcon() {
+function SparkSVG() {
   return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
       <defs>
-        <linearGradient id="sg1" x1="11" y1="0" x2="11" y2="22" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#ff4444"/>
-          <stop offset="35%" stopColor="#ff8800"/>
-          <stop offset="65%" stopColor="#ffdd00"/>
-          <stop offset="100%" stopColor="#4488ff"/>
-        </linearGradient>
-        <linearGradient id="sg2" x1="0" y1="11" x2="22" y2="11" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#4488ff"/>
-          <stop offset="100%" stopColor="#aa44ff"/>
+        <linearGradient id="sp" x1="8" y1="0" x2="8" y2="16" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stopColor="#FF3A3A"/>
+          <stop offset="30%"  stopColor="#FF8C00"/>
+          <stop offset="60%"  stopColor="#FFD600"/>
+          <stop offset="100%" stopColor="#3A8FFF"/>
         </linearGradient>
       </defs>
-      {/* 4-pointed star shape */}
-      <path
-        d="M11 1 C11 1 12.5 7.5 18 11 C12.5 14.5 11 21 11 21 C11 21 9.5 14.5 4 11 C9.5 7.5 11 1 11 1Z"
-        fill="url(#sg1)"
-      />
-      <path
-        d="M11 4 C11 4 12 8.5 15.5 11 C12 13.5 11 18 11 18 C11 18 10 13.5 6.5 11 C10 8.5 11 4 11 4Z"
-        fill="url(#sg2)"
-        opacity="0.6"
-      />
+      <path d="M8 0.5C8 0.5 9.2 5.8 13.5 8C9.2 10.2 8 15.5 8 15.5C8 15.5 6.8 10.2 2.5 8C6.8 5.8 8 0.5 8 0.5Z"
+        fill="url(#sp)"/>
     </svg>
   )
 }
 
-interface Props {
-  onClick: () => void
-}
-
-export function AskButton({ onClick }: Props) {
+export function AskButton({ onClick }: { onClick: () => void }) {
   return (
     <motion.button
       onClick={onClick}
-      initial={{ opacity: 0, scale: 0.8, y: 10 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ delay: 0.4, type: 'spring', stiffness: 320, damping: 24 }}
-      whileTap={{ scale: 0.95 }}
-      className="ask-pill press fixed z-40 flex items-center gap-2.5 px-4 py-2.5"
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3, duration: 0.25 }}
+      whileTap={{ opacity: 0.7 }}
+      className="ask-pill press"
       style={{
+        position: 'fixed',
         top: 'max(env(safe-area-inset-top), 14px)',
         right: 16,
-        marginTop: 8,
+        marginTop: 10,
+        zIndex: 60,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 7,
+        padding: '8px 14px',
+        cursor: 'pointer',
+        border: 'none',
       }}
     >
-      <SparkleIcon />
+      <SparkSVG />
       <span style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: '0.85rem',
+        fontFamily: 'var(--f-body)',
+        fontSize: '0.72rem',
         fontWeight: 600,
-        color: 'var(--fg-2)',
-        letterSpacing: '-0.01em',
+        letterSpacing: '0.1em',
+        color: 'rgba(255,255,255,0.7)',
+        textTransform: 'uppercase',
       }}>
         Ask
       </span>
