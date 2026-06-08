@@ -1,65 +1,70 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
-import { DAYS, DayName } from "@/lib/data"
+import { DAYS } from "@/lib/data"
 import { getDayProgressReal } from "@/lib/helpers"
 
-interface DayPickerProps {
+interface Props {
   selectedDay: number
-  onDayChange: (day: number) => void
+  onDayChange: (d: number) => void
   checked: Record<string, boolean>
 }
 
-export function DayPicker({ selectedDay, onDayChange, checked }: DayPickerProps) {
+export function DayPicker({ selectedDay, onDayChange, checked }: Props) {
   const todayIdx = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1
+  const D = ['S','T','Q','Q','S','S','D']
 
   return (
-    <div className="grid grid-cols-7 gap-2 px-4 py-4">
+    <div style={{
+      display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)',
+      borderBottom: '1px solid #222',
+      background: '#000',
+    }}>
       {DAYS.map((day, idx) => {
-        const isSelected = idx === selectedDay
-        const isToday = idx === todayIdx
-        const progress = getDayProgressReal(day, checked)
-        const isDone = progress === 100
-        const isPartial = progress > 0 && progress < 100
+        const sel = idx === selectedDay
+        const today = idx === todayIdx
+        const pct = getDayProgressReal(day, checked)
+        const done = pct === 100
 
         return (
-          <motion.button
-            key={day}
-            onClick={() => onDayChange(idx)}
-            className={cn(
-              "relative flex flex-col items-center gap-1 rounded-xl border py-2 transition-all",
-              isSelected
-                ? "border-primary bg-secondary"
-                : "border-border bg-transparent",
-              isDone && "border-success/30 bg-success/5"
-            )}
-            whileTap={{ scale: 0.95 }}
-          >
-            {isToday && (
-              <div className="absolute -top-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-primary" />
-            )}
-            <span
-              className={cn(
-                "font-mono text-[7px] uppercase tracking-wider",
-                isSelected ? "text-primary" : "text-muted-foreground"
-              )}
-            >
-              {day.slice(0, 3)}
+          <button key={day} onClick={() => onDayChange(idx)}
+            style={{
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center',
+              gap: 5, padding: '10px 0',
+              background: sel ? '#0f0f0f' : 'transparent',
+              border: 'none',
+              borderRight: idx < 6 ? '1px solid #1a1a1a' : 'none',
+              borderTop: sel ? '2px solid #FF6B00' : '2px solid transparent',
+              cursor: 'pointer',
+              transition: 'background 0.1s',
+            }}>
+            <span style={{
+              fontFamily: 'var(--f-head)',
+              fontSize: '0.48rem', textTransform: 'uppercase',
+              letterSpacing: '0.14em',
+              color: today ? '#fff' : 'rgba(255,255,255,0.25)',
+            }}>
+              {D[idx]}
             </span>
-            <span
-              className={cn(
-                "font-mono text-[8px]",
-                isDone
-                  ? "text-success"
-                  : isPartial
-                  ? "text-primary"
-                  : "text-muted-foreground/50"
-              )}
-            >
-              {isDone ? "100%" : isPartial ? `${progress}%` : "—"}
-            </span>
-          </motion.button>
+            <div style={{
+              width: 20, height: 20,
+              border: done ? '1px solid #FF6B00' : sel ? '1px solid rgba(255,255,255,0.4)' : '1px solid #222',
+              background: done ? '#FF6B00' : 'transparent',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              {done ? (
+                <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                  <path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="#000" strokeWidth="1.5"
+                    strokeLinecap="square" strokeLinejoin="miter"/>
+                </svg>
+              ) : pct > 0 ? (
+                <span style={{
+                  fontFamily: 'var(--f-body)', fontSize: '0.4rem',
+                  fontWeight: 400, color: 'rgba(255,255,255,0.4)',
+                }}>{pct}%</span>
+              ) : null}
+            </div>
+          </button>
         )
       })}
     </div>
