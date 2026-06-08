@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ChevronRight, Check } from "lucide-react"
+import { ArrowRight, Check } from "lucide-react"
 
 export interface OnboardingData {
   nome: string
@@ -14,205 +14,206 @@ export interface OnboardingData {
   suplementos: string[]
 }
 
-interface Props {
-  onComplete: (data: OnboardingData) => void
-}
-
 const OBJETIVOS = [
-  { id: "perder_gordura", label: "Perder gordura", sub: "Déficit calórico controlado" },
-  { id: "ganhar_massa",   label: "Ganhar massa",   sub: "Superávit com proteína alta" },
-  { id: "manter",        label: "Manter",          sub: "Equilíbrio e saúde" },
-  { id: "recomposicao",  label: "Recomposição",    sub: "Perder gordura e ganhar músculo" },
+  { id: "perder_gordura", label: "Perder gordura",  sub: "Déficit calórico" },
+  { id: "ganhar_massa",   label: "Ganhar massa",    sub: "Superávit com proteína" },
+  { id: "manter",        label: "Manter",           sub: "Equilíbrio e saúde" },
+  { id: "recomposicao",  label: "Recomposição",     sub: "Gordura ↓ / Músculo ↑" },
 ] as const
 
 const ATIVIDADES = [
-  { id: "sedentario", label: "Sedentário",   sub: "Sem atividade física" },
-  { id: "leve",       label: "Leve",         sub: "1-2x por semana" },
-  { id: "moderado",   label: "Moderado",     sub: "3-4x por semana" },
-  { id: "intenso",    label: "Intenso",      sub: "5x ou mais por semana" },
+  { id: "sedentario", label: "Sedentário",  sub: "Sem atividade" },
+  { id: "leve",       label: "Leve",        sub: "1–2x por semana" },
+  { id: "moderado",   label: "Moderado",    sub: "3–4x por semana" },
+  { id: "intenso",    label: "Intenso",     sub: "5x ou mais" },
 ] as const
 
-const SUPLEMENTOS_OPT = ["Creatina", "Whey Protein", "Vitamina D", "Ômega 3", "Outro"]
+const SUPLEMENTOS = ["Creatina", "Whey", "Vitamina D", "Ômega 3", "Outro"]
 
-export function Onboarding({ onComplete }: Props) {
+export function Onboarding({ onComplete }: { onComplete: (d: OnboardingData) => void }) {
   const [step, setStep] = useState(0)
-  const [data, setData] = useState<Partial<OnboardingData>>({
-    suplementos: [],
-  })
+  const [data, setData] = useState<Partial<OnboardingData>>({ suplementos: [] })
 
-  const steps = [
-    "Bem-vindo",
-    "Dados básicos",
-    "Objetivo",
-    "Atividade",
-    "Preferências",
-    "Pronto",
-  ]
-
-  function next() { setStep(s => Math.min(s + 1, steps.length - 1)) }
-  function canAdvance() {
+  const TOTAL = 6
+  const canNext = () => {
     if (step === 1) return data.nome && data.peso && data.altura
-    if (step === 2) return data.objetivo
-    if (step === 3) return data.atividadeFisica
+    if (step === 2) return !!data.objetivo
+    if (step === 3) return !!data.atividadeFisica
     return true
   }
 
-  const slideVariants = {
-    enter: { opacity: 0, x: 30 },
-    center: { opacity: 1, x: 0 },
-    exit: { opacity: 0, x: -30 },
+  function OptionRow({ id, label, sub, active, onClick }: {
+    id: string; label: string; sub: string; active: boolean; onClick: () => void
+  }) {
+    return (
+      <button onClick={onClick} className="press" style={{
+        width: '100%', textAlign: 'left',
+        padding: '14px 16px',
+        background: active ? 'var(--surface-2)' : 'var(--void)',
+        border: `1px solid ${active ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.08)'}`,
+        marginBottom: 6, cursor: 'pointer',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      }}>
+        <div>
+          <div style={{ fontFamily: 'var(--f-title)', fontSize: '0.85rem',
+            textTransform: 'uppercase', letterSpacing: '0.06em', color: active ? '#FFF' : 'rgba(255,255,255,0.6)' }}>
+            {label}
+          </div>
+          <div className="label" style={{ marginTop: 3 }}>{sub}</div>
+        </div>
+        {active && (
+          <div style={{ width: 18, height: 18, background: 'var(--orange)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M2 5L4 7L8 3" stroke="#000" strokeWidth="1.5"
+                strokeLinecap="square" strokeLinejoin="miter"/>
+            </svg>
+          </div>
+        )}
+      </button>
+    )
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col"
-      style={{ background: 'var(--bg)' }}>
-
-      {/* Mesh bg */}
-      <div className="motion-bg">
-        <div className="m-orb orb-navy"/><div className="m-orb orb-ocean"/>
-        <div className="m-orb orb-teal"/><div className="m-orb orb-neon"/>
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 100,
+      background: '#000000', display: 'flex', flexDirection: 'column',
+    }}>
+      {/* Progress ruler */}
+      <div style={{ height: 2, background: 'rgba(255,255,255,0.06)', flexShrink: 0 }}>
+        <motion.div
+          animate={{ width: `${((step + 1) / TOTAL) * 100}%` }}
+          transition={{ duration: 0.4 }}
+          style={{ height: '100%', background: 'var(--orange)' }}/>
       </div>
-      <div className="motion-grain"/>
 
-      {/* Progress dots */}
-      <div className="relative z-10 flex justify-center gap-2 pt-safe pt-16 pb-4">
-        {steps.map((_, i) => (
-          <div key={i} style={{
-            width: i === step ? 20 : 6, height: 6,
-            borderRadius: 100,
-            background: i <= step ? 'var(--primary)' : 'var(--fg-3)',
-            transition: 'all 0.3s',
-          }}/>
-        ))}
+      {/* Step counter */}
+      <div className="pt-safe" style={{
+        padding: '14px 16px 0',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        flexShrink: 0,
+      }}>
+        <span style={{ fontFamily: 'var(--f-logo)', fontSize: '1.1rem',
+          letterSpacing: '0.12em', color: '#FFFFFF' }}>EVO</span>
+        <span className="label">{step + 1} / {TOTAL}</span>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex flex-col px-6 overflow-hidden">
+      <div style={{ flex: 1, overflow: 'hidden', position: 'relative', padding: '0' }}>
         <AnimatePresence mode="wait">
           <motion.div key={step}
-            variants={slideVariants} initial="enter" animate="center" exit="exit"
-            transition={{ duration: 0.25 }}
-            className="flex-1 flex flex-col justify-center">
+            initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.22 }}
+            style={{
+              position: 'absolute', inset: 0, padding: '24px 16px 0',
+              overflowY: 'auto',
+            }}>
 
-            {/* STEP 0 — Welcome */}
+            {/* STEP 0 */}
             {step === 0 && (
-              <div className="text-center">
-                <div style={{
-                  fontFamily: 'var(--font-logo)', fontSize: '4rem',
-                  color: 'var(--fg)', letterSpacing: '0.08em',
-                  textShadow: '0 0 60px rgba(26,149,151,0.4)',
-                  marginBottom: 16,
-                }}>EVO</div>
-                <h1 style={{
-                  fontFamily: 'var(--font-title)', fontSize: '1.6rem',
-                  color: 'var(--fg)', lineHeight: 1.2, marginBottom: 12,
-                }}>Evolua seu corpo,<br/>do jeito certo</h1>
-                <p style={{
-                  fontFamily: 'var(--font-body)', fontSize: '0.9rem',
-                  color: 'var(--fg-2)', lineHeight: 1.6, marginBottom: 32,
-                }}>
-                  Vamos montar sua dieta base com foco em comida real, baseada na pirâmide alimentar brasileira.
-                </p>
-                <p style={{
-                  fontFamily: 'var(--font-body)', fontSize: '0.72rem',
-                  color: 'var(--fg-3)', lineHeight: 1.5,
-                }}>
-                  Este app é um auxílio inteligente. Não substitui médico ou nutricionista.
-                </p>
+              <div>
+                <div className="label" style={{ marginBottom: 12 }}>Bem-vindo</div>
+                <h1 style={{ fontFamily: 'var(--f-title)', fontSize: '2rem',
+                  textTransform: 'uppercase', letterSpacing: '0.06em',
+                  color: '#FFFFFF', lineHeight: 1.15, marginBottom: 20 }}>
+                  Evolua<br/>seu corpo<br/>do jeito certo
+                </h1>
+                <div style={{ borderLeft: '2px solid var(--orange)', paddingLeft: 14, marginBottom: 24 }}>
+                  <p style={{ fontFamily: 'var(--f-body)', fontSize: '0.82rem',
+                    fontWeight: 300, color: 'rgba(255,255,255,0.55)', lineHeight: 1.65 }}>
+                    Vamos montar sua dieta base com foco em comida real,
+                    baseada na pirâmide alimentar brasileira.
+                  </p>
+                </div>
+                <div style={{ padding: '10px 14px', background: 'var(--surface)',
+                  border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <p style={{ fontFamily: 'var(--f-body)', fontSize: '0.65rem',
+                    fontWeight: 300, color: 'rgba(255,255,255,0.3)', lineHeight: 1.6,
+                    textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    Este app é um auxílio inteligente. Não substitui médico ou nutricionista.
+                  </p>
+                </div>
               </div>
             )}
 
-            {/* STEP 1 — Dados */}
+            {/* STEP 1 */}
             {step === 1 && (
               <div>
-                <div className="label-xs" style={{ marginBottom: 4 }}>Passo 2</div>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '1.4rem', color: 'var(--fg)', marginBottom: 24 }}>
-                  Seus dados
-                </h2>
+                <div className="label" style={{ marginBottom: 12 }}>Dados básicos</div>
+                <h2 style={{ fontFamily: 'var(--f-title)', fontSize: '1.5rem',
+                  textTransform: 'uppercase', letterSpacing: '0.06em',
+                  color: '#FFFFFF', marginBottom: 24 }}>Seus dados</h2>
                 {[
-                  { key: 'nome', label: 'Como te chamamos?', placeholder: 'Seu nome', type: 'text' },
-                  { key: 'peso', label: 'Peso atual (kg)',    placeholder: 'Ex: 92.5', type: 'number' },
-                  { key: 'altura', label: 'Altura (cm)',      placeholder: 'Ex: 178', type: 'number' },
+                  { key: 'nome',   label: 'Nome',          placeholder: 'Como te chamamos', type: 'text' },
+                  { key: 'peso',   label: 'Peso atual (kg)', placeholder: '92.5',           type: 'number' },
+                  { key: 'altura', label: 'Altura (cm)',    placeholder: '178',              type: 'number' },
                 ].map(f => (
-                  <div key={f.key} style={{ marginBottom: 16 }}>
-                    <label style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem',
-                      fontWeight: 600, color: 'var(--fg-2)', display: 'block', marginBottom: 6 }}>
-                      {f.label}
-                    </label>
+                  <div key={f.key} style={{ marginBottom: 14 }}>
+                    <div className="label" style={{ marginBottom: 6 }}>{f.label}</div>
                     <input type={f.type} placeholder={f.placeholder}
                       value={(data as any)[f.key] || ''}
                       onChange={e => setData(d => ({ ...d, [f.key]: e.target.value }))}
-                      style={{
-                        width: '100%', padding: '12px 16px',
-                        borderRadius: 14, outline: 'none',
-                        background: 'var(--card)', border: '1px solid var(--border)',
-                        color: 'var(--fg)', fontSize: '0.95rem',
-                      }}
-                    />
+                      className="input-brutal"/>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* STEP 2 — Objetivo */}
+            {/* STEP 2 */}
             {step === 2 && (
               <div>
-                <div className="label-xs" style={{ marginBottom: 4 }}>Passo 3</div>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '1.4rem', color: 'var(--fg)', marginBottom: 24 }}>
-                  Qual seu objetivo?
-                </h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {OBJETIVOS.map(o => {
-                    const on = data.objetivo === o.id
-                    return (
-                      <button key={o.id} onClick={() => setData(d => ({ ...d, objetivo: o.id }))}
-                        className="press glass"
-                        style={{
-                          padding: '14px 16px', textAlign: 'left',
-                          border: on ? '1px solid rgba(26,149,151,0.5)' : '1px solid var(--border)',
-                          background: on ? 'rgba(26,149,151,0.12)' : undefined,
-                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        }}>
-                        <div>
-                          <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600,
-                            fontSize: '0.9rem', color: 'var(--fg)' }}>{o.label}</div>
-                          <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem',
-                            color: 'var(--fg-3)', marginTop: 2 }}>{o.sub}</div>
-                        </div>
-                        {on && <Check size={16} style={{ color: 'var(--primary)', flexShrink: 0 }}/>}
-                      </button>
-                    )
-                  })}
-                </div>
+                <div className="label" style={{ marginBottom: 12 }}>Objetivo</div>
+                <h2 style={{ fontFamily: 'var(--f-title)', fontSize: '1.5rem',
+                  textTransform: 'uppercase', letterSpacing: '0.06em',
+                  color: '#FFFFFF', marginBottom: 24 }}>Qual seu objetivo?</h2>
+                {OBJETIVOS.map(o => (
+                  <OptionRow key={o.id} id={o.id} label={o.label} sub={o.sub}
+                    active={data.objetivo === o.id}
+                    onClick={() => setData(d => ({ ...d, objetivo: o.id }))}/>
+                ))}
               </div>
             )}
 
-            {/* STEP 3 — Atividade */}
+            {/* STEP 3 */}
             {step === 3 && (
               <div>
-                <div className="label-xs" style={{ marginBottom: 4 }}>Passo 4</div>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '1.4rem', color: 'var(--fg)', marginBottom: 24 }}>
-                  Nível de atividade
-                </h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {ATIVIDADES.map(a => {
-                    const on = data.atividadeFisica === a.id
+                <div className="label" style={{ marginBottom: 12 }}>Atividade</div>
+                <h2 style={{ fontFamily: 'var(--f-title)', fontSize: '1.5rem',
+                  textTransform: 'uppercase', letterSpacing: '0.06em',
+                  color: '#FFFFFF', marginBottom: 24 }}>Nível de atividade</h2>
+                {ATIVIDADES.map(a => (
+                  <OptionRow key={a.id} id={a.id} label={a.label} sub={a.sub}
+                    active={data.atividadeFisica === a.id}
+                    onClick={() => setData(d => ({ ...d, atividadeFisica: a.id }))}/>
+                ))}
+              </div>
+            )}
+
+            {/* STEP 4 */}
+            {step === 4 && (
+              <div>
+                <div className="label" style={{ marginBottom: 12 }}>Preferências</div>
+                <h2 style={{ fontFamily: 'var(--f-title)', fontSize: '1.5rem',
+                  textTransform: 'uppercase', letterSpacing: '0.06em',
+                  color: '#FFFFFF', marginBottom: 8 }}>Personalize</h2>
+                <p style={{ fontFamily: 'var(--f-body)', fontSize: '0.75rem', fontWeight: 300,
+                  color: 'rgba(255,255,255,0.4)', marginBottom: 20 }}>Opcional</p>
+                <div className="label" style={{ marginBottom: 6 }}>Restrições / alergias</div>
+                <input type="text" placeholder="sem lactose, alergia a glúten..."
+                  value={data.restricoes || ''}
+                  onChange={e => setData(d => ({ ...d, restricoes: e.target.value }))}
+                  className="input-brutal" style={{ marginBottom: 20 }}/>
+                <div className="label" style={{ marginBottom: 10 }}>Suplementos</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {SUPLEMENTOS.map(s => {
+                    const on = data.suplementos?.includes(s)
                     return (
-                      <button key={a.id} onClick={() => setData(d => ({ ...d, atividadeFisica: a.id }))}
-                        className="press glass"
-                        style={{
-                          padding: '14px 16px', textAlign: 'left',
-                          border: on ? '1px solid rgba(26,149,151,0.5)' : '1px solid var(--border)',
-                          background: on ? 'rgba(26,149,151,0.12)' : undefined,
-                          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        }}>
-                        <div>
-                          <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600,
-                            fontSize: '0.9rem', color: 'var(--fg)' }}>{a.label}</div>
-                          <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem',
-                            color: 'var(--fg-3)', marginTop: 2 }}>{a.sub}</div>
-                        </div>
-                        {on && <Check size={16} style={{ color: 'var(--primary)', flexShrink: 0 }}/>}
+                      <button key={s} onClick={() => setData(d => ({
+                        ...d,
+                        suplementos: on ? d.suplementos?.filter(x => x !== s) : [...(d.suplementos||[]), s]
+                      }))}
+                        className={`chip ${on ? 'chip-active' : ''} press`}>
+                        {s}
                       </button>
                     )
                   })}
@@ -220,87 +221,39 @@ export function Onboarding({ onComplete }: Props) {
               </div>
             )}
 
-            {/* STEP 4 — Preferências */}
-            {step === 4 && (
-              <div>
-                <div className="label-xs" style={{ marginBottom: 4 }}>Passo 5</div>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '1.4rem', color: 'var(--fg)', marginBottom: 8 }}>
-                  Preferências
-                </h2>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--fg-2)', marginBottom: 20 }}>
-                  Opcional — nos ajuda a personalizar melhor
-                </p>
-                <div style={{ marginBottom: 18 }}>
-                  <label style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem',
-                    fontWeight: 600, color: 'var(--fg-2)', display: 'block', marginBottom: 6 }}>
-                    Restrições ou alergias
-                  </label>
-                  <input type="text" placeholder="Ex: sem lactose, alergia a amendoim..."
-                    value={data.restricoes || ''}
-                    onChange={e => setData(d => ({ ...d, restricoes: e.target.value }))}
-                    style={{
-                      width: '100%', padding: '12px 16px', borderRadius: 14, outline: 'none',
-                      background: 'var(--card)', border: '1px solid var(--border)',
-                      color: 'var(--fg)', fontSize: '0.9rem',
-                    }}
-                  />
-                </div>
-                <div>
-                  <label style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem',
-                    fontWeight: 600, color: 'var(--fg-2)', display: 'block', marginBottom: 10 }}>
-                    Suplementos que usa ou quer incluir
-                  </label>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    {SUPLEMENTOS_OPT.map(s => {
-                      const on = data.suplementos?.includes(s)
-                      return (
-                        <button key={s}
-                          className="press"
-                          onClick={() => setData(d => ({
-                            ...d,
-                            suplementos: on
-                              ? d.suplementos?.filter(x => x !== s)
-                              : [...(d.suplementos || []), s]
-                          }))}
-                          style={{
-                            padding: '7px 14px', borderRadius: 100,
-                            fontFamily: 'var(--font-body)', fontSize: '0.78rem', fontWeight: 500,
-                            background: on ? 'rgba(26,149,151,0.15)' : 'var(--card)',
-                            border: on ? '1px solid rgba(26,149,151,0.4)' : '1px solid var(--border)',
-                            color: on ? 'var(--primary)' : 'var(--fg-2)',
-                          }}>
-                          {s}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* STEP 5 — Pronto */}
+            {/* STEP 5 */}
             {step === 5 && (
-              <div className="text-center">
-                <div style={{
-                  width: 72, height: 72, borderRadius: '50%',
-                  background: 'rgba(26,149,151,0.15)', border: '2px solid rgba(26,149,151,0.4)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  margin: '0 auto 24px',
-                  boxShadow: '0 0 32px rgba(26,149,151,0.25)',
-                }}>
-                  <Check size={32} style={{ color: 'var(--primary)' }}/>
-                </div>
-                <h2 style={{ fontFamily: 'var(--font-title)', fontSize: '1.5rem',
-                  color: 'var(--fg)', marginBottom: 12 }}>
-                  Tudo pronto, {data.nome}!
+              <div>
+                <div className="label" style={{ marginBottom: 12 }}>Pronto</div>
+                <h2 style={{ fontFamily: 'var(--f-title)', fontSize: '1.5rem',
+                  textTransform: 'uppercase', letterSpacing: '0.06em',
+                  color: '#FFFFFF', marginBottom: 20 }}>
+                  Sistema configurado
                 </h2>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.88rem',
-                  color: 'var(--fg-2)', lineHeight: 1.6, marginBottom: 8 }}>
-                  Sua dieta base foi preparada com base nos seus dados. Lembre: isso é uma sugestão de ponto de partida.
-                </p>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem',
-                  color: 'var(--fg-3)', lineHeight: 1.5 }}>
-                  Consulte um nutricionista para acompanhamento personalizado.
+                <div style={{ border: '1px solid rgba(255,255,255,0.08)',
+                  background: 'var(--surface)', marginBottom: 16 }}>
+                  {[
+                    { l: 'Nome',      v: data.nome || '—' },
+                    { l: 'Peso',      v: data.peso ? `${data.peso} kg` : '—' },
+                    { l: 'Altura',    v: data.altura ? `${data.altura} cm` : '—' },
+                    { l: 'Objetivo',  v: data.objetivo?.replace('_', ' ') || '—' },
+                    { l: 'Atividade', v: data.atividadeFisica || '—' },
+                  ].map((r, i) => (
+                    <div key={r.l} style={{
+                      display: 'flex', justifyContent: 'space-between',
+                      padding: '10px 16px',
+                      borderBottom: i < 4 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+                    }}>
+                      <span className="label">{r.l}</span>
+                      <span style={{ fontFamily: 'var(--f-body)', fontSize: '0.78rem',
+                        color: '#FFFFFF', textTransform: 'capitalize' }}>{r.v}</span>
+                    </div>
+                  ))}
+                </div>
+                <p style={{ fontFamily: 'var(--f-body)', fontSize: '0.68rem', fontWeight: 300,
+                  color: 'rgba(255,255,255,0.3)', lineHeight: 1.6,
+                  textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  Sugestão de ponto de partida. Consulte um nutricionista para acompanhamento personalizado.
                 </p>
               </div>
             )}
@@ -308,31 +261,22 @@ export function Onboarding({ onComplete }: Props) {
         </AnimatePresence>
       </div>
 
-      {/* CTA Button */}
-      <div className="relative z-10 px-6 pb-safe" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 32px)' }}>
+      {/* CTA */}
+      <div style={{ padding: '16px', borderTop: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}
+        className="pb-safe">
         <button
-          className="press"
-          disabled={!canAdvance()}
+          className="btn-orange press"
+          disabled={!canNext()}
           onClick={() => {
-            if (step < steps.length - 1) {
-              next()
-            } else {
-              onComplete(data as OnboardingData)
-            }
+            if (step < TOTAL - 1) setStep(s => s + 1)
+            else onComplete(data as OnboardingData)
           }}
           style={{
-            width: '100%', padding: '16px',
-            borderRadius: 100, cursor: canAdvance() ? 'pointer' : 'not-allowed',
-            background: canAdvance() ? 'var(--primary)' : 'var(--fg-3)',
-            color: canAdvance() ? '#000022' : 'var(--fg-3)',
-            fontFamily: 'var(--font-body)', fontWeight: 700,
-            fontSize: '0.95rem', letterSpacing: '-0.01em',
-            boxShadow: canAdvance() ? '0 0 24px rgba(26,149,151,0.4)' : 'none',
-            transition: 'all 0.2s',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            width: '100%', opacity: canNext() ? 1 : 0.3,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
-          {step < steps.length - 1 ? 'Continuar' : 'Entrar no EVO'}
-          <ChevronRight size={18}/>
+          <span>{step < TOTAL - 1 ? 'Continuar' : `Entrar — ${data.nome || 'EVO'}`}</span>
+          <ArrowRight size={16} strokeWidth={2}/>
         </button>
       </div>
     </div>
