@@ -1,21 +1,20 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { LayoutDashboard, Utensils, TrendingUp, BookOpen, MoreHorizontal } from "lucide-react"
+import { LayoutDashboard, Utensils, TrendingUp, MoreHorizontal } from "lucide-react"
 
-export type TabId = "home" | "dieta" | "progresso" | "reflexao" | "menu"
+export type TabId = "home" | "dieta" | "progresso" | "menu"
 
 const TABS = [
   { id: "home"      as TabId, Icon: LayoutDashboard, label: "Home" },
   { id: "dieta"     as TabId, Icon: Utensils,        label: "Dieta" },
   { id: "progresso" as TabId, Icon: TrendingUp,      label: "Evolução" },
-  { id: "reflexao"  as TabId, Icon: BookOpen,        label: "Reflexão" },
   { id: "menu"      as TabId, Icon: MoreHorizontal,  label: "Mais" },
 ]
 
 export function Navigation({ active, onChange }: { active: TabId; onChange: (t: TabId) => void }) {
   return (
-    <nav className="nav-bar pb-safe">
+    <nav className="nav-bar pb-safe" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
       {TABS.map(({ id, Icon, label }) => {
         const on = active === id
         return (
@@ -27,14 +26,15 @@ export function Navigation({ active, onChange }: { active: TabId; onChange: (t: 
                 transition={{ type: "spring", stiffness: 500, damping: 40 }}
               />
             )}
-            <Icon size={17} style={{
+            <Icon size={18} style={{
               color: on ? "var(--gold)" : "var(--text-2)",
               strokeWidth: on ? 2 : 1.5,
               transition: "color 0.15s",
             }}/>
             <span style={{
               fontFamily: "var(--f-head)",
-              fontSize: "0.5rem", textTransform: "uppercase",
+              fontSize: "0.52rem",
+              textTransform: "uppercase",
               letterSpacing: "0.14em",
               color: on ? "var(--gold)" : "var(--text-2)",
               transition: "color 0.15s",
