@@ -25,7 +25,7 @@ export function SideMenu({open,onClose,onSelect,userName}:{open:boolean;onClose:
             initial={{x:"100%"}} animate={{x:0}} exit={{x:"100%"}}
             transition={{type:"tween",duration:0.22,ease:[.4,0,.2,1]}}
             className="side-panel"
-            style={{position:"fixed",right:0,top:0,bottom:0,zIndex:70,width:260,display:"flex",flexDirection:"column"}}>
+            style={{position:"fixed",right:0,top:0,bottom:0,zIndex:70,width:260,display:"flex",flexDirection:"column",borderRadius:"16px 0 0 16px"}}>
             <div className="pt-safe" style={{padding:"14px 16px",borderBottom:"1px solid rgba(66,71,105,0.4)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <div>
                 <div style={{fontFamily:"var(--f-logo)",fontSize:"1rem",color:"var(--gold)",letterSpacing:"0.14em"}}>EVO</div>
