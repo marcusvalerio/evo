@@ -27,20 +27,20 @@ export function MealList({ dayName, checked, onToggle }: Props) {
         const allDone = done === total && total > 0
 
         return (
-          <div key={meal} style={{ borderBottom: '1px solid #222' }}>
+          <div key={meal} style={{ borderBottom: '1px solid rgba(66,71,105,0.35)' }}>
             {/* Meal header */}
             <div style={{
               display: 'flex', alignItems: 'center',
               justifyContent: 'space-between',
               padding: '10px 16px',
-              background: '#0a0a0a',
-              borderBottom: '1px solid #222',
+              background: 'var(--container)',
+              borderBottom: '1px solid rgba(66,71,105,0.35)',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 {allDone && (
                   <div style={{
                     width: 6, height: 6,
-                    background: '#FF6B00',
+                    background: 'var(--gold)',
                     flexShrink: 0,
                   }}/>
                 )}
@@ -49,7 +49,7 @@ export function MealList({ dayName, checked, onToggle }: Props) {
                   fontSize: '0.65rem',
                   textTransform: 'uppercase',
                   letterSpacing: '0.18em',
-                  color: allDone ? '#FF6B00' : 'rgba(255,255,255,0.5)',
+                  color: allDone ? 'var(--gold)' : 'rgba(255,255,255,0.5)',
                 }}>
                   {MEAL_LABEL[meal] || meal}
                 </span>
@@ -93,9 +93,9 @@ export function MealList({ dayName, checked, onToggle }: Props) {
                 >
                   {/* Checkbox */}
                   <div style={{
-                    width: 14, height: 14, flexShrink: 0,
-                    border: `1px solid ${on ? '#FF6B00' : '#333'}`,
-                    background: on ? '#FF6B00' : 'transparent',
+                    width: 18, height: 18, flexShrink: 0, borderRadius: 5,
+                    border: `1px solid ${on ? 'var(--gold)' : '#333'}`,
+                    background: on ? 'var(--gold)' : 'transparent',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     transition: 'all 0.1s',
                   }}>
@@ -128,7 +128,8 @@ export function MealList({ dayName, checked, onToggle }: Props) {
                         textTransform: 'uppercase',
                         letterSpacing: '0.18em',
                         color: '#FF6B00',
-                        border: '1px solid #FF6B00',
+                        border: '1px solid var(--gold)',
+                        borderRadius: 4,
                         padding: '1px 5px',
                         verticalAlign: 'middle',
                       }}>SUPL</span>
