@@ -16,8 +16,8 @@ export function DayPicker({ selectedDay, onDayChange, checked }: Props) {
   return (
     <div style={{
       display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)',
-      borderBottom: '1px solid #222',
-      background: '#000',
+      borderBottom: '1px solid rgba(66,71,105,0.35)',
+      background: 'var(--canvas)',
     }}>
       {DAYS.map((day, idx) => {
         const sel = idx === selectedDay
@@ -31,10 +31,10 @@ export function DayPicker({ selectedDay, onDayChange, checked }: Props) {
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center',
               gap: 5, padding: '10px 0',
-              background: sel ? '#0f0f0f' : 'transparent',
+              background: sel ? 'rgba(27,41,75,0.25)' : 'transparent',
               border: 'none',
-              borderRight: idx < 6 ? '1px solid #1a1a1a' : 'none',
-              borderTop: sel ? '2px solid #FF6B00' : '2px solid transparent',
+              borderRight: idx < 6 ? '1px solid rgba(66,71,105,0.2)' : 'none',
+              borderTop: sel ? '2px solid var(--gold)' : '2px solid transparent',
               cursor: 'pointer',
               transition: 'background 0.1s',
             }}>
@@ -42,25 +42,26 @@ export function DayPicker({ selectedDay, onDayChange, checked }: Props) {
               fontFamily: 'var(--f-head)',
               fontSize: '0.48rem', textTransform: 'uppercase',
               letterSpacing: '0.14em',
-              color: today ? '#fff' : 'rgba(255,255,255,0.25)',
+              color: today ? 'var(--text)' : 'var(--text-2)',
             }}>
               {D[idx]}
             </span>
             <div style={{
               width: 20, height: 20,
-              border: done ? '1px solid #FF6B00' : sel ? '1px solid rgba(255,255,255,0.4)' : '1px solid #222',
-              background: done ? '#FF6B00' : 'transparent',
+              border: done ? '1px solid var(--gold)' : sel ? '1px solid rgba(181,158,95,0.5)' : '1px solid var(--cobalt)',
+              background: done ? 'var(--gold)' : 'transparent',
+              borderRadius: 4,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               {done ? (
                 <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                  <path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="#000" strokeWidth="1.5"
-                    strokeLinecap="square" strokeLinejoin="miter"/>
+                  <path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="var(--canvas)" strokeWidth="1.5"
+                    strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               ) : pct > 0 ? (
                 <span style={{
                   fontFamily: 'var(--f-body)', fontSize: '0.4rem',
-                  fontWeight: 400, color: 'rgba(255,255,255,0.4)',
+                  fontWeight: 400, color: 'var(--text-2)',
                 }}>{pct}%</span>
               ) : null}
             </div>
