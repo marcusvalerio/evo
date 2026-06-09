@@ -13,51 +13,32 @@ const TABS = [
   { id: "menu"      as TabId, Icon: MoreHorizontal,  label: "Mais" },
 ]
 
-export function Navigation({
-  active, onChange,
-}: {
-  active: TabId
-  onChange: (t: TabId) => void
-}) {
+export function Navigation({ active, onChange }: { active: TabId; onChange: (t: TabId) => void }) {
   return (
     <nav className="nav-bar pb-safe">
-      {TABS.map(({ id, Icon, label }, i) => {
+      {TABS.map(({ id, Icon, label }) => {
         const on = active === id
         return (
-          <button
-            key={id}
-            onClick={() => onChange(id)}
-            className="nav-item press"
-          >
+          <button key={id} onClick={() => onChange(id)} className="nav-item press">
             {on && (
               <motion.div
-                layoutId="nav-gold-line"
+                layoutId="nav-mp176"
                 className="nav-active-line"
                 transition={{ type: "spring", stiffness: 500, damping: 40 }}
               />
             )}
-            <Icon
-              size={17}
-              style={{
-                color: on
-                  ? "var(--accent-primary)"
-                  : "var(--text-secondary)",
-                strokeWidth: on ? 2 : 1.5,
-                transition: "color 0.15s",
-              }}
-            />
-            <span
-              style={{
-                fontFamily: "var(--f-head)",
-                fontSize: "0.5rem",
-                textTransform: "uppercase",
-                letterSpacing: "0.14em",
-                color: on ? "var(--accent-primary)" : "var(--text-secondary)",
-                transition: "color 0.15s",
-              }}
-            >
-              {label}
-            </span>
+            <Icon size={17} style={{
+              color: on ? "var(--gold)" : "var(--text-2)",
+              strokeWidth: on ? 2 : 1.5,
+              transition: "color 0.15s",
+            }}/>
+            <span style={{
+              fontFamily: "var(--f-head)",
+              fontSize: "0.5rem", textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: on ? "var(--gold)" : "var(--text-2)",
+              transition: "color 0.15s",
+            }}>{label}</span>
           </button>
         )
       })}
