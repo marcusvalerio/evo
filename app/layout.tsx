@@ -3,7 +3,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'EVO',
-  description: 'Evolua seu corpo',
+  description: 'Performance Telemetry System',
   appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'EVO' },
 }
 
@@ -19,7 +19,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
-      <body style={{ background: '#000000', minHeight: '100dvh' }}>
+      <body style={{ background: '#000000', minHeight: '100dvh', fontFamily: "'Sora', sans-serif" }}>
         {children}
       </body>
     </html>
