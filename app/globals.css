@@ -22,7 +22,7 @@
 
   /* Liquid metal border gradient */
   --metal-border: linear-gradient(135deg, #D4CFD6 0%, #1B294B 30%, #B59E5F 65%, #17181C 100%);
-  --radius: 8px;
+  --radius: 10px;
 }
 
 /* ── RESET ── */
