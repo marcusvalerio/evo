@@ -18,8 +18,8 @@ export function ShoppingList({ shopChecked, onToggle, onClear }: Props) {
     <div>
       {/* Header */}
       <div style={{
-        padding: '12px 16px', background: '#0a0a0a',
-        borderBottom: '1px solid #222',
+        padding: '12px 16px', background: 'var(--container)',
+        borderBottom: '1px solid rgba(66,71,105,0.35)',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
         <div>
@@ -30,9 +30,9 @@ export function ShoppingList({ shopChecked, onToggle, onClear }: Props) {
           }}>Itens marcados</div>
           <div style={{
             fontFamily: 'var(--f-body)', fontSize: '1.4rem',
-            fontWeight: 300, color: '#fff',
+            fontWeight: 300, color: 'var(--text)',
           }}>
-            {done}<span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.3)', marginLeft: 4 }}>/{total}</span>
+            {done}<span style={{ fontSize: '0.7rem', color: 'var(--text-2)', marginLeft: 4 }}>/{total}</span>
           </div>
         </div>
         <button onClick={onClear} className="btn-ghost"
@@ -52,8 +52,8 @@ export function ShoppingList({ shopChecked, onToggle, onClear }: Props) {
         return (
           <div key={cat.category} style={{ borderBottom: '1px solid #222' }}>
             <div style={{
-              padding: '9px 16px', background: '#0a0a0a',
-              borderBottom: '1px solid #1a1a1a',
+              padding: '9px 16px', background: 'var(--container)',
+              borderBottom: '1px solid rgba(66,71,105,0.2)',
               display: 'flex', justifyContent: 'space-between',
             }}>
               <span style={{
@@ -79,21 +79,21 @@ export function ShoppingList({ shopChecked, onToggle, onClear }: Props) {
                     borderBottom: i < cat.items.length - 1 ? '1px solid #111' : 'none',
                   }}>
                   <div style={{
-                    width: 14, height: 14, flexShrink: 0,
-                    border: `1px solid ${on ? '#FF6B00' : '#2a2a2a'}`,
-                    background: on ? '#FF6B00' : 'transparent',
+                    width: 18, height: 18, flexShrink: 0, borderRadius: 5,
+                    border: `1px solid ${on ? 'var(--gold)' : '#2a2a2a'}`,
+                    background: on ? 'var(--gold)' : 'transparent',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
                     {on && (
                       <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
                         <path d="M1.5 4L3 5.5L6.5 2" stroke="#000" strokeWidth="1.5"
-                          strokeLinecap="square"/>
+                          strokeLinecap="round"/>
                       </svg>
                     )}
                   </div>
                   <span style={{
                     fontFamily: 'var(--f-body)', fontSize: '0.8rem', fontWeight: 300,
-                    color: on ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.75)',
+                    color: on ? 'var(--text-2)' : 'rgba(255,255,255,0.75)',
                     textDecoration: on ? 'line-through' : 'none',
                     textDecorationColor: '#2a2a2a',
                   }}>{item}</span>
