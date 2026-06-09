@@ -168,8 +168,9 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
       <div style={{
         padding:"16px",
         display:"flex",justifyContent:"space-between",alignItems:"flex-end",
-        borderBottom:"2px solid var(--accent-primary)",
-        background:"var(--card-bg)",
+        borderBottom:"2px solid var(--gold)",
+        background:"var(--container)",
+        borderRadius:"10px 10px 0 0",
       }}>
         <div>
           <div style={{
@@ -358,7 +359,7 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
         <button
           onClick={()=>handleShare(shareText)}
           className="btn-gold"
-          style={{ padding:"18px 20px", fontSize:"0.72rem" }}>
+          style={{ padding:"16px 20px", fontSize:"0.7rem", borderRadius: 10 }}>
           EXPORT TELEMETRY
         </button>
         <div style={{
