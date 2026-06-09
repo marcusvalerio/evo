@@ -1,8 +1,86 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { DAYS } from "@/lib/data"
 import { getDayProgressReal, calcStreak, fmtDate, WeightEntry, DayEval } from "@/lib/helpers"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+
+/* ── INCENTIVOS — sem clichê ── */
+const INCENTIVOS = [
+  { text: "Músculo não cresce no treino. Cresce no descanso, no sono e na comida.", tag: "FISIOLOGIA" },
+  { text: "Disciplina não é motivação acumulada. É uma decisão repetida quando a motivação sumiu.", tag: "CONSTÂNCIA" },
+  { text: "Comida real não precisa de lista de ingredientes. Esse é o critério mais simples.", tag: "NUTRIÇÃO" },
+  { text: "Treino com 60% de intensidade feito 5x supera treino com 100% feito 1x.", tag: "FREQUÊNCIA" },
+  { text: "Peso na balança é dado, não julgamento. Use como ferramenta.", tag: "DADOS" },
+  { text: "Hidratação, sono e proteína resolvem mais do que qualquer suplemento.", tag: "FUNDAMENTOS" },
+  { text: "Você não precisa de mais informação. Precisa executar o que já sabe.", tag: "EXECUÇÃO" },
+  { text: "A diferença entre quem chega e quem desiste está nos dias ruins.", tag: "RESILIÊNCIA" },
+  { text: "Cada refeição é uma escolha. Não precisa ser perfeita — precisa ser intencional.", tag: "INTENÇÃO" },
+  { text: "Não compare seu progresso. Os pontos de partida são diferentes.", tag: "AUTOCONHECIMENTO" },
+]
+
+/* ── INCENTIVO BAR ── */
+function IncentivoBar() {
+  const [idx, setIdx] = useState(0)
+
+  useEffect(() => {
+    const d = new Date()
+    const seed = Math.floor((d.getTime() - new Date(d.getFullYear(),0,0).getTime()) / 86400000)
+    setIdx(seed % INCENTIVOS.length)
+  }, [])
+
+  const item = INCENTIVOS[idx]
+  const prev = () => setIdx(i => (i - 1 + INCENTIVOS.length) % INCENTIVOS.length)
+  const next = () => setIdx(i => (i + 1) % INCENTIVOS.length)
+
+  return (
+    <div style={{
+      margin: "12px",
+      background: "var(--canvas)",
+      border: "1px solid rgba(66,71,105,0.4)",
+      borderRadius: 8,
+      borderLeft: "2px solid var(--gold)",
+      padding: "12px 14px",
+      display: "flex", alignItems: "center", gap: 10,
+    }}>
+      {/* Prev */}
+      <button onClick={prev} className="press" style={{
+        background: "none", border: "none", cursor: "pointer",
+        color: "rgba(181,158,95,0.4)", flexShrink: 0, padding: 2,
+      }}>
+        <ChevronLeft size={12}/>
+      </button>
+
+      {/* Content */}
+      <AnimatePresence mode="wait">
+        <motion.div key={idx}
+          initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.2 }}
+          style={{ flex: 1 }}>
+          <div style={{
+            fontFamily: "var(--f-head)", fontSize: "0.5rem",
+            textTransform: "uppercase", letterSpacing: "0.2em",
+            color: "var(--gold)", marginBottom: 4, opacity: 0.8,
+          }}>{item.tag}</div>
+          <p style={{
+            fontFamily: "var(--f-body)", fontSize: "0.72rem",
+            fontWeight: 300, color: "var(--text-2)",
+            lineHeight: 1.5,
+          }}>{item.text}</p>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Next */}
+      <button onClick={next} className="press" style={{
+        background: "none", border: "none", cursor: "pointer",
+        color: "rgba(181,158,95,0.4)", flexShrink: 0, padding: 2,
+      }}>
+        <ChevronRight size={12}/>
+      </button>
+    </div>
+  )
+}
 
 /* ── GOLD ARC ── */
 function GoldArc({ pct }: { pct: number }) {
@@ -26,7 +104,7 @@ function GoldArc({ pct }: { pct: number }) {
           initial={{ strokeDashoffset: arc }}
           animate={{ strokeDashoffset: offset }}
           transition={{ duration: 1.6, ease: [.4,0,.2,1], delay: .2 }}
-          style={{ filter: isElite ? "drop-shadow(0 0 4px rgba(181,158,95,0.5))" : "none" }}/>
+          style={{ filter: isElite ? "drop-shadow(0 0 6px rgba(181,158,95,0.55))" : "none" }}/>
       </svg>
       <div style={{
         position: "absolute", inset: 0,
@@ -221,66 +299,51 @@ export function Dashboard({ checked, weights, evals }: Props) {
 
   return (
     <div>
-
       {/* ── METRIC CONTROLLER ── */}
       <motion.div
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
         className="metal-surface gleam-on-load"
         style={{ margin: "12px", padding: "18px", position: "relative" }}>
-
-        {/* Corner accent marks — liquid metal */}
+        {/* Corner marks */}
         {[
-          { top: 7, left: 7, borderTop: true, borderLeft: true },
-          { top: 7, right: 7, borderTop: true, borderRight: true },
-          { bottom: 7, left: 7, borderBottom: true, borderLeft: true },
-          { bottom: 7, right: 7, borderBottom: true, borderRight: true },
+          { top: 7, left: 7, bT: true, bL: true },
+          { top: 7, right: 7, bT: true, bR: true },
+          { bottom: 7, left: 7, bB: true, bL: true },
+          { bottom: 7, right: 7, bB: true, bR: true },
         ].map((pos, i) => (
           <div key={i} style={{
             position: "absolute", width: 10, height: 10,
-            top: "top" in pos ? pos.top : undefined,
-            bottom: "bottom" in pos ? pos.bottom : undefined,
-            left: "left" in pos ? pos.left : undefined,
-            right: "right" in pos ? pos.right : undefined,
-            borderTop: pos.borderTop ? "1px solid var(--gold)" : "none",
-            borderBottom: pos.borderBottom ? "1px solid var(--gold)" : "none",
-            borderLeft: pos.borderLeft ? "1px solid var(--gold)" : "none",
-            borderRight: pos.borderRight ? "1px solid var(--gold)" : "none",
+            top: "top" in pos ? (pos as any).top : undefined,
+            bottom: "bottom" in pos ? (pos as any).bottom : undefined,
+            left: "left" in pos ? (pos as any).left : undefined,
+            right: "right" in pos ? (pos as any).right : undefined,
+            borderTop:    (pos as any).bT ? "1px solid var(--gold)" : "none",
+            borderBottom: (pos as any).bB ? "1px solid var(--gold)" : "none",
+            borderLeft:   (pos as any).bL ? "1px solid var(--gold)" : "none",
+            borderRight:  (pos as any).bR ? "1px solid var(--gold)" : "none",
           }}/>
         ))}
-
         <div style={{
           fontFamily: "var(--f-head)", fontSize: "0.58rem",
           textTransform: "uppercase", letterSpacing: "0.2em",
           color: "var(--text-2)", marginBottom: 16,
-        }}>
-          ÍNDICE DE ADERÊNCIA ATUAL
-        </div>
-
+        }}>ÍNDICE DE ADERÊNCIA ATUAL</div>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <GoldArc pct={adh}/>
-          <div style={{ flex: 1, paddingLeft: 14,
-            borderLeft: "1px solid rgba(66,71,105,0.4)" }}>
-            {/* Big metric */}
+          <div style={{ flex: 1, paddingLeft: 14, borderLeft: "1px solid rgba(66,71,105,0.4)" }}>
             <div style={{
               fontFamily: "var(--f-body)", fontSize: "2.4rem", fontWeight: 300,
-              color: "var(--gold)", lineHeight: 1, letterSpacing: "-0.03em",
-              marginBottom: 4,
+              color: "var(--gold)", lineHeight: 1, letterSpacing: "-0.03em", marginBottom: 4,
             }}>
               {adh}<span style={{ fontSize: "1rem" }}>%</span>{" "}
-              <span style={{ fontSize: "0.85rem", color: "var(--gold-2)", letterSpacing: "0.04em" }}>
-                ADH
-              </span>
+              <span style={{ fontSize: "0.85rem", color: "var(--gold-2)", letterSpacing: "0.04em" }}>ADH</span>
             </div>
             <div style={{
               fontFamily: "var(--f-head)", fontSize: "0.52rem",
               textTransform: "uppercase", letterSpacing: "0.14em",
               color: "var(--gold-2)", marginBottom: 14,
-            }}>
-              STATUS: {statusLabel}
-            </div>
-
-            {/* Bars */}
+            }}>STATUS: {statusLabel}</div>
             {[
               { l: "DIETA HOJE", v: adh },
               { l: "META SEMANAL", v: Math.round((completedDays/7)*100) },
@@ -290,8 +353,7 @@ export function Dashboard({ checked, weights, evals }: Props) {
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                   <span style={{
                     fontFamily: "var(--f-head)", fontSize: "0.44rem",
-                    textTransform: "uppercase", letterSpacing: "0.16em",
-                    color: "var(--text-2)",
+                    textTransform: "uppercase", letterSpacing: "0.16em", color: "var(--text-2)",
                   }}>{bar.l}</span>
                   <span style={{
                     fontFamily: "var(--f-body)", fontSize: "0.5rem",
@@ -300,32 +362,28 @@ export function Dashboard({ checked, weights, evals }: Props) {
                 </div>
                 <div className="prog-track">
                   <motion.div className="prog-fill"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${bar.v}%` }}
+                    initial={{ width: 0 }} animate={{ width: `${bar.v}%` }}
                     transition={{ duration: 1.4, ease: [.4,0,.2,1], delay: .4 }}/>
                 </div>
               </div>
             ))}
-
-            {/* Session tag */}
             <div style={{
               marginTop: 12, display: "inline-flex", alignItems: "center", gap: 6,
-              background: "rgba(27,41,75,0.5)",
-              border: "1px solid rgba(27,41,75,0.8)",
+              background: "rgba(27,41,75,0.5)", border: "1px solid rgba(27,41,75,0.8)",
               borderRadius: 6, padding: "3px 8px",
             }}>
               <div style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--gold)" }}/>
               <span style={{
                 fontFamily: "var(--f-head)", fontSize: "0.46rem",
-                textTransform: "uppercase", letterSpacing: "0.14em",
-                color: "var(--gold-2)",
-              }}>
-                {DAY_NAMES[new Date().getDay()]} // SESSÃO {period}
-              </span>
+                textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--gold-2)",
+              }}>{DAY_NAMES[new Date().getDay()]} // SESSÃO {period}</span>
             </div>
           </div>
         </div>
       </motion.div>
+
+      {/* ── INCENTIVO BAR ── */}
+      <IncentivoBar />
 
       {/* ── VECTOR DIRECTIVE ── */}
       <VectorDirective adh={adh}/>
