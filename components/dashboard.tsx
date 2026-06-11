@@ -40,7 +40,7 @@ function IncentivoBar() {
       background: "var(--canvas)",
       border: "1px solid rgba(66,71,105,0.4)",
       borderRadius: 8,
-      borderLeft: "2px solid var(--gold)",
+      borderLeft: "2px solid #E34B26",
       padding: "12px 14px",
       display: "flex", alignItems: "center", gap: 10,
     }}>
@@ -59,13 +59,13 @@ function IncentivoBar() {
           exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.2 }}
           style={{ flex: 1 }}>
           <div style={{
-            fontFamily: "var(--f-head)", fontSize: "0.5rem",
+            fontFamily: "var(--f-title)", fontSize: "0.5rem",
             textTransform: "uppercase", letterSpacing: "0.2em",
-            color: "var(--gold)", marginBottom: 4, opacity: 0.8,
+            color: "#E34B26", marginBottom: 4, opacity: 0.8,
           }}>{item.tag}</div>
           <p style={{
             fontFamily: "var(--f-body)", fontSize: "0.72rem",
-            fontWeight: 300, color: "var(--text-2)",
+            fontWeight: 300, color: "var(--t2)",
             lineHeight: 1.5,
           }}>{item.text}</p>
         </motion.div>
@@ -95,10 +95,10 @@ function GoldArc({ pct }: { pct: number }) {
       <svg width={S} height={S} viewBox={`0 0 ${S} ${S}`}
         style={{ transform: "rotate(144deg)" }}>
         <circle cx={S/2} cy={S/2} r={r} fill="none"
-          stroke="var(--cobalt)" strokeWidth={sw} strokeLinecap="round"
+          stroke="rgba(73,116,127,0.35)" strokeWidth={sw} strokeLinecap="round"
           strokeDasharray={`${arc} ${circ}`}/>
         <motion.circle cx={S/2} cy={S/2} r={r} fill="none"
-          stroke={isElite ? "var(--gold)" : "var(--cobalt)"}
+          stroke={isElite ? "#E34B26" : "rgba(73,116,127,0.35)"}
           strokeWidth={sw} strokeLinecap="round"
           strokeDasharray={`${arc} ${circ}`}
           initial={{ strokeDashoffset: arc }}
@@ -115,15 +115,15 @@ function GoldArc({ pct }: { pct: number }) {
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
           style={{
             fontFamily: "var(--f-body)", fontSize: "2.2rem", fontWeight: 300,
-            color: isElite ? "var(--gold)" : "var(--text)",
+            color: isElite ? "#E34B26" : "var(--t1)",
             lineHeight: 1, letterSpacing: "-0.02em",
           }}>
           {pct}%
         </motion.span>
         <span style={{
-          fontFamily: "var(--f-head)", fontSize: "0.46rem",
+          fontFamily: "var(--f-title)", fontSize: "0.46rem",
           textTransform: "uppercase", letterSpacing: "0.2em",
-          color: "var(--text-2)", marginTop: 4,
+          color: "var(--t2)", marginTop: 4,
         }}>ADH</span>
       </div>
     </div>
@@ -136,15 +136,15 @@ function VectorDirective({ adh }: { adh: number }) {
   return (
     <div className="vector-directive">
       <div style={{
-        fontFamily: "var(--f-head)", fontSize: "0.55rem",
+        fontFamily: "var(--f-title)", fontSize: "0.55rem",
         textTransform: "uppercase", letterSpacing: "0.2em",
-        color: "var(--gold)", marginBottom: 8,
+        color: "#E34B26", marginBottom: 8,
       }}>
         DIRETRIZ DE VETOR // {stable ? "ESTÁVEL" : "ALERTA"}
       </div>
       <p style={{
         fontFamily: "var(--f-body)", fontSize: "0.75rem", fontWeight: 300,
-        color: stable ? "var(--text)" : "var(--gold-2)",
+        color: stable ? "var(--t1)" : "var(--hushed)",
         lineHeight: 1.6, marginBottom: 8,
       }}>
         {stable
@@ -153,10 +153,10 @@ function VectorDirective({ adh }: { adh: number }) {
       </p>
       <div style={{
         fontFamily: "var(--f-body)", fontSize: "0.58rem", fontWeight: 300,
-        color: "var(--text-2)", textTransform: "uppercase", letterSpacing: "0.12em",
+        color: "var(--t2)", textTransform: "uppercase", letterSpacing: "0.12em",
       }}>
         EFICIÊNCIA MECÂNICA SISTÊMICA //{" "}
-        <span style={{ color: stable ? "var(--gold-2)" : "var(--gold)" }}>
+        <span style={{ color: stable ? "var(--hushed)" : "#E34B26" }}>
           {stable ? "[STATUS: STABLE VECTOR]" : "[STATUS: CRITICAL DEVIATION]"}
         </span>
       </div>
@@ -184,19 +184,19 @@ function WeekStrip({ checked }: { checked: Record<string, boolean> }) {
             padding: "10px 0",
             background: isToday ? "rgba(27,41,75,0.3)" : "transparent",
             borderRight: idx < 6 ? "1px solid rgba(66,71,105,0.25)" : "none",
-            borderTop: isToday ? "2px solid var(--gold)" : "2px solid transparent",
+            borderTop: isToday ? "2px solid #E34B26" : "2px solid transparent",
           }}>
             <span style={{
-              fontFamily: "var(--f-head)", fontSize: "0.44rem",
+              fontFamily: "var(--f-title)", fontSize: "0.44rem",
               textTransform: "uppercase", letterSpacing: "0.1em",
-              color: isToday ? "var(--gold-2)" : "var(--text-2)", marginBottom: 5,
+              color: isToday ? "var(--hushed)" : "var(--t2)", marginBottom: 5,
             }}>{L[idx]}</span>
             <div style={{
               width: 20, height: 20, borderRadius: 4,
-              border: done ? "1px solid var(--gold)"
+              border: done ? "1px solid #E34B26"
                 : isToday ? "1px solid rgba(181,158,95,0.4)"
-                : "1px solid var(--cobalt)",
-              background: done ? "var(--gold)" : "transparent",
+                : "1px solid rgba(73,116,127,0.35)",
+              background: done ? "#E34B26" : "transparent",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               {done ? (
@@ -207,7 +207,7 @@ function WeekStrip({ checked }: { checked: Record<string, boolean> }) {
               ) : pct > 0 ? (
                 <span style={{
                   fontFamily: "var(--f-body)", fontSize: "0.38rem",
-                  fontWeight: 400, color: "var(--text-2)",
+                  fontWeight: 400, color: "var(--t2)",
                 }}>{pct}%</span>
               ) : null}
             </div>
@@ -228,28 +228,28 @@ function MetricCell({ label, value, unit, sub, accent, borderRight, viz }: {
       padding: "16px",
       borderRight: borderRight ? "1px solid rgba(66,71,105,0.35)" : "none",
       borderBottom: "1px solid rgba(66,71,105,0.35)",
-      background: "var(--container)",
+      background: "var(--card)",
     }}>
       <div style={{
-        fontFamily: "var(--f-head)", fontSize: "0.5rem",
+        fontFamily: "var(--f-title)", fontSize: "0.5rem",
         textTransform: "uppercase", letterSpacing: "0.2em",
-        color: "var(--text-2)", marginBottom: 10,
+        color: "var(--t2)", marginBottom: 10,
       }}>{label}</div>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
         <div>
           <span style={{
             fontFamily: "var(--f-body)", fontSize: "1.9rem", fontWeight: 300,
-            color: accent ? "var(--gold)" : "var(--text)",
+            color: accent ? "#E34B26" : "var(--t1)",
             letterSpacing: "-0.02em", lineHeight: 1,
           }}>{value}</span>
           {unit && <span style={{
             fontFamily: "var(--f-body)", fontSize: "0.58rem",
-            fontWeight: 300, color: "var(--text-2)", marginLeft: 4,
+            fontWeight: 300, color: "var(--t2)", marginLeft: 4,
           }}>{unit}</span>}
           {sub && <div style={{
-            fontFamily: "var(--f-head)", fontSize: "0.46rem",
+            fontFamily: "var(--f-title)", fontSize: "0.46rem",
             textTransform: "uppercase", letterSpacing: "0.14em",
-            color: "var(--text-2)", marginTop: 4,
+            color: "var(--t2)", marginTop: 4,
           }}>{sub}</div>}
         </div>
         {viz}
@@ -270,10 +270,10 @@ function MiniLine({ weights }: { weights: WeightEntry[] }) {
   const pts = s.map((w,i) => `${x(i)},${y(w.val)}`).join(" ")
   return (
     <svg viewBox={`0 0 ${W} ${H}`} style={{ width: W, height: H }}>
-      <polyline points={pts} fill="none" stroke="var(--gold)"
+      <polyline points={pts} fill="none" stroke="#E34B26"
         strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/>
       <circle cx={x(s.length-1)} cy={y(s[s.length-1].val)} r="2.5"
-        fill="var(--gold)" style={{ filter: "drop-shadow(0 0 3px rgba(181,158,95,0.6))" }}/>
+        fill="#E34B26" style={{ filter: "drop-shadow(0 0 3px rgba(181,158,95,0.6))" }}/>
     </svg>
   )
 }
@@ -318,31 +318,31 @@ export function Dashboard({ checked, weights, evals }: Props) {
             bottom: "bottom" in pos ? (pos as any).bottom : undefined,
             left: "left" in pos ? (pos as any).left : undefined,
             right: "right" in pos ? (pos as any).right : undefined,
-            borderTop:    (pos as any).bT ? "1px solid var(--gold)" : "none",
-            borderBottom: (pos as any).bB ? "1px solid var(--gold)" : "none",
-            borderLeft:   (pos as any).bL ? "1px solid var(--gold)" : "none",
-            borderRight:  (pos as any).bR ? "1px solid var(--gold)" : "none",
+            borderTop:    (pos as any).bT ? "1px solid #E34B26" : "none",
+            borderBottom: (pos as any).bB ? "1px solid #E34B26" : "none",
+            borderLeft:   (pos as any).bL ? "1px solid #E34B26" : "none",
+            borderRight:  (pos as any).bR ? "1px solid #E34B26" : "none",
           }}/>
         ))}
         <div style={{
-          fontFamily: "var(--f-head)", fontSize: "0.58rem",
+          fontFamily: "var(--f-title)", fontSize: "0.58rem",
           textTransform: "uppercase", letterSpacing: "0.2em",
-          color: "var(--text-2)", marginBottom: 16,
+          color: "var(--t2)", marginBottom: 16,
         }}>ÍNDICE DE ADERÊNCIA ATUAL</div>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <GoldArc pct={adh}/>
           <div style={{ flex: 1, paddingLeft: 14, borderLeft: "1px solid rgba(66,71,105,0.4)" }}>
             <div style={{
               fontFamily: "var(--f-body)", fontSize: "2.4rem", fontWeight: 300,
-              color: "var(--gold)", lineHeight: 1, letterSpacing: "-0.03em", marginBottom: 4,
+              color: "#E34B26", lineHeight: 1, letterSpacing: "-0.03em", marginBottom: 4,
             }}>
               {adh}<span style={{ fontSize: "1rem" }}>%</span>{" "}
-              <span style={{ fontSize: "0.85rem", color: "var(--gold-2)", letterSpacing: "0.04em" }}>ADH</span>
+              <span style={{ fontSize: "0.85rem", color: "var(--hushed)", letterSpacing: "0.04em" }}>ADH</span>
             </div>
             <div style={{
-              fontFamily: "var(--f-head)", fontSize: "0.52rem",
+              fontFamily: "var(--f-title)", fontSize: "0.52rem",
               textTransform: "uppercase", letterSpacing: "0.14em",
-              color: "var(--gold-2)", marginBottom: 14,
+              color: "var(--hushed)", marginBottom: 14,
             }}>STATUS: {statusLabel}</div>
             {[
               { l: "DIETA HOJE", v: adh },
@@ -352,12 +352,12 @@ export function Dashboard({ checked, weights, evals }: Props) {
               <div key={bar.l} style={{ marginBottom: 9 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                   <span style={{
-                    fontFamily: "var(--f-head)", fontSize: "0.44rem",
-                    textTransform: "uppercase", letterSpacing: "0.16em", color: "var(--text-2)",
+                    fontFamily: "var(--f-title)", fontSize: "0.44rem",
+                    textTransform: "uppercase", letterSpacing: "0.16em", color: "var(--t2)",
                   }}>{bar.l}</span>
                   <span style={{
                     fontFamily: "var(--f-body)", fontSize: "0.5rem",
-                    fontWeight: 300, color: "var(--gold-2)",
+                    fontWeight: 300, color: "var(--hushed)",
                   }}>{bar.v}%</span>
                 </div>
                 <div className="prog-track">
@@ -372,10 +372,10 @@ export function Dashboard({ checked, weights, evals }: Props) {
               background: "rgba(27,41,75,0.5)", border: "1px solid rgba(27,41,75,0.8)",
               borderRadius: 6, padding: "3px 8px",
             }}>
-              <div style={{ width: 4, height: 4, borderRadius: "50%", background: "var(--gold)" }}/>
+              <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#E34B26" }}/>
               <span style={{
-                fontFamily: "var(--f-head)", fontSize: "0.46rem",
-                textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--gold-2)",
+                fontFamily: "var(--f-title)", fontSize: "0.46rem",
+                textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--hushed)",
               }}>{DAY_NAMES[new Date().getDay()]} // SESSÃO {period}</span>
             </div>
           </div>
@@ -400,7 +400,7 @@ export function Dashboard({ checked, weights, evals }: Props) {
               {[...Array(Math.min(streak,7)||1)].map((_,i) => (
                 <div key={i} style={{
                   width: 4, height: 6 + i*5, borderRadius: 2,
-                  background: i < Math.min(streak,7) ? "var(--gold)" : "var(--cobalt)",
+                  background: i < Math.min(streak,7) ? "#E34B26" : "rgba(73,116,127,0.35)",
                 }}/>
               ))}
             </div>
@@ -425,7 +425,7 @@ export function Dashboard({ checked, weights, evals }: Props) {
               <div key={date} className="telem-row">
                 <span style={{
                   fontFamily: "var(--f-body)", fontSize: "0.6rem",
-                  fontWeight: 300, color: "var(--text-2)",
+                  fontWeight: 300, color: "var(--t2)",
                   textTransform: "uppercase", letterSpacing: "0.1em",
                 }}>[{fmtDate(date)}]</span>
                 <div style={{ display: "flex", gap: 8 }}>
