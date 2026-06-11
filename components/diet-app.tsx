@@ -116,7 +116,7 @@ export function DietApp() {
                 <span style={{fontFamily:'var(--f-logo)',fontSize:'1.2rem',
                   letterSpacing:'0.14em',color:'#fff'}}>EVO</span>
               ) : (
-                <span style={{fontFamily:'var(--f-head)',fontSize:'0.72rem',
+                <span style={{fontFamily:'var(--f-title)',fontSize:'0.72rem',
                   textTransform:'uppercase',letterSpacing:'0.16em',
                   color:'rgba(255,255,255,0.7)'}}>
                   {TITLES[view]||view}
@@ -161,7 +161,7 @@ export function DietApp() {
                   padding:'10px 16px',background:'#0a0a0a',borderBottom:'1px solid #222',
                   display:'flex',justifyContent:'space-between',alignItems:'center',
                 }}>
-                  <span style={{fontFamily:'var(--f-head)',fontSize:'0.58rem',
+                  <span style={{fontFamily:'var(--f-title)',fontSize:'0.58rem',
                     textTransform:'uppercase',letterSpacing:'0.2em',color:'rgba(255,255,255,0.3)'}}>
                     Registrar peso
                   </span>
