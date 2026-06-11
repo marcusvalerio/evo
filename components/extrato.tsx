@@ -53,7 +53,8 @@ async function handleShare(text: string) {
     try { await navigator.share({ title:"EVO_TELEMETRY", text, url: window.location.href }) }
     catch {}
   } else {
-    try { await navigator.clipboard.writeText(`${text}\n${window.location.href}`) } catch {}
+    try { await navigator.clipboard.writeText(`${text}
+${window.location.href}`) } catch {}
   }
 }
 
@@ -129,7 +130,8 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
     ...logEntries.map(e => `[${e.time}] ${e.label} ......... ${e.status}`),
     ``,
     `evo-weld.vercel.app`,
-  ].filter(Boolean).join("\n")
+  ].filter(Boolean).join("
+")
 
   /* Reusable row */
   const TR = ({ l, v, u, accent, dim, indent=false }: {
@@ -137,60 +139,60 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
   }) => (
     <div className="telem-row" style={{ paddingLeft: indent ? 28 : 16 }}>
       <span style={{
-        fontFamily:"var(--f-head)",fontSize:"0.55rem",textTransform:"uppercase",
-        letterSpacing:"0.18em",color: dim?"rgba(136,136,136,0.5)":"var(--text-secondary)",
+        fontFamily:"var(--f-title)",fontSize:"0.55rem",textTransform:"uppercase",
+        letterSpacing:"0.18em",color: dim?"rgba(136,136,136,0.5)":"var(--t3)",
       }}>{l}</span>
       <span style={{
         fontFamily:"var(--f-body)",
         fontSize: accent?"0.9rem":"0.7rem",
         fontWeight: accent?400:300,
-        color: accent?"var(--accent-primary)": dim?"rgba(136,136,136,0.4)":"var(--text-primary)",
+        color: accent?"#E34B26": dim?"rgba(136,136,136,0.4)":"var(--t1)",
       }}>
-        {v}{u&&<span style={{fontSize:"0.52rem",color:"var(--text-secondary)",marginLeft:3}}>{u}</span>}
+        {v}{u&&<span style={{fontSize:"0.52rem",color:"var(--t3)",marginLeft:3}}>{u}</span>}
       </span>
     </div>
   )
 
   const SH = ({ l }: { l:string }) => (
     <div style={{
-      padding:"9px 16px", background:"var(--card-bg)",
-      borderBottom:"1px solid var(--border-color)",
-      fontFamily:"var(--f-head)", fontSize:"0.6rem",
+      padding:"9px 16px", background:"var(--card)",
+      borderBottom:"1px solid var(--border)",
+      fontFamily:"var(--f-title)", fontSize:"0.6rem",
       textTransform:"uppercase", letterSpacing:"0.22em",
-      color:"var(--accent-primary)",
+      color:"#E34B26",
     }}>{l}</div>
   )
 
   return (
-    <div style={{ background:"var(--canvas-bg)", minHeight:"100%" }}>
+    <div style={{ background:"var(--canvas)", minHeight:"100%" }}>
 
       {/* HEADER */}
       <div style={{
         padding:"16px",
         display:"flex",justifyContent:"space-between",alignItems:"flex-end",
-        borderBottom:"2px solid var(--gold)",
+        borderBottom:"2px solid #E34B26",
         background:"var(--container)",
         borderRadius:"10px 10px 0 0",
       }}>
         <div>
           <div style={{
             fontFamily:"var(--f-logo)",fontSize:"2rem",fontWeight:700,
-            color:"var(--accent-primary)",letterSpacing:"0.14em",lineHeight:1,
+            color:"#E34B26",letterSpacing:"0.14em",lineHeight:1,
           }}>EVO</div>
           <div style={{
-            fontFamily:"var(--f-head)",fontSize:"0.52rem",
+            fontFamily:"var(--f-title)",fontSize:"0.52rem",
             textTransform:"uppercase",letterSpacing:"0.28em",
-            color:"var(--text-secondary)",marginTop:5,
+            color:"var(--t3)",marginTop:5,
           }}>EXTRATO DE TELEMETRIA</div>
         </div>
         <div style={{ textAlign:"right" }}>
           <div style={{
             fontFamily:"var(--f-body)",fontSize:"0.55rem",fontWeight:300,
-            color:"var(--text-secondary)",letterSpacing:"0.08em",textTransform:"uppercase",
+            color:"var(--t3)",letterSpacing:"0.08em",textTransform:"uppercase",
           }}>{ts}</div>
           {userName&&<div style={{
             fontFamily:"var(--f-body)",fontSize:"0.6rem",fontWeight:400,
-            color:"var(--text-primary)",marginTop:3,
+            color:"var(--t1)",marginTop:3,
             textTransform:"uppercase",letterSpacing:"0.1em",
           }}>{userName}</div>}
         </div>
@@ -199,7 +201,7 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
       {/* KPI STRIP */}
       <div style={{
         display:"grid",gridTemplateColumns:"1fr 1fr 1fr",
-        background:"var(--card-bg)",borderBottom:"1px solid var(--border-color)",
+        background:"var(--card)",borderBottom:"1px solid var(--border)",
       }}>
         {[
           { l:"ADERÊNCIA", v:`${adhSemanal}%`, acc:adhSemanal>=80 },
@@ -208,16 +210,16 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
         ].map((k,i) => (
           <div key={k.l} style={{
             padding:"14px 10px",textAlign:"center",
-            borderRight:i<2?"1px solid var(--border-color)":"none",
+            borderRight:i<2?"1px solid var(--border)":"none",
           }}>
             <div style={{
-              fontFamily:"var(--f-head)",fontSize:"0.48rem",
+              fontFamily:"var(--f-title)",fontSize:"0.48rem",
               textTransform:"uppercase",letterSpacing:"0.2em",
-              color:"var(--text-secondary)",marginBottom:7,
+              color:"var(--t3)",marginBottom:7,
             }}>{k.l}</div>
             <div style={{
               fontFamily:"var(--f-body)",fontSize:"1.5rem",fontWeight:300,
-              color:k.acc?"var(--accent-primary)":"var(--text-primary)",
+              color:k.acc?"#E34B26":"var(--t1)",
               lineHeight:1,letterSpacing:"-0.01em",
             }}>{k.v}</div>
           </div>
@@ -232,15 +234,15 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
           <div key={i} className="telem-row">
             <span style={{
               fontFamily:"var(--f-body)",fontSize:"0.65rem",fontWeight:300,
-              color:"var(--text-secondary)",letterSpacing:"0.08em",
+              color:"var(--t3)",letterSpacing:"0.08em",
             }}>
-              [{e.time}] <span style={{color:"var(--text-primary)"}}>{e.label}</span>
+              [{e.time}] <span style={{color:"var(--t1)"}}>{e.label}</span>
               <span style={{color:"rgba(136,136,136,0.3)"}}> {dots} </span>
             </span>
             <span style={{
-              fontFamily:"var(--f-head)",fontSize:"0.55rem",
+              fontFamily:"var(--f-title)",fontSize:"0.55rem",
               textTransform:"uppercase",letterSpacing:"0.14em",
-              color: e.ok?"var(--accent-primary)" : e.status==="PARCIAL"?"var(--accent-secondary)":"var(--text-secondary)",
+              color: e.ok?"#E34B26" : e.status==="PARCIAL"?"var(--hushed)":"var(--t3)",
             }}>{e.status}</span>
           </div>
         )
@@ -259,15 +261,15 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
       <SH l="GRADE SEMANAL"/>
       <div style={{
         display:"grid",gridTemplateColumns:"52px repeat(4,1fr)",
-        background:"var(--card-bg)",borderBottom:"1px solid var(--border-color)",
+        background:"var(--card)",borderBottom:"1px solid var(--border)",
       }}>
         {["","ADH","KCAL","PTN","CHO"].map((h,i)=>(
           <div key={h} style={{
             padding:"6px 8px",
-            borderRight:i<4?"1px solid var(--border-color)":"none",
-            fontFamily:"var(--f-head)",fontSize:"0.44rem",
+            borderRight:i<4?"1px solid var(--border)":"none",
+            fontFamily:"var(--f-title)",fontSize:"0.44rem",
             textTransform:"uppercase",letterSpacing:"0.16em",
-            color:"var(--text-secondary)",textAlign:i?"right":"left",
+            color:"var(--t3)",textAlign:i?"right":"left",
           }}>{h}</div>
         ))}
       </div>
@@ -280,14 +282,14 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
             borderBottom:"1px solid rgba(66,71,105,0.3)",
           }}>
             <div style={{
-              padding:"9px 8px",borderRight:"1px solid var(--border-color)",
+              padding:"9px 8px",borderRight:"1px solid var(--border)",
               display:"flex",alignItems:"center",gap:5,
             }}>
-              {done&&<div style={{width:4,height:4,background:"var(--accent-primary)",flexShrink:0}}/>}
+              {done&&<div style={{width:4,height:4,background:"#E34B26",flexShrink:0}}/>}
               <span style={{
-                fontFamily:"var(--f-head)",fontSize:"0.5rem",
+                fontFamily:"var(--f-title)",fontSize:"0.5rem",
                 textTransform:"uppercase",letterSpacing:"0.12em",
-                color:isToday?"var(--accent-secondary)":done?"var(--text-primary)":"var(--text-secondary)",
+                color:isToday?"var(--hushed)":done?"var(--t1)":"var(--t3)",
               }}>{DAY_LABELS[i]}</span>
             </div>
             {[
@@ -301,7 +303,7 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
                 borderRight:ci<3?"1px solid rgba(66,71,105,0.3)":"none",
                 fontFamily:"var(--f-body)",fontSize:"0.6rem",
                 fontWeight:c.acc?400:300,
-                color:c.acc?"var(--accent-primary)":d.adh===0?"rgba(136,136,136,0.25)":"var(--text-primary)",
+                color:c.acc?"#E34B26":d.adh===0?"rgba(136,136,136,0.25)":"var(--t1)",
               }}>{c.v}</div>
             ))}
           </div>
@@ -327,35 +329,35 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
 
       {/* PROGRESS VISUAL */}
       <SH l="ADERÊNCIA SEMANAL — TELEMETRIA VISUAL"/>
-      <div style={{ padding:"16px", borderBottom:"1px solid var(--border-color)" }}>
+      <div style={{ padding:"16px", borderBottom:"1px solid var(--border)" }}>
         <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}>
           <span style={{
-            fontFamily:"var(--f-head)",fontSize:"0.52rem",
-            textTransform:"uppercase",letterSpacing:"0.2em",color:"var(--text-secondary)",
+            fontFamily:"var(--f-title)",fontSize:"0.52rem",
+            textTransform:"uppercase",letterSpacing:"0.2em",color:"var(--t3)",
           }}>PROGRESSO</span>
           <span style={{
             fontFamily:"var(--f-body)",fontSize:"0.85rem",fontWeight:300,
-            color:adhSemanal>=80?"var(--accent-primary)":"var(--text-primary)",
-          }}>{adhSemanal}% <span style={{fontSize:"0.52rem",color:"var(--text-secondary)"}}>[{statusLabel}]</span></span>
+            color:adhSemanal>=80?"#E34B26":"var(--t1)",
+          }}>{adhSemanal}% <span style={{fontSize:"0.52rem",color:"var(--t3)"}}>[{statusLabel}]</span></span>
         </div>
         <div className="prog-track">
           <motion.div
             initial={{width:0}} animate={{width:`${adhSemanal}%`}}
             transition={{duration:1.6,ease:[.4,0,.2,1],delay:.2}}
-            style={{height:2,background:"var(--accent-primary)",position:"absolute",left:0,top:0}}/>
+            style={{height:2,background:"#E34B26",position:"absolute",left:0,top:0}}/>
         </div>
         <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
           {[0,25,50,75,100].map(t=>(
             <span key={t} style={{
               fontFamily:"var(--f-body)",fontSize:"0.42rem",
-              fontWeight:300,color:"var(--text-secondary)",
+              fontWeight:300,color:"var(--t3)",
             }}>{t}%</span>
           ))}
         </div>
       </div>
 
       {/* EXPORT */}
-      <div style={{ borderTop:"2px solid var(--accent-primary)" }}>
+      <div style={{ borderTop:"2px solid #E34B26" }}>
         <button
           onClick={()=>handleShare(shareText)}
           className="btn-gold"
@@ -363,8 +365,8 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
           EXPORT TELEMETRY
         </button>
         <div style={{
-          padding:"10px 16px",borderTop:"1px solid var(--border-color)",
-          background:"var(--card-bg)",
+          padding:"10px 16px",borderTop:"1px solid var(--border)",
+          background:"var(--card)",
           display:"flex",justifyContent:"space-between",alignItems:"center",
         }}>
           <span style={{
@@ -373,7 +375,7 @@ export function Extrato({ checked, weights, userName, userGoal }: Props) {
           }}>EVO</span>
           <span style={{
             fontFamily:"var(--f-body)",fontSize:"0.48rem",
-            fontWeight:300,color:"var(--text-secondary)",
+            fontWeight:300,color:"var(--t3)",
             textTransform:"uppercase",letterSpacing:"0.1em",
           }}>evo-weld.vercel.app</span>
         </div>
