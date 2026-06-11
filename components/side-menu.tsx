@@ -28,7 +28,7 @@ export function SideMenu({open,onClose,onSelect,userName}:{open:boolean;onClose:
             style={{position:"fixed",right:0,top:0,bottom:0,zIndex:70,width:260,display:"flex",flexDirection:"column",borderRadius:"16px 0 0 16px"}}>
             <div className="pt-safe" style={{padding:"14px 16px",borderBottom:"1px solid rgba(66,71,105,0.4)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <div>
-                <div style={{fontFamily:"var(--f-logo)",fontSize:"1rem",color:"var(--gold)",letterSpacing:"0.14em"}}>EVO</div>
+                <div style={{fontFamily:"var(--f-logo)",fontSize:"1rem",color:"#E34B26",letterSpacing:"0.14em"}}>EVO</div>
                 {userName&&<div style={{fontFamily:"var(--f-body)",fontSize:"0.58rem",fontWeight:300,color:"var(--text-2)",textTransform:"uppercase",letterSpacing:"0.1em",marginTop:3}}>{userName}</div>}
               </div>
               <button onClick={onClose} className="btn-ghost press" style={{padding:"7px 11px"}}>✕</button>
@@ -39,10 +39,10 @@ export function SideMenu({open,onClose,onSelect,userName}:{open:boolean;onClose:
                   className="press"
                   style={{width:"100%",textAlign:"left",padding:"14px 16px",background:"transparent",border:"none",borderBottom:"1px solid rgba(66,71,105,0.25)",display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer"}}>
                   <div>
-                    <div style={{fontFamily:"var(--f-head)",fontSize:"0.72rem",textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--text)"}}>{item.label}</div>
+                    <div style={{fontFamily:"var(--f-title)",fontSize:"0.72rem",textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--text)"}}>{item.label}</div>
                     <div style={{fontFamily:"var(--f-body)",fontSize:"0.55rem",fontWeight:300,color:"var(--text-2)",textTransform:"uppercase",letterSpacing:"0.1em",marginTop:3}}>{item.sub}</div>
                   </div>
-                  <span style={{color:"var(--gold)",fontSize:"0.8rem"}}>→</span>
+                  <span style={{color:"#E34B26",fontSize:"0.8rem"}}>→</span>
                 </button>
               ))}
             </div>
