@@ -42,11 +42,11 @@ export function AskButton({ onClick }: { onClick: () => void }) {
     >
       <GoldSpark />
       <span style={{
-        fontFamily: "var(--f-head)",
+        fontFamily: "var(--f-title)",
         fontSize: "0.6rem",
         textTransform: "uppercase",
         letterSpacing: "0.16em",
-        color: "var(--gold-2)",
+        color: "var(--hushed)",
       }}>Ask</span>
     </motion.button>
   )
