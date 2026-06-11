@@ -34,12 +34,12 @@ export function DayPicker({ selectedDay, onDayChange, checked }: Props) {
               background: sel ? 'rgba(27,41,75,0.25)' : 'transparent',
               border: 'none',
               borderRight: idx < 6 ? '1px solid rgba(66,71,105,0.2)' : 'none',
-              borderTop: sel ? '2px solid var(--gold)' : '2px solid transparent',
+              borderTop: sel ? '2px solid #E34B26' : '2px solid transparent',
               cursor: 'pointer',
               transition: 'background 0.1s',
             }}>
             <span style={{
-              fontFamily: 'var(--f-head)',
+              fontFamily: 'var(--f-title)',
               fontSize: '0.48rem', textTransform: 'uppercase',
               letterSpacing: '0.14em',
               color: today ? 'var(--text)' : 'var(--text-2)',
@@ -48,8 +48,8 @@ export function DayPicker({ selectedDay, onDayChange, checked }: Props) {
             </span>
             <div style={{
               width: 20, height: 20,
-              border: done ? '1px solid var(--gold)' : sel ? '1px solid rgba(181,158,95,0.5)' : '1px solid var(--cobalt)',
-              background: done ? 'var(--gold)' : 'transparent',
+              border: done ? '1px solid #E34B26' : sel ? '1px solid rgba(181,158,95,0.5)' : '1px solid rgba(73,116,127,0.35)',
+              background: done ? '#E34B26' : 'transparent',
               borderRadius: 4,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
