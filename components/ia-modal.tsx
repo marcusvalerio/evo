@@ -52,26 +52,26 @@ Tom: técnico, direto, sem enrolação. Máximo 3 parágrafos. Sem markdown.`
       style={{position:"fixed",inset:0,zIndex:80,background:"var(--canvas)",display:"flex",flexDirection:"column"}}>
       <div className="pt-safe" style={{padding:"14px 16px",borderBottom:"1px solid rgba(66,71,105,0.4)",background:"var(--container)",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
         <div>
-          <div style={{fontFamily:"var(--f-logo)",fontSize:"0.88rem",color:"var(--gold)",letterSpacing:"0.14em"}}>EVO</div>
-          <div style={{fontFamily:"var(--f-head)",fontSize:"0.62rem",textTransform:"uppercase",letterSpacing:"0.16em",color:"var(--text)",marginTop:2}}>COACH // SISTEMA ATIVO</div>
+          <div style={{fontFamily:"var(--f-logo)",fontSize:"0.88rem",color:"#E34B26",letterSpacing:"0.14em"}}>EVO</div>
+          <div style={{fontFamily:"var(--f-title)",fontSize:"0.62rem",textTransform:"uppercase",letterSpacing:"0.16em",color:"var(--text)",marginTop:2}}>COACH // SISTEMA ATIVO</div>
         </div>
         <button onClick={onClose} className="btn-ghost press" style={{padding:"8px 12px"}}><X size={14}/></button>
       </div>
       <div style={{flex:1,overflowY:"auto",padding:"16px"}}>
         {msgs.length===0&&(
           <motion.div initial={{opacity:0}} animate={{opacity:1}}>
-            <div style={{borderLeft:"2px solid var(--gold)",paddingLeft:12,marginBottom:20}}>
+            <div style={{borderLeft:"2px solid #E34B26",paddingLeft:12,marginBottom:20}}>
               <p style={{fontFamily:"var(--f-body)",fontSize:"0.78rem",fontWeight:300,color:"var(--text-2)",lineHeight:1.65}}>
                 {streak>0?`${streak} dias no streak. Sistema operacional.`:"Sistema pronto."}
               </p>
             </div>
-            <div style={{fontFamily:"var(--f-head)",fontSize:"0.5rem",textTransform:"uppercase",letterSpacing:"0.2em",color:"var(--text-2)",marginBottom:10}}>DIRETRIZES RÁPIDAS</div>
+            <div style={{fontFamily:"var(--f-title)",fontSize:"0.5rem",textTransform:"uppercase",letterSpacing:"0.2em",color:"var(--text-2)",marginBottom:10}}>DIRETRIZES RÁPIDAS</div>
             <div style={{display:"flex",flexDirection:"column",gap:4}}>
               {QUICK.map(({label,q})=>(
                 <button key={label} onClick={()=>send(q)} className="press metal-btn"
                   style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"11px 14px",border:"none",textAlign:"left",cursor:"pointer"}}>
-                  <span style={{fontFamily:"var(--f-head)",fontSize:"0.62rem",textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--text)"}}>{label}</span>
-                  <ArrowRight size={12} style={{color:"var(--gold)",flexShrink:0}}/>
+                  <span style={{fontFamily:"var(--f-title)",fontSize:"0.62rem",textTransform:"uppercase",letterSpacing:"0.12em",color:"var(--text)"}}>{label}</span>
+                  <ArrowRight size={12} style={{color:"#E34B26",flexShrink:0}}/>
                 </button>
               ))}
             </div>
@@ -83,7 +83,7 @@ Tom: técnico, direto, sem enrolação. Máximo 3 parágrafos. Sem markdown.`
               style={{marginBottom:10,display:"flex",justifyContent:m.role==="user"?"flex-end":"flex-start"}}>
               <div style={{
                 maxWidth:"88%",padding:"10px 14px",borderRadius:8,
-                background:m.role==="user"?"var(--gold)":"var(--container)",
+                background:m.role==="user"?"#E34B26":"var(--container)",
                 boxShadow:m.role==="user"
                   ? "inset 0 1px 0 rgba(255,255,255,0.15)"
                   : "0 0 0 1px rgba(66,71,105,0.5)",
@@ -96,7 +96,7 @@ Tom: técnico, direto, sem enrolação. Máximo 3 parágrafos. Sem markdown.`
         {loading&&(
           <div style={{display:"flex",gap:5,padding:"10px 14px",borderRadius:8,background:"var(--container)",boxShadow:"0 0 0 1px rgba(66,71,105,0.5)",width:"fit-content"}}>
             {[0,1,2].map(i=>(
-              <motion.div key={i} style={{width:4,height:4,borderRadius:"50%",background:"var(--gold)"}}
+              <motion.div key={i} style={{width:4,height:4,borderRadius:"50%",background:"#E34B26"}}
                 animate={{opacity:[.3,1,.3]}} transition={{duration:1,repeat:Infinity,delay:i*.2}}/>
             ))}
           </div>
@@ -108,7 +108,7 @@ Tom: técnico, direto, sem enrolação. Máximo 3 parágrafos. Sem markdown.`
           onKeyDown={e=>e.key==="Enter"&&send(input)}
           className="inp" style={{flex:1,padding:"10px 14px",fontSize:"0.82rem"}}/>
         <button onClick={()=>send(input)} disabled={!input.trim()||loading}
-          style={{padding:"10px 14px",background:"var(--gold)",borderRadius:8,border:"none",cursor:"pointer",opacity:input.trim()&&!loading?1:0.3,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          style={{padding:"10px 14px",background:"#E34B26",borderRadius:8,border:"none",cursor:"pointer",opacity:input.trim()&&!loading?1:0.3,display:"flex",alignItems:"center",justifyContent:"center"}}>
           <ArrowRight size={15} style={{color:"var(--canvas)"}}/>
         </button>
       </div>
