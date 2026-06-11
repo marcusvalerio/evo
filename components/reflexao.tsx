@@ -51,7 +51,7 @@ export function Reflexao() {
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
         <span style={{
-          fontFamily: 'var(--f-head)', fontSize: '0.58rem',
+          fontFamily: 'var(--f-title)', fontSize: '0.58rem',
           textTransform: 'uppercase', letterSpacing: '0.2em',
           color: 'rgba(255,255,255,0.3)',
         }}>Reflexão do dia</span>
@@ -76,7 +76,7 @@ export function Reflexao() {
               letterSpacing: '0.2em', color: '#FF6B00',
             }}>{r.tag}</div>
             <p style={{
-              fontFamily: 'var(--f-head)',
+              fontFamily: 'var(--f-title)',
               fontSize: '1rem', letterSpacing: '0.04em',
               color: '#fff', lineHeight: 1.55,
               marginBottom: 16, textTransform: 'uppercase',
@@ -96,14 +96,14 @@ export function Reflexao() {
         borderBottom: '1px solid #222',
       }}>
         <span style={{
-          fontFamily: 'var(--f-head)', fontSize: '0.58rem',
+          fontFamily: 'var(--f-title)', fontSize: '0.58rem',
           textTransform: 'uppercase', letterSpacing: '0.2em',
           color: 'rgba(255,255,255,0.3)',
         }}>Dica da semana</span>
       </div>
       <div style={{ padding: '16px', borderBottom: '1px solid #222' }}>
         <div style={{
-          fontFamily: 'var(--f-head)', fontSize: '0.8rem',
+          fontFamily: 'var(--f-title)', fontSize: '0.8rem',
           textTransform: 'uppercase', letterSpacing: '0.06em',
           color: '#fff', marginBottom: 10,
         }}>{d.titulo}</div>
@@ -119,7 +119,7 @@ export function Reflexao() {
         borderBottom: '1px solid #222',
       }}>
         <span style={{
-          fontFamily: 'var(--f-head)', fontSize: '0.58rem',
+          fontFamily: 'var(--f-title)', fontSize: '0.58rem',
           textTransform: 'uppercase', letterSpacing: '0.2em',
           color: 'rgba(255,255,255,0.3)',
         }}>Mais reflexões</span>
