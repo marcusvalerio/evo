@@ -27,16 +27,16 @@ export function Navigation({ active, onChange }: { active: TabId; onChange: (t: 
               />
             )}
             <Icon size={18} style={{
-              color: on ? "var(--gold)" : "var(--text-2)",
+              color: on ? "#E34B26" : "var(--text-2)",
               strokeWidth: on ? 2 : 1.5,
               transition: "color 0.15s",
             }}/>
             <span style={{
-              fontFamily: "var(--f-head)",
+              fontFamily: "var(--f-title)",
               fontSize: "0.52rem",
               textTransform: "uppercase",
               letterSpacing: "0.14em",
-              color: on ? "var(--gold)" : "var(--text-2)",
+              color: on ? "#E34B26" : "var(--text-2)",
               transition: "color 0.15s",
             }}>{label}</span>
           </button>
