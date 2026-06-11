@@ -40,16 +40,16 @@ export function MealList({ dayName, checked, onToggle }: Props) {
                 {allDone && (
                   <div style={{
                     width: 6, height: 6,
-                    background: 'var(--gold)',
+                    background: '#E34B26',
                     flexShrink: 0,
                   }}/>
                 )}
                 <span style={{
-                  fontFamily: 'var(--f-head)',
+                  fontFamily: 'var(--f-title)',
                   fontSize: '0.65rem',
                   textTransform: 'uppercase',
                   letterSpacing: '0.18em',
-                  color: allDone ? 'var(--gold)' : 'rgba(255,255,255,0.5)',
+                  color: allDone ? '#E34B26' : 'rgba(255,255,255,0.5)',
                 }}>
                   {MEAL_LABEL[meal] || meal}
                 </span>
@@ -94,8 +94,8 @@ export function MealList({ dayName, checked, onToggle }: Props) {
                   {/* Checkbox */}
                   <div style={{
                     width: 18, height: 18, flexShrink: 0, borderRadius: 5,
-                    border: `1px solid ${on ? 'var(--gold)' : '#333'}`,
-                    background: on ? 'var(--gold)' : 'transparent',
+                    border: `1px solid ${on ? '#E34B26' : '#333'}`,
+                    background: on ? '#E34B26' : 'transparent',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     transition: 'all 0.1s',
                   }}>
@@ -128,7 +128,7 @@ export function MealList({ dayName, checked, onToggle }: Props) {
                         textTransform: 'uppercase',
                         letterSpacing: '0.18em',
                         color: '#FF6B00',
-                        border: '1px solid var(--gold)',
+                        border: '1px solid #E34B26',
                         borderRadius: 4,
                         padding: '1px 5px',
                         verticalAlign: 'middle',
