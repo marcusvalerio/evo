@@ -24,7 +24,7 @@ export function ShoppingList({ shopChecked, onToggle, onClear }: Props) {
       }}>
         <div>
           <div style={{
-            fontFamily: 'var(--f-head)', fontSize: '0.58rem',
+            fontFamily: 'var(--f-title)', fontSize: '0.58rem',
             textTransform: 'uppercase', letterSpacing: '0.2em',
             color: 'rgba(255,255,255,0.3)', marginBottom: 4,
           }}>Itens marcados</div>
@@ -57,7 +57,7 @@ export function ShoppingList({ shopChecked, onToggle, onClear }: Props) {
               display: 'flex', justifyContent: 'space-between',
             }}>
               <span style={{
-                fontFamily: 'var(--f-head)', fontSize: '0.6rem',
+                fontFamily: 'var(--f-title)', fontSize: '0.6rem',
                 textTransform: 'uppercase', letterSpacing: '0.18em',
                 color: 'rgba(255,255,255,0.4)',
               }}>{cat.category}</span>
@@ -80,8 +80,8 @@ export function ShoppingList({ shopChecked, onToggle, onClear }: Props) {
                   }}>
                   <div style={{
                     width: 18, height: 18, flexShrink: 0, borderRadius: 5,
-                    border: `1px solid ${on ? 'var(--gold)' : '#2a2a2a'}`,
-                    background: on ? 'var(--gold)' : 'transparent',
+                    border: `1px solid ${on ? '#E34B26' : '#2a2a2a'}`,
+                    background: on ? '#E34B26' : 'transparent',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
                     {on && (
