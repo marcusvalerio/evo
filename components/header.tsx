@@ -1,79 +1,65 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
 import { ProgressRing } from "./progress-ring"
-import { Bell } from "lucide-react"
 
 interface HeaderProps {
   title: string
   subtitle?: string
   progress?: number
-  className?: string
   showBrand?: boolean
 }
 
-export function Header({ title, subtitle, progress, className, showBrand = false }: HeaderProps) {
+export function Header({ title, subtitle, progress, showBrand = false }: HeaderProps) {
   return (
-    <header className={cn(
-      "sticky top-0 z-40 border-b border-border/40 glass-card-strong",
-      "safe-area-pt",
-      className
-    )}>
-      <div className="mx-auto max-w-md px-5 pb-4 pt-4">
-        <div className="flex items-center justify-between">
-          <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {showBrand ? (
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary glow-green">
-                  <span className="text-lg font-black text-primary-foreground tracking-tight">E</span>
-                </div>
-                <div>
-                  <h1 className="text-2xl font-black uppercase tracking-tight text-foreground leading-none">
-                    {title}
-                  </h1>
-                  {subtitle && (
-                    <div className="font-mono text-[8px] uppercase tracking-[2.5px] text-muted-foreground mt-0.5">
-                      {subtitle}
-                    </div>
-                  )}
-                </div>
+    <header className="pt-safe" style={{
+      position: "sticky",
+      top: 0,
+      zIndex: 40,
+      background: "rgba(0,28,42,0.88)",
+      backdropFilter: "blur(32px)",
+      WebkitBackdropFilter: "blur(32px)",
+      borderBottom: "1px solid var(--border-soft)",
+    }}>
+      <div style={{ padding: "10px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <motion.div
+          initial={{ opacity: 0, x: -12 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.25 }}
+        >
+          {showBrand ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{
+                width: 34, height: 34,
+                borderRadius: 10,
+                background: "var(--sco-dim)",
+                border: "1px solid var(--border-accent)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <span style={{ fontFamily: "var(--f-logo)", fontSize: "0.9rem", color: "var(--scoville)" }}>E</span>
               </div>
-            ) : (
-              <>
+              <div>
+                <div style={{ fontFamily: "var(--f-logo)", fontSize: "1.1rem", letterSpacing: "0.14em", color: "var(--feather)", lineHeight: 1 }}>{title}</div>
                 {subtitle && (
-                  <div className="font-mono text-[8px] uppercase tracking-[3px] text-muted-foreground">
-                    {subtitle}
-                  </div>
+                  <div style={{ fontFamily: "var(--f-body)", fontSize: "0.46rem", textTransform: "uppercase", letterSpacing: "0.22em", color: "var(--t3)", marginTop: 2 }}>{subtitle}</div>
                 )}
-                <h1 className="text-2xl font-black uppercase tracking-tight text-foreground">
-                  {title}
-                </h1>
-              </>
-            )}
-          </motion.div>
+              </div>
+            </div>
+          ) : (
+            <div>
+              {subtitle && (
+                <div style={{ fontFamily: "var(--f-body)", fontSize: "0.46rem", textTransform: "uppercase", letterSpacing: "0.22em", color: "var(--t3)", marginBottom: 2 }}>{subtitle}</div>
+              )}
+              <div style={{ fontFamily: "var(--f-title)", fontSize: "0.78rem", textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--t1)" }}>{title}</div>
+            </div>
+          )}
+        </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="flex items-center gap-2.5"
-          >
-            {progress !== undefined && (
-              <ProgressRing
-                progress={progress}
-                color={progress === 100 ? "success" : "primary"}
-              />
-            )}
-            <button className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary/80 text-muted-foreground transition-colors hover:text-foreground">
-              <Bell className="h-4 w-4" />
-            </button>
+        {progress !== undefined && (
+          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.25, delay: 0.1 }}>
+            <ProgressRing progress={progress} color={progress === 100 ? "success" : "primary"} />
           </motion.div>
-        </div>
+        )}
       </div>
     </header>
   )
