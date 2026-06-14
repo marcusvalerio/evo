@@ -88,21 +88,23 @@ export function DietApp() {
   }
 
   if (!hydrated) return (
-    <div style={{position:'fixed',inset:0,background:'#000',display:'flex',alignItems:'center',justifyContent:'center'}}>
-      <div className="breathe" style={{fontFamily:'var(--f-logo)',fontSize:'3rem',color:'#fff',letterSpacing:'0.18em'}}>EVO</div>
+    <div style={{position:'fixed',inset:0,background:'var(--canvas)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+      <div className="breathe" style={{fontFamily:'var(--f-logo)',fontSize:'3rem',color:'var(--feather)',letterSpacing:'0.18em'}}>EVO</div>
     </div>
   )
 
   if (!onboarded) return <Onboarding onComplete={handleOnboard}/>
 
   return (
-    <div style={{maxWidth:480,margin:'0 auto',minHeight:'100dvh',background:'#000',position:'relative'}}>
+    <div style={{maxWidth:480,margin:'0 auto',minHeight:'100dvh',background:'var(--canvas)',position:'relative'}}>
 
       {/* HEADER */}
       <header className="pt-safe" style={{
         position:'sticky',top:0,zIndex:40,
-        background:'#000000',
-        borderBottom:'1px solid #222',
+        background:'rgba(0,28,42,0.88)',
+        backdropFilter:'blur(32px)',
+        WebkitBackdropFilter:'blur(32px)',
+        borderBottom:'1px solid var(--border-soft)',
       }}>
         <div style={{
           display:'flex',justifyContent:'space-between',alignItems:'center',
@@ -114,11 +116,11 @@ export function DietApp() {
               exit={{opacity:0}} transition={{duration:0.15}}>
               {view==='home' ? (
                 <span style={{fontFamily:'var(--f-logo)',fontSize:'1.2rem',
-                  letterSpacing:'0.14em',color:'#fff'}}>EVO</span>
+                  letterSpacing:'0.14em',color:'var(--feather)'}}>EVO</span>
               ) : (
                 <span style={{fontFamily:'var(--f-title)',fontSize:'0.72rem',
                   textTransform:'uppercase',letterSpacing:'0.16em',
-                  color:'rgba(255,255,255,0.7)'}}>
+                  color:'var(--t2)'}}>
                   {TITLES[view]||view}
                 </span>
               )}
@@ -156,20 +158,20 @@ export function DietApp() {
           {view==='progresso'&&(
             <motion.div key="progresso" initial={{opacity:0}} animate={{opacity:1}}
               exit={{opacity:0}} transition={{duration:0.15}}>
-              <div style={{borderBottom:'1px solid #222'}}>
+              <div style={{borderBottom:'1px solid var(--border-soft)'}}>
                 <div style={{
-                  padding:'10px 16px',background:'#0a0a0a',borderBottom:'1px solid #222',
+                  padding:'10px 16px',background:'rgba(0,28,42,0.60)',borderBottom:'1px solid var(--border-soft)',
                   display:'flex',justifyContent:'space-between',alignItems:'center',
                 }}>
                   <span style={{fontFamily:'var(--f-title)',fontSize:'0.58rem',
-                    textTransform:'uppercase',letterSpacing:'0.2em',color:'rgba(255,255,255,0.3)'}}>
+                    textTransform:'uppercase',letterSpacing:'0.2em',color:'var(--t3)'}}>
                     Registrar peso
                   </span>
                 </div>
-                <div style={{padding:'12px 16px',display:'flex',gap:8,borderBottom:'1px solid #111'}}>
+                <div style={{padding:'12px 16px',display:'flex',gap:8,borderBottom:'1px solid var(--border-soft)'}}>
                   <input type="number" step="0.1" placeholder="92.5" id="w-in"
                     className="inp" style={{flex:1}}/>
-                  <button className="btn-o press" id="w-btn"
+                  <button className="btn-outline" id="w-btn"
                     style={{padding:'12px 16px',width:'auto'}}
                     onClick={()=>{
                       const el=document.getElementById('w-in') as HTMLInputElement
@@ -185,16 +187,16 @@ export function DietApp() {
                 {weights.length>0&&[...weights].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8).map((w,i)=>(
                   <div key={w.date} style={{
                     display:'flex',justifyContent:'space-between',alignItems:'baseline',
-                    padding:'11px 16px',borderBottom:'1px solid #111',
+                    padding:'11px 16px',borderBottom:'1px solid var(--border-soft)',
                   }}>
                     <span style={{fontFamily:'var(--f-body)',fontSize:'0.62rem',
-                      fontWeight:300,color:'rgba(255,255,255,0.25)',
+                      fontWeight:300,color:'var(--t3)',
                       textTransform:'uppercase',letterSpacing:'0.1em'}}>
                       {w.date.split('-').reverse().slice(0,2).join('/')}
                     </span>
                     <span style={{fontFamily:'var(--f-logo)',fontSize:'1.1rem',
-                      color:'#fff',letterSpacing:'-0.01em'}}>
-                      {w.val}<span style={{fontSize:'0.55rem',color:'rgba(255,255,255,0.25)',marginLeft:3}}>kg</span>
+                      color:'var(--t1)',letterSpacing:'-0.01em'}}>
+                      {w.val}<span style={{fontSize:'0.55rem',color:'var(--t3)',marginLeft:3}}>kg</span>
                     </span>
                   </div>
                 ))}
@@ -239,9 +241,9 @@ export function DietApp() {
           {(view==='perfil'||view==='config')&&(
             <motion.div key={view} initial={{opacity:0}} animate={{opacity:1}}
               transition={{duration:0.15}}>
-              <div style={{padding:'16px',borderBottom:'1px solid #222'}}>
+              <div style={{padding:'16px',borderBottom:'1px solid var(--border-soft)'}}>
                 <span style={{fontFamily:'var(--f-body)',fontSize:'0.7rem',
-                  fontWeight:300,color:'rgba(255,255,255,0.25)',
+                  fontWeight:300,color:'var(--t3)',
                   textTransform:'uppercase',letterSpacing:'0.14em'}}>EM BREVE</span>
               </div>
             </motion.div>
